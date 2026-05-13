@@ -1,0 +1,22 @@
+# Raw sources — copyright-bound PDFs and personal note dumps
+raw/
+
+# Auto-memory directory for Claude Code
+.claude/
+
+# Intermediate text extracts from PDF ingest
+tools/_extracted/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Obsidian workspace state (per-machine; not portable)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json

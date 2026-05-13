@@ -1,0 +1,223 @@
+{
+  "main": {
+    "id": "1653b6d0cc3f3b1f",
+    "type": "split",
+    "children": [
+      {
+        "id": "123ae73b9596985f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0fe50b8498311e59",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "tools/basic-assembler.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "basic-assembler"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "bb24d36e2ada1eef",
+    "type": "split",
+    "children": [
+      {
+        "id": "98dd99840dc7d2cb",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "02798b714efc70e6",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "ddc24e0b0a5e037b",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "b142672208a75fac",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "b9232926ad7d8f08",
+    "type": "split",
+    "children": [
+      {
+        "id": "1ed2f5fc883f4e49",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3d3ef13c2b1e123c",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "tools/basic-assembler.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for basic-assembler"
+            }
+          },
+          {
+            "id": "7969aae7fd5cb5bd",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "tools/basic-assembler.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from basic-assembler"
+            }
+          },
+          {
+            "id": "0d705ae1f7b2d124",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "062805df5829d0d3",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "f616704e1787307e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "tools/basic-assembler.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of basic-assembler"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "0fe50b8498311e59",
+  "lastOpenFiles": [
+    "os/printer.md",
+    "os/break-intercept.md",
+    "os/adc.md",
+    "hardware/upd7002-adc.md",
+    "hardware/cmos-rtc.md",
+    "os/clocks.md",
+    "sources/naug-ch24-misc.md",
+    "sources/naug-ch20-adc.md",
+    "sources/naug-ch19-clocks-cmos.md",
+    "os/serial.md",
+    "os/escape.md",
+    "os/filing-systems.md",
+    "hardware/6850-acia.md",
+    "hardware/6502.md",
+    "hardware/serial-ula.md",
+    "tools/basic-assembler.md",
+    "hardware/1mhz-bus.md",
+    "memory/shadow-ram.md",
+    "sources/naug-ch12-memory.md",
+    "hardware/system-via.md",
+    "memory/paged-rom.md",
+    "sources/naug-ch15-serial.md",
+    "sources/naug-ch10-escape.md",
+    "sources/naug-ch10-escape.md.tmp.37116.c5c875065014",
+    "hardware/6502-addressing-modes.md",
+    "hardware/6502-isa.md",
+    "memory/os-workspace.md",
+    "index.md.tmp.37116.7506c17f3a55",
+    "synthesis/mode-8-16colour-lf.md.tmp.37116.29e611592042",
+    "index.md.tmp.37116.282294952bbb",
+    "log.md.tmp.37116.115bdbc184ab",
+    "index.md.tmp.37116.25a26aa51f14",
+    "index.md.tmp.37116.b678c9a4bade",
+    "index.md.tmp.37116.0205184c500e"
+  ]
+}
