@@ -31,12 +31,14 @@ jobs:
         with:
           node-version: 22
 
-      # On Linux runner the Windows junction quartz/content -> wiki is just a
-      # broken directory. Recreate it as a symlink before build.
-      - name: Link wiki/ into quartz/content/
+      # On Linux runner the Windows junction quartz/content -> wiki is a
+      # broken directory entry. Quartz also doesn't follow symlinks for
+      # content fetch, so we copy wiki/ into quartz/content/ for the build.
+      - name: Copy wiki/ into quartz/content/
         run: |
           rm -rf quartz/content
-          ln -s ../wiki quartz/content
+          cp -a wiki quartz/content
+          echo "Copied $(find quartz/content -name '*.md' | wc -l) markdown files."
 
       - name: Install Quartz dependencies
         working-directory: quartz
@@ -47,6 +49,8 @@ jobs:
         run: npx quartz build
 
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - uses: actions/upload-pages-artifact@v3
         with:
