@@ -102,6 +102,10 @@ MODE 7 (teletext) uses the SAA5050 character generator instead of the Video ULA 
 
 **MODE 7 customisation is out of scope for this page.** Building a custom teletext-style mode is genuinely different from custom graphics modes — covered separately in `[[video/teletext-mode]]` (planned). If you're after a 4-colour or 16-colour image, you're starting from a graphics mode (0-6), not 7.
 
+### Worked example: community "MODE 8" 16-colour LF mode
+
+For a concrete reference custom mode that combines MODE 2's 16-colour palette with MODE 5's LF clock (giving a 160×256 16-colour playfield instead of MODE 2's 160×256 8 KB cost in 20 KB), see `[[synthesis/mode-8-16colour-lf]]`. Worked CRTC and Video ULA register values; what the BBC community has historically called "MODE 8".
+
 ## Step 4: patch the Video ULA (only if base mode is wrong)
 
 If the base mode already has the right colour depth and clock, you don't need to touch `&FE20` — leave it at the base mode's value (see `[[hardware/video-ula]]` per-mode table). For mid-frame mode-switching tricks, write `&FE20` (or via OSBYTE `&9A` for Tube safety) at the raster split point.

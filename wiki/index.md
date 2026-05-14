@@ -29,6 +29,11 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/naug-ch20-adc]] — NAUG Ch20: ADC system (p372-378). µPD7002 chip, conversion timing, joystick reading, Master Compact's switched-not-analogue simulator.
 - [[sources/naug-ch24-misc]] — NAUG Ch24: Miscellaneous (p426-438). BREAK intercept `&F7-&F9`, reset types, printer UPTV, `*CODE`/`*LINE` via USERV, machine identification, NETV/KEYV.
 - [[sources/allmem-ripley-harston]] — AllMem: BBC System Memory Map (Ripley/Harston, 2016). Byte-level catalogue of MOS workspace across BBC/Electron/Master variants. Authoritative cross-check for `&00`-`&FF`, `&0200`-`&02FF`, `&0300`-`&03FF`, buffer pages, `&FE00-&FEFF`, MOS jumpblock.
+- [[sources/beebwiki-address-translation]] — BeebWiki: Address translation (mdfs.net). The discrete-logic translator: CPU/TTX/HI-RES modes, IC 32 + IC 39 wraparound mechanism, per-mode subtract amounts, MODE 7 formula.
+- [[sources/beebwiki-crtc]] — BeebWiki: CRTC (mdfs.net). 6845 register map + Acorn quirks (R10 BLK encoding, MODE 7 R12/R13 XOR `&54`, 6845S variant).
+- [[sources/beebwiki-video-ula]] — BeebWiki: Video ULA (mdfs.net). Shift-register / palette-CAM mechanics, undefined 80@1MHz / 10@2MHz behaviour, default palette write tables, hardware history (Ferranti / VLSI / VideoNuLA).
+- [[sources/beebwiki-andy]] — BeebWiki: ANDY (mdfs.net). B+ 12 KB / Master 4 KB paged RAM area; OSWORD `&05`/`&06` extended-addressing access; B+ shadow-display window at `&A000-&AFFF`.
+- [[sources/beebwiki-cycle-stretching]] — BeebWiki: Cycle stretching (mdfs.net). Mechanism + complete list of 1 MHz peripheral addresses; variable 2c/3c penalty per access; phase-aligning notes.
 
 ## Hardware
 
@@ -48,6 +53,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[hardware/serial-ula]] — Acorn serial ULA: baud-rate encoding, RS423/cassette switch, cassette motor control.
 - [[hardware/cmos-rtc]] — Master-only 146818 RTC: register layout, alarm/periodic/UE IRQ sources, slow-bus access, LK4 enable.
 - [[hardware/upd7002-adc]] — NEC µPD7002 4-channel 12-bit ADC: status/start register, 8-bit vs 12-bit modes, EOC IRQ on System VIA CB1.
+- [[hardware/address-translation]] — Discrete-logic CPU/CRTC → DRAM mapper. CPU/TTX/HI-RES modes, IC 32 + IC 39 hardware-scroll wraparound, MODE 7 formula, per-mode DRAM refresh intervals.
 
 ## Memory
 
@@ -65,6 +71,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 ## Timing
 
 - [[timing/via-timers]] — T1/T2 modes, periodic IRQ, raster splits, PB7 audio, pulse counting, MOS-sound conflict on System VIA T1.
+- [[timing/cycle-stretching]] — Which addresses cost extra cycles (most of SHEILA, FRED, JIM); variable 2c/3c penalty; phase-aligning; what's NOT stretched (Video ULA, Tube, FDC, ROMSEL).
 
 ## OS / MOS
 

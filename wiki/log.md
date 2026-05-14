@@ -194,3 +194,31 @@ grep "^## \[" wiki/log.md | tail -10
 - Updated: wiki/memory/zero-page.md — VDU table corrected (removed wrong &CB-&CE and &DD-&E0 rows; added &D6-&D7 graphics char cell, &D8-&D9 top scan line, &DA-&DF temp); critical OS table fixed (&FD-&FE = error message pointer, not "post-BRK return"); &EE expanded to dual purpose (1MHz paging copy + OSBYTE-&79 key-ignore); added &F8-&F9, &FA-&FB rows.
 - Updated: wiki/memory/os-workspace.md — "Useful direct reads" all four wrong addresses corrected (&27C/&24A/&262/&261), added formula `&236 + (osbyte_num - &A6)`; Page-3 cursor row split into 6 correct entries; Page 8-9 buffer rows clarified (printer is distinct from sound).
 - Updated frontmatter sources to cite allmem-ripley-harston: zero-page.md, os-workspace.md, memory-map.md.
+
+## [2026-05-14] ingest | BeebWiki Hardware section: Address translation, CRTC, Video ULA
+- Created sources: wiki/sources/beebwiki-address-translation.md, wiki/sources/beebwiki-crtc.md, wiki/sources/beebwiki-video-ula.md
+- Created entity: wiki/hardware/address-translation.md (NEW page — wraparound mechanism finally explained: IC 32 latch C0/C1 → IC 39 quad adder, subtract amounts &4000/&2000/&5000/&2800 for MODES 3/6/0-2/4-5; MODE 7 phys = ((MA & 0x800) << 3) | 0x3C00 | (MA & 0x3FF); per-mode DRAM refresh intervals; MODE 7 MA6 ⊕ ~1MHz refresh trick).
+- Updated: wiki/hardware/crtc-6845.md — fixed R10 BLK encoding (4-state field 00=off, 01=steady, 10=slow, 11=fast — old version misdescribed bit 6 / bit 5 split); added MODE 7 R12/R13 XOR &54 quirk with `(high - &74) EOR &20` formula; added 6845S variant section; cited beebwiki-crtc.
+- Updated: wiki/hardware/video-ula.md — added MOS shadow addresses (&248 / &249); added clock-divider output pin reference (8/4/2/1 MHz on pins 7/6/5/4); added shift-register clock-rate-per-MODE table; documented 80@1MHz / 10@2MHz undefined behaviour; added default palette write-sequence tables for MODE groups; added hardware history (Ferranti, VLSI, VideoNuLA); cited beebwiki-video-ula.
+- Updated: wiki/video/hardware-scrolling.md — replaced hand-wavy "adds an offset" with the real subtract amounts and pointer to address-translation.
+- Updated: wiki/index.md (3 new sources, 1 new hardware entity).
+- Contradiction logged but not "fixed": BeebWiki CRTC R0=127 across all modes is wrong; NAUG (and our existing table) correctly shows R0=63 for MODES 4-7. Source page documents the discrepancy.
+
+## [2026-05-14] ingest | BeebWiki: ANDY + Cycle stretching
+- Created sources: wiki/sources/beebwiki-andy.md, wiki/sources/beebwiki-cycle-stretching.md
+- Created entity: wiki/timing/cycle-stretching.md (NEW page — first system-wide treatment of which SHEILA addresses pay the 1MHz penalty; documents 2c/3c variable cost depending on phase; lists what is NOT stretched: Video ULA, Tube, FDC, ROMSEL/ACCCON; phase-aligning trick via dummy stretched read).
+- Updated: wiki/memory/paged-rom.md — added ANDY-access section (OSWORD &05/&06 with &FFFExxxx form, B+ &A000-&AFFF shadow-display window trick, MOS won't scan ANDY for languages); cited beebwiki-andy.
+- Updated: wiki/hardware/1mhz-bus.md — corrected "2 cycles" to "1-2 extra cycles (variable)"; added cross-link to timing/cycle-stretching; clarified the same mechanism applies to most SHEILA peripherals; cited beebwiki-cycle-stretching.
+- Updated: wiki/index.md — added 2 new sources, 1 new timing page.
+- Headline new fact for performance code: every CRTC, ACIA, Serial ULA, VIA, ADC access pays the 1MHz stretch (5-6c instead of 4c). Video ULA writes (&FE20/&FE21) and Tube writes (&FEE0+) do NOT — preferred for tight raster work.
+
+## [2026-05-14] lint | post-BeebWiki ingest health check & fixes
+- Fixed: wiki/hardware/1mhz-bus.md — corrected stale "8 cycles per LDA abs / factor 2" to actual 5-6c per cycle-stretching page.
+- Fixed: wiki/memory/memory-map.md — Master ANDY was wrongly attributed to ACCCON; it's ROMSEL bit 7 (consistent with paged-rom.md and beebwiki-andy).
+- Fixed: broken link `[[synthesis/mode-8]]` → `[[synthesis/mode-8-16colour-lf]]` in wiki/sources/beebwiki-video-ula.md.
+- Fixed: orphan wiki/synthesis/mode-8-16colour-lf.md — added inbound refs from wiki/techniques/custom-modes.md and wiki/hardware/video-ula.md.
+- No-action items: BeebWiki R0=127 row stays a flagged discrepancy in source page only (ours matches NAUG and is correct); known stubs (raster-splits, crtc-6845-advanced, etc.) untouched; code-block dialect annotations all correct on spot-check.
+- Suggested next sources to seek (likely on bitshifters/bbc-documents):
+  - Master Reference Manual — for definitive ACCCON / ANDY / HAZEL paging confirmation.
+  - Acorn Service Manual — for cycle-stretching IC schematics (IC 23 / IC 33) and address-translator IC numbering.
+- Suggested next page-write candidate: `techniques/raster-splits` (5 inbound refs, well-supported by new cycle-stretching + via-timers pages).

@@ -57,7 +57,7 @@ For sub-character horizontal smoothness, use mode 2 hardware scroll combined wit
 
 ## Hardware wrap-around
 
-When the 6845's fetch address hits `≥ &8000` (would point into ROM space), dedicated logic detects this and **adds a per-mode offset** to bring the address back into screen RAM. The offset is selected by 2 bits on the **System VIA Port A latch** (NAUG §13.3.10 p200 → §22.3, see `[[hardware/system-via]]`).
+When the 6845's fetch address hits `≥ &8000`, dedicated logic **subtracts** a mode-dependent amount to bring the address back into screen RAM. The subtract amount is selected by 2 bits on the **System VIA addressable latch (IC 32)**, programmed at MODE-set time. Full mechanism (subtract amounts `&4000`/`&2000`/`&5000`/`&2800` for MODES 3/6/0-2/4-5, restart addresses `&4000`/`&6000`/`&3000`/`&5800`) is documented in `[[hardware/address-translation]]`.
 
 Practical implication: provided your `R12,R13` value stays within `[screen_base, screen_base + screen_size)`, you can scroll indefinitely and the screen image wraps cleanly through screen RAM.
 

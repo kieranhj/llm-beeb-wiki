@@ -84,7 +84,7 @@ See `[[video/modes]]`. Range is always inside `&3000-&7FFF`; the base depends on
 
 - **Model B**: as above. 16 KB MOS, 16 KB sideways for languages.
 - **B+**: adds 20 KB shadow RAM and 12 KB paged RAM (bit 7 of `&FE30` selects). Total RAM 64 KB on B+, 128 KB on B+128.
-- **Master 128**: 20 KB shadow RAM, **ANDY** (4 KB private at `&8000-&8FFF`, ACCCON-controlled), **HAZEL** (8 KB filing-system RAM at `&C000-&DFFF`, ACCCON `Y`), 4 KB private MOS workspace, plus 16 sideways slots (some RAM, some ROM).
+- **Master 128**: 20 KB shadow RAM, **ANDY** (4 KB private at `&8000-&8FFF`, selected via ROMSEL `&FE30` bit 7), **HAZEL** (8 KB filing-system RAM at `&C000-&DFFF`, selected via ACCCON `Y` bit), 4 KB private MOS workspace, plus 16 sideways slots (some RAM, some ROM).
 - **Master Compact**: similar with adjusted ROM map.
 - **Electron**: Model-B-equivalent map; no shadow RAM, no Tube, video ULA combined with CPU clock generation. ADC moves to `&FE18-&FE1A`. Electron ULA functions at `&FE00-&FE0F`.
 
