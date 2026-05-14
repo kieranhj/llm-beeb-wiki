@@ -222,3 +222,36 @@ grep "^## \[" wiki/log.md | tail -10
   - Master Reference Manual — for definitive ACCCON / ANDY / HAZEL paging confirmation.
   - Acorn Service Manual — for cycle-stretching IC schematics (IC 23 / IC 33) and address-translator IC numbering.
 - Suggested next page-write candidate: `techniques/raster-splits` (5 inbound refs, well-supported by new cycle-stretching + via-timers pages).
+
+## [2026-05-14] ingest | Hitachi HD6845R/HD6845S datasheet (raw/manuals/hd6845sp.pdf)
+- Source: replaced unreadable raw/manuals/6845.pdf with text-searchable hd6845sp.pdf (482KB) from bitshifters/bbc-documents/ICs/6845 CRTC. Deleted two image-only duplicates.
+- Created: wiki/sources/hd6845sp-hitachi-datasheet.md (primary chip reference).
+- Created: wiki/hardware/crtc-6845-advanced.md — closes the long-planned stub. Body = full anomalous-rewrite table (R12/R13 sampled in last raster period of field, R8 dynamic rewrite prohibited, R0/R2/R7/R9 NG, R1/R6 OK, others conditional) + raster-split primitives + field-timing reference.
+- Updated: wiki/hardware/crtc-6845.md:
+  - **R10 BLK encoding CORRECTED** (was wrong since BeebWiki adoption two commits ago). Authoritative per datasheet Table 7: BP=00=non-blink(steady-on), BP=01=non-display(off), BP=10=16-field period (~3 Hz, FASTER), BP=11=32-field period (~1.5 Hz, slower). MOS default BP=10 → R10=&47 in graphics, =&52 in MODE 7 — matches BBC's visible flashing underline cursor.
+  - Added: R9 takes Nr-2 in Interlace Sync & Video mode (MODE 7), not Nr-1.
+  - Added: full HD6845S vs HD6845R differences section (6 features).
+  - Added: Programming Restrictions section (inequalities, R0-even-in-interlace caveat, HSW=0 prohibited).
+  - Added: Reset behaviour (first field anomaly — R12/R13 ignored on field 0).
+  - Refined: Register Latching section now correctly notes per-register behaviour and points at the advanced page.
+- Updated: wiki/index.md (1 new hardware entity + 1 new source).
+- Headline contradiction (logged on source page): BeebWiki R10 BLK encoding is wrong on both 00/01 (swapped) and 10/11 (slow/fast labels inverted). Datasheet is primary; BeebWiki entry contradicts both datasheet and observable BBC behaviour. User verified empirically (all modes default to flashing underline cursor).
+
+## [2026-05-14] ingest | SAA5050 — combined references (chip datasheet image-only)
+- Downloaded raw/manuals/SAA5050.pdf (3.3MB) from bitshifters/bbc-documents/ICs/SAA5050 — image-only, not text-extractable. Stardot mirror also image-only. vd-view down, datasheetcatalog unreachable.
+- No BeebWiki SAA5050 page exists.
+- Substituted four text-bearing sources: Wikipedia Mullard_SAA5050, HandWiki Engineering:Mullard_SAA5050, mdfs.net Teletext Controls (J.G. Harston), Hoglet67 BeebFpga saa5050.vhd.
+- Created: wiki/sources/saa5050-references.md (consolidated reference page with TODO to revisit when datasheet is OCR'd).
+- Created: wiki/hardware/saa5050.md (new entity page) — 12×20 character cell on 5×9 ROM grid with diagonal smoothing, full &80-&9F control code table, set-after vs set-at semantics, hold-graphics bug, double-height pair rule, MODE 7 BBC integration details.
+- Updated 5 pages with [[hardware/saa5050]] inbound links: crtc-6845, crtc-6845-advanced, video-ula, address-translation, video/modes.
+- Updated: wiki/index.md (1 new hardware entity + 1 new source).
+- Key new facts captured:
+  - Control codes are stored with bit 7 set in BBC MODE 7 screen RAM (&80-&9F = teletext codes &00-&1F).
+  - Set-after codes (most) occupy a cell as background-coloured space; set-at codes (Conceal, Hold Graphics, Steady, Black BG, New BG) affect the current cell too.
+  - "Hold graphics bug": control codes inside hold-graphics state (except &9E itself) clear the held character.
+  - Double-height pair rule: second-row character without &8D becomes invisible.
+  - Flash rate ~0.78 Hz, 3:1 duty cycle, chip-internal counter reset by DEW each field.
+  - No black text in practice (alpha-black control writes black-on-black space).
+
+## [2026-05-14] fix | SAA5050 page — &3C00 alt address mischaracterised
+- Fixed: wiki/hardware/saa5050.md — the &3C00 alternate MODE 7 screen RAM address is **not** "shadow" and exists only on the BBC Model B / B+ (Model A also has it via the same address translator). The dual-block addressing is a quirk of the discrete-logic address translator's MODE 7 path (MA11 selects top bit), not shadow RAM. Master's memory-management ULA does NOT replicate this quirk — MODE 7 lives at &7C00 only; shadow MODE 7 on Master uses ACCCON D/E/X bits to swap which physical bank &7C00 maps to. Electron has no quirk at all (MODE 7 is software-emulated).

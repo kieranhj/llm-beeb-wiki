@@ -9,7 +9,7 @@ updated: 2026-05-14
 
 # Address Translation
 
-The BBC's discrete-logic address translator maps three different address spaces (CPU, CRTC + line counter, SAA 5050 input) onto the 15-bit DRAM space. **This is what makes hardware scrolling work** — and the only reason you can write a 14-bit screen-start address to R12/R13 of the `[[hardware/crtc-6845]]` and have it land cleanly in screen RAM regardless of mode.
+The BBC's discrete-logic address translator maps three different address spaces (CPU, CRTC + line counter, [[hardware/saa5050]] input) onto the 15-bit DRAM space. **This is what makes hardware scrolling work** — and the only reason you can write a 14-bit screen-start address to R12/R13 of the `[[hardware/crtc-6845]]` and have it land cleanly in screen RAM regardless of mode.
 
 Implemented as SSI (small-scale integration) logic, not a ULA: ICs 8-15 (data + address gating), IC 32 (System VIA addressable latch — see `[[hardware/system-via]]`), IC 39 (quad adder for the wraparound). On the **Electron** the function is absorbed into the ULA, with restrictions (no hardware scroll, no Teletext fetch — MODE 7 is software-rendered). On the **Master** it lives in the memory-management ULA with B/B+ compatibility.
 

@@ -16,7 +16,7 @@ Custom Acorn chip — partner to the `[[hardware/crtc-6845]]`. Responsibilities:
 - Serialise video data fetched from RAM into RGB output streams.
 - Hold the 16-entry × 4-bit **palette** (logical → physical colour map).
 - Control horizontal cursor width.
-- Switch between in-chip serialiser and the SAA5050 teletext chip (MODE 7).
+- Switch between in-chip serialiser and the [[hardware/saa5050]] teletext chip (MODE 7).
 
 Two write-only Sheila registers (with MOS RAM shadows):
 

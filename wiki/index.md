@@ -34,6 +34,8 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/beebwiki-video-ula]] — BeebWiki: Video ULA (mdfs.net). Shift-register / palette-CAM mechanics, undefined 80@1MHz / 10@2MHz behaviour, default palette write tables, hardware history (Ferranti / VLSI / VideoNuLA).
 - [[sources/beebwiki-andy]] — BeebWiki: ANDY (mdfs.net). B+ 12 KB / Master 4 KB paged RAM area; OSWORD `&05`/`&06` extended-addressing access; B+ shadow-display window at `&A000-&AFFF`.
 - [[sources/beebwiki-cycle-stretching]] — BeebWiki: Cycle stretching (mdfs.net). Mechanism + complete list of 1 MHz peripheral addresses; variable 2c/3c penalty per access; phase-aligning notes.
+- [[sources/hd6845sp-hitachi-datasheet]] — Hitachi HD6845R/HD6845S datasheet (primary chip-level reference). Register encodings, programming restrictions, anomalous-rewrite table, HD6845S-vs-HD6845R differences, reset behaviour.
+- [[sources/saa5050-references]] — Combined SAA5050 references (Wikipedia, HandWiki, mdfs.net Teletext Controls, BeebFpga VHDL model). Substitutes for the image-only Mullard datasheet PDF (`raw/manuals/SAA5050.pdf`).
 
 ## Hardware
 
@@ -41,6 +43,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[hardware/6502-isa]] — Full instruction-set reference: per-mnemonic addressing modes, bytes, cycles, opcodes. Performance summary at end.
 - [[hardware/6502-addressing-modes]] — Mode mechanics: 12 NMOS modes + 2 65C12 additions. Worked examples, page-crossing penalty, mode-cost summary, zp forward-reference trap.
 - [[hardware/crtc-6845]] — 6845 CRTC entity: register map, per-mode values, screen-start lever, light pen, wrap-around.
+- [[hardware/crtc-6845-advanced]] — Anomalous-rewrite table (which registers tolerate mid-frame writes), R12/R13 sample phase, split-screen primitives, field timing.
 - [[hardware/video-ula]] — Acorn Video ULA: control register, palette mechanics, cursor width, logical-colour expansion rules per mode.
 - [[hardware/via-6522]] — 6522 VIA generic: register map (ORA/ORB/DDR/T1/T2/SR/ACR/PCR/IFR/IER), IRA vs IRB asymmetry, IER set/clear protocol.
 - [[hardware/system-via]] — System VIA @ `&FE40`: slow peripheral bus, addressable latch, vsync/keyboard/light-pen/ADC IRQs, hardware-scroll wrap addend table.
@@ -54,6 +57,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[hardware/cmos-rtc]] — Master-only 146818 RTC: register layout, alarm/periodic/UE IRQ sources, slow-bus access, LK4 enable.
 - [[hardware/upd7002-adc]] — NEC µPD7002 4-channel 12-bit ADC: status/start register, 8-bit vs 12-bit modes, EOC IRQ on System VIA CB1.
 - [[hardware/address-translation]] — Discrete-logic CPU/CRTC → DRAM mapper. CPU/TTX/HI-RES modes, IC 32 + IC 39 hardware-scroll wraparound, MODE 7 formula, per-mode DRAM refresh intervals.
+- [[hardware/saa5050]] — Mullard teletext character generator (MODE 7 pixel source). 12×20 cells, full control-code table, set-after vs set-at semantics, hold-graphics quirks, BBC integration.
 
 ## Memory
 

@@ -82,7 +82,7 @@ Same interleaving principle as MODE 1/5 but with 4 bits per pixel instead of 2: 
 
 ### MODE 7 (teletext)
 
-1 byte per character. Screen RAM is `&7C00-&7FFF` (1 KB, but only `&7C00-&7FE7` is displayed). Characters are interpreted by the SAA5050 teletext chip, not the Video ULA serialiser. Hardware scrolling uses a different correction — see `[[video/hardware-scrolling#mode-7]]`.
+1 byte per character. Screen RAM is `&7C00-&7FFF` (1 KB, but only `&7C00-&7FE7` is displayed). Characters are interpreted by the [[hardware/saa5050]] teletext chip, not the Video ULA serialiser. Hardware scrolling uses a different correction — see `[[video/hardware-scrolling#mode-7]]`.
 
 ## "6845 chars" vs "displayed chars"
 
