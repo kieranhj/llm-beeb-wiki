@@ -2,6 +2,10 @@
 
 A persistent, LLM-maintained knowledge base for writing high-performance code on the BBC Micro family (Model B, B+, Master 128, Master Compact, Electron). Built incrementally from technical sources — primarily *The New Advanced User Guide* by Holmes & Dickens — using the [LLM Wiki](https://github.com/karpathy/) pattern: the human curates sources, the LLM compiles and maintains a structured, interlinked wiki of markdown pages.
 
+## Browse online
+
+[**kieranhj.github.io/llm-beeb-wiki**](https://kieranhj.github.io/llm-beeb-wiki/) — full wiki with search, backlinks, and graph view (published via [Quartz](https://quartz.jzhao.xyz/) + GitHub Pages).
+
 ## What's here
 
 - **`CLAUDE.md`** — the schema. Tells the LLM how the wiki is organised, what conventions to follow, and what workflows to use for ingest / query / lint. Also serves as the human-facing introduction to how this wiki works.
