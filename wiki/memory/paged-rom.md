@@ -27,13 +27,13 @@ bit:   7    6    5    4    3    2    1    0
 
 The MOS owns this register. It pages ROMs in and out *often* — for example, every time a `*` command is processed, every paged-ROM service call, every language-ROM call. If you write to `&FE30` without coordinating, the **current language ROM may be swapped out**, and the next instruction fetched from `&8000-&BFFF` will be from the wrong bank. The machine crashes immediately.
 
-Use OSBYTE / service-call APIs instead. See `[[os/paged-roms]]` for the ROM header format, language vs service distinction, and the three safe ways to call into another ROM:
+Use OSBYTE / service-call APIs instead. See [[os/paged-roms]] for the ROM header format, language vs service distinction, and the three safe ways to call into another ROM:
 
 - `OSRDRM` (`&FFB9`) — single-byte read from any slot.
 - `OSBYTE &8F` — issue a paged-ROM service call.
 - **Extended vectors** — permanent intercept; MOS handles paging on every dispatch.
 
-See `[[os/service-calls]]` for the complete service-call reason-code table.
+See [[os/service-calls]] for the complete service-call reason-code table.
 
 ## Standard ROM allocations (Model B with DFS + BASIC)
 
@@ -76,7 +76,7 @@ SWR is commonly used to:
 | B+ | 12 KB | `&8000-&AFFF` | Top of shadow RAM (above the 20 KB shadow screen). Bit 7 of `&FE30` selects. |
 | Master 128 / Compact | 4 KB | `&8000-&8FFF` | Reserved for MOS use (see AllMem `&8000-&8FFF` workspace breakdown). User writes are dangerous. |
 
-**Access methods** (from `[[sources/beebwiki-andy]]`):
+**Access methods** (from [[sources/beebwiki-andy]]):
 
 1. **Direct paging**: write `&FE30` with the top bit set, then access `&8000+`. Same caveats as any direct `&FE30` write — prefer OSBYTE `&8F` or use only inside SEI.
 2. **OSWORD `&05`** — read byte at extended address `&FFFExxxx` (xxxx = ANDY offset).
@@ -88,4 +88,4 @@ The `&FFFE`-prefix form is a Tube-safe convention.
 
 **B+ shadow trick:** on the B+ specifically, the paged-in ANDY window at `&A000-&AFFF` exposes a 4 KB chunk of the shadow display memory. Writing here directly modifies what the shadow screen displays — useful for fast back-buffer fills. Behaviour with shadow display disabled is undocumented.
 
-See `[[memory/memory-map]]` for the wider layout. See `[[memory/shadow-ram]]` for screen-area RAM bank-switching (`&FE34` ACCCON), which is a separate mechanism.
+See [[memory/memory-map]] for the wider layout. See [[memory/shadow-ram]] for screen-area RAM bank-switching (`&FE34` ACCCON), which is a separate mechanism.

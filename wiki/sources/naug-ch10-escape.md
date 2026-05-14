@@ -16,7 +16,7 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.154-156. Short chapter (3 pa
 
 - The ESCAPE key (by default ASCII `&1B`) raises a system-wide ESCAPE condition.
 - Most OS routines check the condition between operations and abort if it's set, returning to the calling BASIC program with an "Escape" error.
-- Event 6 (`[[os/events]]`) fires when ESCAPE is detected if event 6 is enabled.
+- Event 6 ([[os/events]]) fires when ESCAPE is detected if event 6 is enabled.
 - The condition stays set until explicitly cleared.
 
 ## OSBYTE calls
@@ -58,7 +58,7 @@ LDA #&C8 : LDX #1 : LDY #0 : JSR &FFF4    ; disable ESCAPE key
 LDA #&E5 : LDX #&FF : LDY #0 : JSR &FFF4  ; treat ESCAPE as plain ASCII
 ```
 
-Or, less destructively, leave ESCAPE active but trap event 6 (`[[os/events]]`).
+Or, less destructively, leave ESCAPE active but trap event 6 ([[os/events]]).
 
 ### Custom ESCAPE key
 
@@ -91,9 +91,9 @@ When `&E6` flag ≠ 0, only the condition itself is cleared — none of the abov
 
 ## Filed into
 
-- `[[os/escape]]` — Compact escape-handling reference (new page).
-- Updates: `[[os/osbyte]]` entries `&7C/&7D/&7E/&C8/&DC/&E5/&E6` cross-linked.
-- Updates: `[[os/events]]` — event 6 cross-link.
+- [[os/escape]] — Compact escape-handling reference (new page).
+- Updates: [[os/osbyte]] entries `&7C/&7D/&7E/&C8/&DC/&E5/&E6` cross-linked.
+- Updates: [[os/events]] — event 6 cross-link.
 
 ## Open follow-ups
 

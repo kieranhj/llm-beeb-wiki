@@ -29,7 +29,7 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.162-171. Compact (10pp) but 
 - **Test sideways RAM**: `OSBYTE &44` returns X with bits 0-3 set for SWR banks 4-7. Available on B+/Master only.
 - **ACCCON register** at SHEILA `&FE34` controls shadow RAM, HAZEL filing-system RAM, Tube selection, cartridge vs 1 MHz bus. Layout differs between B+ and Master:
   - **B+**: only `S` bit (single shadow select; combined VDU-write + display).
-  - **Master**: bits 0=D, 1=E, 2=X, 3=Y, 4=ITU, 5=IFJ, 6=TST, 7=IRR. See `[[memory/shadow-ram]]`.
+  - **Master**: bits 0=D, 1=E, 2=X, 3=Y, 4=ITU, 5=IFJ, 6=TST, 7=IRR. See [[memory/shadow-ram]].
 - **Shadow RAM**: B+ and Master have an extra 20 KB bank at `&3000-&7FFF` independent of main memory. When selected (`*shadow`, OSBYTE `&72`, or MODE 128-135), screen lives in shadow and `&3000-&7FFF` in main memory is free for user code/data.
 - **HAZEL** (Master only): 8 KB filing-system RAM at `&C000-&DFFF` overlaying MOS VDU driver. Switched by ACCCON `Y` bit. Must be switched back before next OSWRCH or the VDU driver vanishes mid-call.
 - `OSBYTE &84` returns the bottom of display RAM (i.e. HIMEM for non-shadow) — or `&8000` if shadow mode is in use. `OSBYTE &85` same but for a given mode (X = mode).
@@ -46,10 +46,10 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.162-171. Compact (10pp) but 
 
 ## Filed into
 
-- `[[memory/memory-map]]` — 64KB layout with machine-specific extras.
-- `[[memory/paged-rom]]` — sideways ROM/RAM mechanics, paging register, ANDY.
-- `[[memory/shadow-ram]]` — shadow RAM + ACCCON, including Master vs B+ differences and double-buffering technique.
-- Plus the page-3 / zero-page VDU workspace mentioned in §13.2 — folded into `[[memory/memory-map]]` references.
+- [[memory/memory-map]] — 64KB layout with machine-specific extras.
+- [[memory/paged-rom]] — sideways ROM/RAM mechanics, paging register, ANDY.
+- [[memory/shadow-ram]] — shadow RAM + ACCCON, including Master vs B+ differences and double-buffering technique.
+- Plus the page-3 / zero-page VDU workspace mentioned in §13.2 — folded into [[memory/memory-map]] references.
 
 ## Open follow-ups
 

@@ -10,7 +10,7 @@ updated: 2026-05-14
 
 The primary Mullard SAA5050 datasheet (`raw/manuals/SAA5050.pdf`, 3.3 MB from `bitshifters/bbc-documents/ICs/SAA5050`) is an **image-only scan** with no extractable text. Alternative scans from stardot.org.uk, vd-view, and datasheet aggregators were checked — all image-only.
 
-This source page consolidates **four text-bearing alternatives** that together cover the chip's behaviour, plus notes about the unread primary datasheet. The wiki's `[[hardware/saa5050]]` entity page is synthesised from these.
+This source page consolidates **four text-bearing alternatives** that together cover the chip's behaviour, plus notes about the unread primary datasheet. The wiki's [[hardware/saa5050]] entity page is synthesised from these.
 
 ## Sources used
 
@@ -123,8 +123,8 @@ i.e. when in hold-graphics mode, any control code OTHER than `&9E` itself clears
 
 ## Filed into
 
-- Created: `[[hardware/saa5050]]` (new entity page).
-- Updated: `[[hardware/crtc-6845]]`, `[[hardware/crtc-6845-advanced]]`, `[[hardware/video-ula]]`, `[[hardware/address-translation]]`, `[[video/modes]]` — all gained inbound link to `[[hardware/saa5050]]`.
+- Created: [[hardware/saa5050]] (new entity page).
+- Updated: [[hardware/crtc-6845]], [[hardware/crtc-6845-advanced]], [[hardware/video-ula]], [[hardware/address-translation]], [[video/modes]] — all gained inbound link to [[hardware/saa5050]].
 
 ## TODO
 

@@ -12,7 +12,7 @@ updated: 2026-05-13
 
 6522 VIA at SHEILA `&FE60-&FE6F`. Port A drives the **parallel printer port**; Port B + CB1/CB2 form the **user port**. Unlike the System VIA, the MOS leaves this alone unless you're using `*PRINT` — so it's free for user GPIO.
 
-See `[[hardware/via-6522]]` for register layout. Standard VIA register block.
+See [[hardware/via-6522]] for register layout. Standard VIA register block.
 
 ## Port A — Printer (output only, buffered)
 
@@ -81,4 +81,4 @@ User-handled IRQ pattern:
 2. Read `&FE6D` (User VIA IFR). Test bits for your source (CA1, CB1, T1, T2, etc.).
 3. Service and clear the relevant flag.
 
-See `[[sources/naug-ch08-interrupts]]` once ingested for the full IRQ dispatch chain.
+See [[sources/naug-ch08-interrupts]] once ingested for the full IRQ dispatch chain.

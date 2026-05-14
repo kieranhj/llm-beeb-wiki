@@ -26,7 +26,7 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.143-153. The **buffer** laye
 | 7 | SOUND channel 3 | typically 16 bytes |
 | 8 | Speech | (only used if speech hardware fitted) |
 
-Memory for **all** buffers is reserved on every machine, even where the hardware isn't present. Buffer storage lives at `&800-&9BF` and around (`[[memory/os-workspace]]`).
+Memory for **all** buffers is reserved on every machine, even where the hardware isn't present. Buffer storage lives at `&800-&9BF` and around ([[memory/os-workspace]]).
 
 ## Vectors
 
@@ -70,7 +70,7 @@ Exit: X (low) + Y (high) form the 16-bit count. (For a purge, X/Y are preserved.
 | `&98` (152) | Examine next byte | Same as REMV examine. **OS 1.20 and earlier**: Y is a *pointer* indexed off `&FA/&FB` zp; later OS: Y is the byte itself. |
 | `&99` (153) | Insert into input buffer | X = 0 (keyboard) or 1 (RS423); Y = char. Generates input event 2. |
 
-`OSBYTE &80` uses the *inverted* buffer ID (`&FF` = id 0, `&FE` = id 1, etc.) — collision with ADC channel read, where X has the channel number. `[[os/osbyte]]` has the mapping.
+`OSBYTE &80` uses the *inverted* buffer ID (`&FF` = id 0, `&FE` = id 1, etc.) — collision with ADC channel read, where X has the channel number. [[os/osbyte]] has the mapping.
 
 ## Notes for buffer-vector hooking
 
@@ -83,9 +83,9 @@ Several caveats from NAUG §9.4 p137-139:
 
 ## Filed into
 
-- `[[os/buffers]]` — Buffer reference + vector hook patterns.
-- Updates: `[[os/osbyte]]` entries `&0F`/`&15`/`&80`/`&8A`/`&91`/`&98`/`&99` now point here.
-- Updates: `[[memory/os-workspace]]` cross-links — buffer RAM at `&800-&9BF`.
+- [[os/buffers]] — Buffer reference + vector hook patterns.
+- Updates: [[os/osbyte]] entries `&0F`/`&15`/`&80`/`&8A`/`&91`/`&98`/`&99` now point here.
+- Updates: [[memory/os-workspace]] cross-links — buffer RAM at `&800-&9BF`.
 
 ## Open follow-ups
 

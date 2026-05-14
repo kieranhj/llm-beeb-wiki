@@ -10,7 +10,7 @@ updated: 2026-05-13
 
 # NAUG Ch5 — The 6502 Instruction Set
 
-Holmes & Dickens, *The New Advanced User Guide*, pp.35-106. The chapter's structure is one page per mnemonic, each listing addressing modes, byte counts, cycle counts, opcodes, flag effects, and a worked example. This source page captures the chapter-level facts; the per-mnemonic data is filed in `[[hardware/6502-isa]]`.
+Holmes & Dickens, *The New Advanced User Guide*, pp.35-106. The chapter's structure is one page per mnemonic, each listing addressing modes, byte counts, cycle counts, opcodes, flag effects, and a worked example. This source page captures the chapter-level facts; the per-mnemonic data is filed in [[hardware/6502-isa]].
 
 ## Notational conventions (§5.0, p37)
 
@@ -56,8 +56,8 @@ All conditional branches: **2 cycles base, +1 if branch taken, +2 if branch dest
 
 ## Filed into
 
-- `[[hardware/6502]]` — CPU entity page (registers, flags, machine variants).
-- `[[hardware/6502-isa]]` — Full instruction reference: cycle table, opcodes, addressing modes per mnemonic.
+- [[hardware/6502]] — CPU entity page (registers, flags, machine variants).
+- [[hardware/6502-isa]] — Full instruction reference: cycle table, opcodes, addressing modes per mnemonic.
 
 ## Key extracts retained
 
@@ -67,5 +67,5 @@ All conditional branches: **2 cycles base, +1 if branch taken, +2 if branch dest
 
 ## Open follow-ups
 
-- Page-crossing on stores: NAUG lists stores at the unconditional worst-case count (no `+1p` annotation). `[[sources/naug-ch03-04-arithmetic-addressing]]` and `[[hardware/6502-addressing-modes]]` document this consistently; closed.
+- Page-crossing on stores: NAUG lists stores at the unconditional worst-case count (no `+1p` annotation). [[sources/naug-ch03-04-arithmetic-addressing]] and [[hardware/6502-addressing-modes]] document this consistently; closed.
 - WDC W65C02S datasheet cross-check for 65C12 RMW abs,X exact timing remains a nice-to-have but not blocking.

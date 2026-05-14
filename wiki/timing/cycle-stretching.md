@@ -36,11 +36,11 @@ Net effect: every `LDA &FE40` (System VIA), every `LDA &FE00` (CRTC), every `LDA
 | `&FEE0-&FEFF` | Tube ULA | No (2 MHz) |
 | `&FF00-&FFFF` | MOS jumpblock + 6502 vectors | No (2 MHz) |
 
-(Source: `[[sources/beebwiki-cycle-stretching]]`.)
+(Source: [[sources/beebwiki-cycle-stretching]].)
 
 **The Video ULA, the Tube, the FDC, and the ROMSEL/ACCCON registers are NOT stretched** — surprising-but-true. Video ULA palette writes (`STA &FE21`) cost a flat 4 cycles; CRTC register writes (`STA &FE01`) cost 5-6.
 
-The Master cartridge slot via the `&FCFC-&FCFF` page-wide register can be switched to 2 MHz access (OSBYTE `&6B` X=1, or ACCCON `IFJ` bit) — see `[[hardware/1mhz-bus]]` Master cartridge section.
+The Master cartridge slot via the `&FCFC-&FCFF` page-wide register can be switched to 2 MHz access (OSBYTE `&6B` X=1, or ACCCON `IFJ` bit) — see [[hardware/1mhz-bus]] Master cartridge section.
 
 ## How much it costs
 
@@ -94,13 +94,13 @@ Devices on the I/O bus see normal 2 MHz timing; devices flagged as 1 MHz see slo
 
 The 1 MHz expansion bus (FRED `&FC`, JIM `&FD`) is the canonical "stretched" address space and the most discussed case (NAUG Ch23). What's often missed is that *the same mechanism applies to all SHEILA peripherals listed above*. The 1 MHz bus is just the externally-exposed end of the same slow-bus arrangement.
 
-See `[[hardware/1mhz-bus]]` for the cartridge / FRED / JIM specifics, including the Master cartridge's optional 2 MHz mode.
+See [[hardware/1mhz-bus]] for the cartridge / FRED / JIM specifics, including the Master cartridge's optional 2 MHz mode.
 
 ## See also
 
-- `[[hardware/1mhz-bus]]` — FRED/JIM in detail, cartridge slot.
-- `[[hardware/system-via]]`, `[[hardware/user-via]]`, `[[hardware/crtc-6845]]` — the most-touched stretched peripherals.
-- `[[hardware/video-ula]]` — fast (un-stretched) — preferred for raster tricks.
-- `[[hardware/tube-ula]]` — un-stretched, useful for bulk Tube transfers.
-- `[[memory/memory-map]]` — full address-space layout.
-- `[[sources/beebwiki-cycle-stretching]]` — primary reference.
+- [[hardware/1mhz-bus]] — FRED/JIM in detail, cartridge slot.
+- [[hardware/system-via]], [[hardware/user-via]], [[hardware/crtc-6845]] — the most-touched stretched peripherals.
+- [[hardware/video-ula]] — fast (un-stretched) — preferred for raster tricks.
+- [[hardware/tube-ula]] — un-stretched, useful for bulk Tube transfers.
+- [[memory/memory-map]] — full address-space layout.
+- [[sources/beebwiki-cycle-stretching]] — primary reference.

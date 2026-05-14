@@ -120,9 +120,9 @@ Service ROMs generating their own errors: copy a BRK + message into RAM (commonl
 
 ## Filed into
 
-- `[[os/interrupts]]` — IRQ dispatch chain, user handler conventions, IRQ mask OSBYTEs.
-- `[[os/brk]]` — BRK protocol, error message convention.
-- Updates: `[[hardware/system-via]]`, `[[hardware/6502]]`, `[[hardware/via-6522]]` cross-link to these for handler context.
+- [[os/interrupts]] — IRQ dispatch chain, user handler conventions, IRQ mask OSBYTEs.
+- [[os/brk]] — BRK protocol, error message convention.
+- Updates: [[hardware/system-via]], [[hardware/6502]], [[hardware/via-6522]] cross-link to these for handler context.
 
 ## Open follow-ups
 

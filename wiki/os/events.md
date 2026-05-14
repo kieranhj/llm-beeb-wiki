@@ -8,7 +8,7 @@ updated: 2026-05-13
 
 # Events — MOS Callback Layer
 
-Events are a thin MOS wrapper over the IRQ chain (`[[os/interrupts]]`). Enable an event with `OSBYTE &0E,n`; MOS calls your handler at **EVNTV** (`&220`) whenever event `n` fires, with the event number in A. Disable with `OSBYTE &0D,n`.
+Events are a thin MOS wrapper over the IRQ chain ([[os/interrupts]]). Enable an event with `OSBYTE &0E,n`; MOS calls your handler at **EVNTV** (`&220`) whenever event `n` fires, with the event number in A. Disable with `OSBYTE &0D,n`.
 
 Compared to hooking IRQ1V/IRQ2V directly:
 
@@ -40,7 +40,7 @@ Use events for "callback when X happens" plumbing. Use IRQ hooks for cycle-tight
 ## Handler conventions
 
 1. **Don't enable interrupts.** MOS is already inside its IRQ — CLI would let a nested interrupt corrupt zp `&FC` and the vector chain.
-2. **<2 ms total.** The 100 Hz timer (`[[os/interrupts]]`) needs to run on schedule.
+2. **<2 ms total.** The 100 Hz timer ([[os/interrupts]]) needs to run on schedule.
 3. **Preserve all registers** (PHP/PHA/TXA/PHA/TYA/PHA on entry; reverse on exit).
 4. **Chain through old EVNTV** if you want lower-priority handlers to also run. Save the previous `&220/&221` before installing your own; the last `RTS` should be a `JMP (old_evntv)` if chaining.
 
@@ -85,16 +85,16 @@ To uninstall: disable the event (`OSBYTE &0D`), then SEI / restore `&220-&221` /
 For frame-synced work where 50 Hz latency is fine:
 
 - **Event 4** is one OSBYTE to enable and one EVNTV install. MOS's IRQ has already cleared the CA1 flag for you. Your handler just runs.
-- **IRQ1V/IRQ2V** + System VIA CA1 (`[[hardware/system-via]]`): a few cycles faster to start, and you can preempt MOS's flash-colour swap if you want to. You must clear the IFR yourself (`BIT &FE41`).
+- **IRQ1V/IRQ2V** + System VIA CA1 ([[hardware/system-via]]): a few cycles faster to start, and you can preempt MOS's flash-colour swap if you want to. You must clear the IFR yourself (`BIT &FE41`).
 
-For raster-rate work *within* a frame (timing splits to a specific scan line), neither — use the User VIA T1 timer (`[[timing/via-timers]]`).
+For raster-rate work *within* a frame (timing splits to a specific scan line), neither — use the User VIA T1 timer ([[timing/via-timers]]).
 
 ## Event enable flags in memory
 
-The enable mask is stored in OS workspace around `&2BD-&2BE` on Model B (`[[memory/os-workspace]]`). Reading the byte directly is faster than `OSBYTE &0E`/`&0D`. **Don't write directly** — the OSBYTE also re-evaluates VIA IRQ enables for some events (e.g. ADC, light pen).
+The enable mask is stored in OS workspace around `&2BD-&2BE` on Model B ([[memory/os-workspace]]). Reading the byte directly is faster than `OSBYTE &0E`/`&0D`. **Don't write directly** — the OSBYTE also re-evaluates VIA IRQ enables for some events (e.g. ADC, light pen).
 
 ## See also
 
-- `[[os/interrupts]]` — IRQ chain (events ride on top).
-- `[[os/buffers]]` — buffer events (0, 1, 2) require buffer activity.
-- `[[hardware/system-via]]` — CA1 vsync, CB1 ADC, the source of events 3 and 4.
+- [[os/interrupts]] — IRQ chain (events ride on top).
+- [[os/buffers]] — buffer events (0, 1, 2) require buffer activity.
+- [[hardware/system-via]] — CA1 vsync, CB1 ADC, the source of events 3 and 4.

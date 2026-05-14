@@ -10,7 +10,7 @@ updated: 2026-05-13
 
 # NAUG Ch3 + Ch4 — Arithmetic & Addressing Modes
 
-Holmes & Dickens, *The New Advanced User Guide*, pp.22-34. Foundational chapters for the ISA reference (`[[hardware/6502-isa]]`). Captured here because cycle costs and flag effects only make sense once you know *which* addressing mode produced them.
+Holmes & Dickens, *The New Advanced User Guide*, pp.22-34. Foundational chapters for the ISA reference ([[hardware/6502-isa]]). Captured here because cycle costs and flag effects only make sense once you know *which* addressing mode produced them.
 
 ## Key facts captured
 
@@ -76,9 +76,9 @@ The assembler computes the offset; `Out of range` error means the label is outsi
 
 ## Filed into
 
-- `[[hardware/6502-addressing-modes]]` — Full addressing-mode reference with worked examples.
-- `[[hardware/6502]]` — Added JMP (ind) bug detail and CLD-before-OS rule.
-- `[[hardware/6502-isa]]` — Already had cycle data; cross-linked to addressing modes for the *why*.
+- [[hardware/6502-addressing-modes]] — Full addressing-mode reference with worked examples.
+- [[hardware/6502]] — Added JMP (ind) bug detail and CLD-before-OS rule.
+- [[hardware/6502-isa]] — Already had cycle data; cross-linked to addressing modes for the *why*.
 
 ## Open follow-ups
 

@@ -59,9 +59,9 @@ The parameter block layout is per-call. NAUG Appendix B (p448) gives the directo
 OSWORD round-trip overhead is significant (parameter block fetch + dispatch + work + RTS). For high-rate operations the alternatives are:
 
 - **Palette writes**: `OSWORD &0C` is interrupt-safe and tube-compatible. For raw speed in IRQ-disabled code, `STA &FE21` is 4 cycles vs hundreds for OSWORD — but you lose Tube compatibility and must restore OS palette state.
-- **Pixel reads** (`OSWORD &09`): there's no faster way without computing the address yourself. For dense reads, walk screen memory directly using the layout from `[[video/modes]]`.
+- **Pixel reads** (`OSWORD &09`): there's no faster way without computing the address yourself. For dense reads, walk screen memory directly using the layout from [[video/modes]].
 - **SOUND/ENVELOPE**: there's no escape — the SN76489 protocol via System VIA addressable latch + slow peripheral bus is involved enough that OSWORD is usually the right answer unless you're writing your own player.
 
 ## Cross-reference
 
-For directory-level navigation, see `[[sources/naug-appendix-ab]]`. As each chapter is ingested the call entries above gain `[[sources/...]]` links and detail flows in.
+For directory-level navigation, see [[sources/naug-appendix-ab]]. As each chapter is ingested the call entries above gain [[sources/...]] links and detail flows in.

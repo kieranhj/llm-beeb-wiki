@@ -8,7 +8,7 @@ updated: 2026-05-13
 
 # Addressing Modes
 
-The 6502's small instruction set is leveraged by many addressing modes. Mode choice is the dominant factor in instruction cost: same operation, different modes vary 2-7 cycles. See `[[hardware/6502-isa]]` for the full per-mnemonic table.
+The 6502's small instruction set is leveraged by many addressing modes. Mode choice is the dominant factor in instruction cost: same operation, different modes vary 2-7 cycles. See [[hardware/6502-isa]] for the full per-mnemonic table.
 
 ## Modes
 
@@ -205,10 +205,10 @@ Choose the cheapest mode that fits. The cycle differences compound fast in inner
 For `abs,X`, `abs,Y`, and `(zp),Y`: if `(base & &FF00) != ((base + index) & &FF00)`, the chip needs an extra cycle to refetch the high byte. The penalty applies to:
 
 - Loads: `LDA`, `LDX`, `LDY`, `ADC`, `SBC`, `AND`, `EOR`, `ORA`, `CMP`, `BIT`
-- **Stores do not have the penalty** — they always take the worst-case cycle count (which is why the cycle counts in `[[hardware/6502-isa]]` for STA `abs,X` are 5c not "4c +1p").
+- **Stores do not have the penalty** — they always take the worst-case cycle count (which is why the cycle counts in [[hardware/6502-isa]] for STA `abs,X` are 5c not "4c +1p").
 
 To eliminate the penalty in hot loops:
 - Align the table base to a page boundary (`&3000`, `&5800`, etc.).
 - Or split the loop into a low-page and high-page half so the index never crosses.
 
-See `[[hardware/6502-isa]]` for the full cycle table.
+See [[hardware/6502-isa]] for the full cycle table.

@@ -93,7 +93,7 @@ Level 1 (1981 BASIC) has no EQU — exit `]`, poke via `?P%`/`!P%`/`$P%`, re-ent
          EQUB 0                \ null terminator
 ```
 
-When BRK fires the OS reads the byte after BRK as error number, then bytes until null as message. See `[[os/brk]]`.
+When BRK fires the OS reads the byte after BRK as error number, then bytes until null as message. See [[os/brk]].
 
 ## CALL / USR register passing
 
@@ -136,7 +136,7 @@ The `= opt%` at the function end returns the OPT value through — so `OPT FNfoo
 
 ## User zero page
 
-`&70-&8F` (32 bytes) — always safe to use. See `[[memory/zero-page]]` for claim-more-zp patterns and the BASIC zp layout.
+`&70-&8F` (32 bytes) — always safe to use. See [[memory/zero-page]] for claim-more-zp patterns and the BASIC zp layout.
 
 ## Common pitfalls
 
@@ -162,12 +162,12 @@ Code written for BBC BASIC inline assembly usually ports to BeebAsm by:
 2. Replacing `DIM code%` with `ORG code_addr`.
 3. Adding `SAVE "FILE", start, end` at the bottom.
 
-A dedicated `[[tools/beebasm]]` page is planned.
+A dedicated [[tools/beebasm]] page is planned.
 
 ## See also
 
-- `[[sources/naug-ch02-basic-assembler]]` — Full source page.
-- `[[memory/zero-page]]` — Zero-page allocation.
-- `[[os/brk]]` — BRK error message convention.
-- `[[hardware/6502-isa]]` — Mnemonic / cycle reference.
-- `[[hardware/6502-addressing-modes]]` — Mode mechanics.
+- [[sources/naug-ch02-basic-assembler]] — Full source page.
+- [[memory/zero-page]] — Zero-page allocation.
+- [[os/brk]] — BRK error message convention.
+- [[hardware/6502-isa]] — Mnemonic / cycle reference.
+- [[hardware/6502-addressing-modes]] — Mode mechanics.

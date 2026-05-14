@@ -26,7 +26,7 @@ The most valuable 256 bytes on the BBC. Zero-page addressing modes (zp, `zp,X`, 
 
 ## VDU-driver zero page (`&D0-&E1`)
 
-From `[[sources/naug-ch13-video]]` §13.2:
+From [[sources/naug-ch13-video]] §13.2:
 
 | Addr | Use |
 |---|---|
@@ -41,7 +41,7 @@ From `[[sources/naug-ch13-video]]` §13.2:
 | `&DA`-`&DF` | Temporary workspace |
 | `&E0`-`&E1` | BBC/Electron: Row multiplication tables ptr. Master: General workspace. |
 
-(VDU character-cell *addresses* live in page 3, not zero page — see `[[memory/os-workspace]]` for `&034A-&034B` (text cursor 6845 address) and the graphics workspace at `&0330-&0349`.)
+(VDU character-cell *addresses* live in page 3, not zero page — see [[memory/os-workspace]] for `&034A-&034B` (text cursor 6845 address) and the graphics workspace at `&0330-&0349`.)
 
 Touching these while the VDU driver is active = visible corruption.
 
@@ -137,6 +137,6 @@ Costs more cycles per increment (5c vs INY's 2c) but frees Y entirely — a huge
 
 ## See also
 
-- `[[hardware/6502-addressing-modes]]` — Why zp is cheaper than abs.
-- `[[memory/memory-map]]` — Where zp sits in the wider map.
-- `[[memory/os-workspace]]` — Page 1 / 2 / 3 follow-on.
+- [[hardware/6502-addressing-modes]] — Why zp is cheaper than abs.
+- [[memory/memory-map]] — Where zp sits in the wider map.
+- [[memory/os-workspace]] — Page 1 / 2 / 3 follow-on.

@@ -12,7 +12,7 @@ updated: 2026-05-13
 
 Holmes & Dickens, *The New Advanced User Guide*, pp.290-333. Largest single chapter in the book — covers the **paged ROM as a software system**: header format, language vs service ROMs, the full service-call protocol, RFS (the *ROM filing system), OSRDRM, extended vectors, 100 Hz polling.
 
-This complements `[[memory/paged-rom]]` (which covers the hardware paging — `&FE30`, ANDY, sideways RAM testing). Ch17 is about what lives in the 16 KB ROM window and how it talks to MOS.
+This complements [[memory/paged-rom]] (which covers the hardware paging — `&FE30`, ANDY, sideways RAM testing). Ch17 is about what lives in the 16 KB ROM window and how it talks to MOS.
 
 ## Key facts captured
 
@@ -70,7 +70,7 @@ ROM number 15 = highest priority, 0 = lowest. So the priority gradient runs **op
 
 ### Service call reason codes (NAUG §17.4.1 p295-304)
 
-Full table in `[[os/service-calls]]`. Highlights:
+Full table in [[os/service-calls]]. Highlights:
 
 - `&01` Absolute workspace claim (reset only)
 - `&02` Relative private workspace claim (reset only)
@@ -156,9 +156,9 @@ Given an address in X+Y, this OSBYTE verifies the data is a valid paged-ROM imag
 
 ## Filed into
 
-- `[[os/paged-roms]]` — ROM header format, language vs service distinction, language entry protocol, ROM-installation workflow.
-- `[[os/service-calls]]` — Complete service-call reference table with reason codes and entry/exit conventions.
-- Updates: `[[memory/paged-rom]]` cross-links to these; previous "don't write `&FE30` directly" rule now has the OSRDRM / extended-vector alternatives spelled out.
+- [[os/paged-roms]] — ROM header format, language vs service distinction, language entry protocol, ROM-installation workflow.
+- [[os/service-calls]] — Complete service-call reference table with reason codes and entry/exit conventions.
+- Updates: [[memory/paged-rom]] cross-links to these; previous "don't write `&FE30` directly" rule now has the OSRDRM / extended-vector alternatives spelled out.
 
 ## Open follow-ups
 

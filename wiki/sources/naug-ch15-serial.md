@@ -150,12 +150,12 @@ CFS timeout (`OSBYTE &B0`) decremented every vsync (50 Hz) — times inter-block
 
 ## Filed into
 
-- `[[hardware/6850-acia]]` — Chip register reference + control word format.
-- `[[hardware/serial-ula]]` — ULA register + baud-rate encoding.
-- `[[os/serial]]` — OS call reference + Acorn 5-pin pinout + RS423 mode discussion.
+- [[hardware/6850-acia]] — Chip register reference + control word format.
+- [[hardware/serial-ula]] — ULA register + baud-rate encoding.
+- [[os/serial]] — OS call reference + Acorn 5-pin pinout + RS423 mode discussion.
 
 ## Open follow-ups
 
-- **CFS programming details** — tape format covered briefly in Ch16 (`[[sources/naug-ch16-filing]]` §16.3.1). Not file-system-level interesting.
+- **CFS programming details** — tape format covered briefly in Ch16 ([[sources/naug-ch16-filing]] §16.3.1). Not file-system-level interesting.
 - **Software UART** — there's no NAUG coverage of bit-banging your own serial via User VIA, but it's a reasonable performance project (would give finer baud-rate control and arbitrary protocols).
-- **6850 IRQ handling** — captured in `[[os/interrupts]]` already; cross-link confirmed.
+- **6850 IRQ handling** — captured in [[os/interrupts]] already; cross-link confirmed.

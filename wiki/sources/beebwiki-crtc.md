@@ -79,7 +79,7 @@ R11 CEL|  8|  8|  8|  9|  8|  9|  9| 19 |
 
 ### Acorn-specific quirks
 
-- **MODE 7 R12/R13 XOR `&54`:** Address written to R12/R13 in MODE 7 is XORed with `&54` so the resulting "6845 address" lands in the `&2000-&2FFF` range that flags Teletext addressing for the address translator. Cross-reference: see `[[hardware/address-translation]]` MODE 7 formula.
+- **MODE 7 R12/R13 XOR `&54`:** Address written to R12/R13 in MODE 7 is XORed with `&54` so the resulting "6845 address" lands in the `&2000-&2FFF` range that flags Teletext addressing for the address translator. Cross-reference: see [[hardware/address-translation]] MODE 7 formula.
 
 - **Cursor end-line bug in MOS:** Acorn's VDU drivers set CEL one beyond the correct value: CEL=8 in graphics modes (correct: 7), CEL=9 in stripey modes (with CSL=8 → 2-scanline cursor), CEL=19 in MODE 7 (cell is 20 scanlines). Works because the CRTC clips, but technically incorrect.
 
@@ -93,7 +93,7 @@ R11 CEL|  8|  8|  8|  9|  8|  9|  9| 19 |
 
 - **R8 interlace:** All standard MODEs set bit 0 = 1 (interlace sync, but with R9 making each character row span an even number of scanlines so the field-pairs effectively render the same content). True interlace-sync-and-video uses both bits = 1 — MODE 7 only.
 
-- **R12/R13 hardware scrolling (soft modes):** address is `physical_addr / 8`, range `&0000-&0FFF`. Wrap at `&1000-&1FFF` triggers the wraparound mechanism (see `[[hardware/address-translation]]`).
+- **R12/R13 hardware scrolling (soft modes):** address is `physical_addr / 8`, range `&0000-&0FFF`. Wrap at `&1000-&1FFF` triggers the wraparound mechanism (see [[hardware/address-translation]]).
 
 ### Programming method
 
@@ -111,7 +111,7 @@ Standard: `VDU 23,0,R,V,0,0,0,0,0,0` (Tube-safe, with `*TV`/VDU 23,1 cursor-cont
 
 ## Filed into
 
-- Updated: `[[hardware/crtc-6845]]` (R10 fix, MODE 7 XOR, 6845S note, second-source citation).
+- Updated: [[hardware/crtc-6845]] (R10 fix, MODE 7 XOR, 6845S note, second-source citation).
 
 ## Notes
 

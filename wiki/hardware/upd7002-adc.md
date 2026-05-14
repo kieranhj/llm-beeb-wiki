@@ -53,7 +53,7 @@ Writing this register **starts the conversion immediately**. Don't write again u
 | 6 | 0 = busy, 1 = not busy |
 | 7 | 0 = conversion complete, 1 = not complete |
 
-When bit 7 transitions 1→0, **System VIA CB1 IRQ fires** (`[[hardware/system-via]]`). MOS hooks this for its 4-channel auto-cycle.
+When bit 7 transitions 1→0, **System VIA CB1 IRQ fires** ([[hardware/system-via]]). MOS hooks this for its 4-channel auto-cycle.
 
 ## Reading the result
 
@@ -103,7 +103,7 @@ Each axis is a 100 KΩ pot between Vref and Aground, wiper to channel input.
 
 The Compact omits the µPD7002. Joystick switches feed the User VIA's user port (PB0-PB4 + CB1/CB2). MOS reads these and synthesises analogue-looking ADVAL values for compatibility.
 
-See `[[os/adc]]` for the OSBYTE-level simulator config (`&BE` bits).
+See [[os/adc]] for the OSBYTE-level simulator config (`&BE` bits).
 
 ## Performance use cases
 
@@ -114,6 +114,6 @@ See `[[os/adc]]` for the OSBYTE-level simulator config (`&BE` bits).
 
 ## See also
 
-- `[[os/adc]]` — MOS-level ADC interface + joystick reading.
-- `[[hardware/system-via]]` — CB1 = ADC end-of-conversion IRQ source.
-- `[[memory/memory-map]]` — `&FEC0-&FEDF` (B/B+) and `&FE18-&FE1A` (Master/Electron) in SHEILA.
+- [[os/adc]] — MOS-level ADC interface + joystick reading.
+- [[hardware/system-via]] — CB1 = ADC end-of-conversion IRQ source.
+- [[memory/memory-map]] — `&FEC0-&FEDF` (B/B+) and `&FE18-&FE1A` (Master/Electron) in SHEILA.

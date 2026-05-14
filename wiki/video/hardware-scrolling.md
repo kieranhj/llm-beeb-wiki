@@ -53,11 +53,11 @@ Pixel-step granularity:
 - MODE 4: 8 pixels per step
 - MODE 5: 4 pixels per step
 
-For sub-character horizontal smoothness, use mode 2 hardware scroll combined with byte-shifted pre-rendered sprites — see `[[techniques/fast-animation]]`.
+For sub-character horizontal smoothness, use mode 2 hardware scroll combined with byte-shifted pre-rendered sprites — see [[techniques/fast-animation]].
 
 ## Hardware wrap-around
 
-When the 6845's fetch address hits `≥ &8000`, dedicated logic **subtracts** a mode-dependent amount to bring the address back into screen RAM. The subtract amount is selected by 2 bits on the **System VIA addressable latch (IC 32)**, programmed at MODE-set time. Full mechanism (subtract amounts `&4000`/`&2000`/`&5000`/`&2800` for MODES 3/6/0-2/4-5, restart addresses `&4000`/`&6000`/`&3000`/`&5800`) is documented in `[[hardware/address-translation]]`.
+When the 6845's fetch address hits `≥ &8000`, dedicated logic **subtracts** a mode-dependent amount to bring the address back into screen RAM. The subtract amount is selected by 2 bits on the **System VIA addressable latch (IC 32)**, programmed at MODE-set time. Full mechanism (subtract amounts `&4000`/`&2000`/`&5000`/`&2800` for MODES 3/6/0-2/4-5, restart addresses `&4000`/`&6000`/`&3000`/`&5800`) is documented in [[hardware/address-translation]].
 
 Practical implication: provided your `R12,R13` value stays within `[screen_base, screen_base + screen_size)`, you can scroll indefinitely and the screen image wraps cleanly through screen RAM.
 
@@ -81,16 +81,16 @@ Where `high_byte:low_byte` is the desired screen-start RAM address. The same cor
 
 ## Timing
 
-R12/R13 are **latched** by the 6845 and applied at the next CRTC frame cycle — writes don't cause mid-frame tearing of the scrolled image (see `[[hardware/crtc-6845#register-latching]]`). What *can* go wrong: R12 and R13 form a 14-bit value across two writes, so if the chip samples between your two writes the result is one frame at a "half-updated" address. To avoid this, either write both bytes within a single frame (well within 20 ms), or synchronise to vsync so both writes land in the same blanking window:
+R12/R13 are **latched** by the 6845 and applied at the next CRTC frame cycle — writes don't cause mid-frame tearing of the scrolled image (see [[hardware/crtc-6845#register-latching]]). What *can* go wrong: R12 and R13 form a 14-bit value across two writes, so if the chip samples between your two writes the result is one frame at a "half-updated" address. To avoid this, either write both bytes within a single frame (well within 20 ms), or synchronise to vsync so both writes land in the same blanking window:
 
 - Wait via OS: `*FX 19` / `OSBYTE &13` (`JSR &FFF4` with A=&13).
 - Wait via hardware: poll the System VIA IFR for the CA1 vsync edge — bit 1 of `&FE4D`. Or hook IRQ2V (`&206/&207`) on that bit. Latency to first vsync edge is up to 20 ms; budget accordingly.
 
-Detailed timing of R12/R13 update semantics will be expanded in `[[hardware/crtc-6845-advanced]]` (planned).
+Detailed timing of R12/R13 update semantics will be expanded in [[hardware/crtc-6845-advanced]] (planned).
 
 ## A note about the OS shadow copy
 
-The OS keeps the screen-start copy at `&350/&351` (page 3 — see `[[memory/os-workspace]]`). When you scroll directly via `&FE00/&FE01`, the OS's idea of the screen origin is now stale — character output (`OSWRCH`) will write to the wrong line. Either:
+The OS keeps the screen-start copy at `&350/&351` (page 3 — see [[memory/os-workspace]]). When you scroll directly via `&FE00/&FE01`, the OS's idea of the screen origin is now stale — character output (`OSWRCH`) will write to the wrong line. Either:
 
 - Sync the OS copy after each scroll: write your computed `(addr DIV 8) MOD 256` to `&350` and `(addr DIV 8) DIV 256` to `&351`.
 - Or only do hardware scrolling in code that doesn't rely on OSWRCH afterwards (i.e., the game owns the screen).

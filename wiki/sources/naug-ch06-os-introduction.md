@@ -12,7 +12,7 @@ updated: 2026-05-13
 
 Holmes & Dickens, *The New Advanced User Guide*, pp.107-125. Defines the **MOS API surface**: vectored entry points, indirection vectors, OSBYTE / OSWORD generic protocol, zero-page and page-two workspace allocation.
 
-This is the contract the MOS exposes to user code. The wiki's `[[memory/zero-page]]` and `[[memory/os-workspace]]` close the `memory/vdu-workspace` stub that was left over from the earlier Ch13 ingest.
+This is the contract the MOS exposes to user code. The wiki's [[memory/zero-page]] and [[memory/os-workspace]] close the `memory/vdu-workspace` stub that was left over from the earlier Ch13 ingest.
 
 ## Key facts captured
 
@@ -101,7 +101,7 @@ The most performance-critical resource on the BBC: page 0. NAUG splits it as:
 | `&FC` | Accumulator save during IRQ |
 | `&FF` | Escape flag (bit 7 only) |
 
-Detail in `[[memory/zero-page]]`.
+Detail in [[memory/zero-page]].
 
 ## Page 2 — OS variables and vectors (§6.6.2)
 
@@ -110,7 +110,7 @@ Detail in `[[memory/zero-page]]`.
 - `&290`-`&29F` — `*TV` settings, TIME values (dual-clock for atomicity), interval timer.
 - `&2A0-`onwards — Paged ROM table, INKEY countdown, ADC results, event enable flags, key rollover, buffer pointers, CFS state, OSFILE control blocks.
 
-Detail in `[[memory/os-workspace]]`.
+Detail in [[memory/os-workspace]].
 
 ## OSHWM — where user RAM starts
 
@@ -122,10 +122,10 @@ OSHWM is the MSB of a 16-bit address always on a page boundary. On Model B with 
 
 ## Filed into
 
-- `[[memory/zero-page]]` — Full zp allocation with user/MOS regions and MOS-bypass notes.
-- `[[memory/os-workspace]]` — Page 1, page 2, page 3 workspace consolidated (closes the earlier `memory/vdu-workspace` stub).
-- `[[os/calls]]` — Master OS entry-point reference (replaces stubs in `os/osbyte.md` / `os/osword.md`).
-- Updates: `[[memory/memory-map]]` now links to zero-page and os-workspace pages.
+- [[memory/zero-page]] — Full zp allocation with user/MOS regions and MOS-bypass notes.
+- [[memory/os-workspace]] — Page 1, page 2, page 3 workspace consolidated (closes the earlier `memory/vdu-workspace` stub).
+- [[os/calls]] — Master OS entry-point reference (replaces stubs in `os/osbyte.md` / `os/osword.md`).
+- Updates: [[memory/memory-map]] now links to zero-page and os-workspace pages.
 
 ## Open follow-ups
 

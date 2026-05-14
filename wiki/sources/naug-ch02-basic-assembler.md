@@ -140,7 +140,7 @@ $P% = "string"      : P% = P% + LEN($P%) + 1     : REM null-terminated
         EQUB 0          \ null terminator
 ```
 
-When BRK fires, MOS reads the byte after BRK as the error number and the following bytes as an error message (null-terminated). See `[[os/brk]]` for the full BRKV protocol.
+When BRK fires, MOS reads the byte after BRK as the error number and the following bytes as an error message (null-terminated). See [[os/brk]] for the full BRKV protocol.
 
 ## CALL and USR — entering code from BASIC
 
@@ -187,15 +187,15 @@ The trick: return `opt%` from the function so `OPT FNsave_regs(opt%)` lands the 
 
 ## User zero page
 
-`&70-&8F` (32 bytes) reserved for user machine code — safe to use while BASIC is loaded. Touching `&00-&6F` (BASIC's zp workspace) requires understanding that BASIC won't survive after your code returns unless you preserve it. See `[[memory/zero-page]]` for the wider story.
+`&70-&8F` (32 bytes) reserved for user machine code — safe to use while BASIC is loaded. Touching `&00-&6F` (BASIC's zp workspace) requires understanding that BASIC won't survive after your code returns unless you preserve it. See [[memory/zero-page]] for the wider story.
 
 ## Filed into
 
-- `[[tools/basic-assembler]]` — Cheatsheet for OPT / P% / labels / EQU / two-pass idiom / FN-macro pattern.
-- Updates: `[[os/brk]]` — BRK error message convention cross-link confirmed.
-- Updates: `[[memory/zero-page]]` — user zp `&70-&8F` already documented; cross-link confirmed.
+- [[tools/basic-assembler]] — Cheatsheet for OPT / P% / labels / EQU / two-pass idiom / FN-macro pattern.
+- Updates: [[os/brk]] — BRK error message convention cross-link confirmed.
+- Updates: [[memory/zero-page]] — user zp `&70-&8F` already documented; cross-link confirmed.
 
 ## Open follow-ups
 
-- **BeebAsm dialect** — modern cross-assembler that closely mirrors this syntax. Worth its own page under `[[tools/beebasm]]` (planned) covering the diffs: directives that don't exist in BBC BASIC (`SAVE`, `INCBIN`, `ORG`, `GUARD`), modern bracket-free syntax, no two-pass FOR-loop boilerplate.
+- **BeebAsm dialect** — modern cross-assembler that closely mirrors this syntax. Worth its own page under [[tools/beebasm]] (planned) covering the diffs: directives that don't exist in BBC BASIC (`SAVE`, `INCBIN`, `ORG`, `GUARD`), modern bracket-free syntax, no two-pass FOR-loop boilerplate.
 - **CALL parameter block at `&600`** — documented at the headline level; if BASIC ↔ assembler parameter passing matters, expand from User Guide reference.

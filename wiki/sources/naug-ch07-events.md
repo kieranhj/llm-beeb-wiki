@@ -21,7 +21,7 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.126-130. The **event** syste
 - `OSBYTE &0E` (`*FX 14,n`) — enable event `n`.
 - `OSBYTE &0D` (`*FX 13,n`) — disable event `n`. Returns old enable state in X (0=disabled).
 - `OSEVEN` (`&FFBF`) — generate a user event. Y = event number. Not available across Tube. C=0 on exit iff the event was enabled.
-- Event enable flags stored at `&2BD-`onwards in page 2 (`[[memory/os-workspace]]`). Reading directly is faster than OSBYTE.
+- Event enable flags stored at `&2BD-`onwards in page 2 ([[memory/os-workspace]]). Reading directly is faster than OSBYTE.
 
 ## Event table (NAUG §7.1 p119)
 
@@ -43,15 +43,15 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.126-130. The **event** syste
 The cheapest "fire every frame" hook. Compared to hooking IRQ1V directly:
 
 - **Event 4 path**: cheap to enable (`*FX 14,4`), runs inside MOS IRQ at ~50 Hz, your handler sits at EVNTV.
-- **IRQ1V/IRQ2V path**: lower latency, you test System VIA CA1 bit yourself, can do raster-rate work. See `[[os/interrupts]]`.
+- **IRQ1V/IRQ2V path**: lower latency, you test System VIA CA1 bit yourself, can do raster-rate work. See [[os/interrupts]].
 
 Event 4 is the lazy/safe option; IRQ hooking is the performance option. The handler-runtime constraint is the same either way (< 2 ms).
 
 ## Filed into
 
-- `[[os/events]]` — Master events reference + handler patterns.
-- Updates: `[[os/interrupts]]` cross-links to events as the "easier than IRQ hooking" alternative.
+- [[os/events]] — Master events reference + handler patterns.
+- Updates: [[os/interrupts]] cross-links to events as the "easier than IRQ hooking" alternative.
 
 ## Open follow-ups
 
-- Exact `&2BD-`onwards layout for event enable flags (Master differs from Model B) — `[[memory/os-workspace]]` has the rough range; precise addresses would need MOS disassembly confirmation.
+- Exact `&2BD-`onwards layout for event enable flags (Master differs from Model B) — [[memory/os-workspace]] has the rough range; precise addresses would need MOS disassembly confirmation.

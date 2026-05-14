@@ -8,7 +8,7 @@ updated: 2026-05-13
 
 # VIA Timers (T1, T2)
 
-Each 6522 VIA has two 16-bit timers that decrement at **1 MHz** — i.e. one tick = 1 µs = 2 CPU cycles (at 2 MHz CPU clock). Both VIAs (`[[hardware/system-via]]`, `[[hardware/user-via]]`) have a T1 and a T2, so the BBC has **four** timers total — though System VIA T1 is often claimed by MOS sound, leaving T2 + both User VIA timers free for user code.
+Each 6522 VIA has two 16-bit timers that decrement at **1 MHz** — i.e. one tick = 1 µs = 2 CPU cycles (at 2 MHz CPU clock). Both VIAs ([[hardware/system-via]], [[hardware/user-via]]) have a T1 and a T2, so the BBC has **four** timers total — though System VIA T1 is often claimed by MOS sound, leaving T2 + both User VIA timers free for user code.
 
 ## T1 — full-featured
 
@@ -96,4 +96,4 @@ The standard advice: **prefer User VIA timers** for general-purpose timing. Touc
 - Writing T1C-H or T2C-H clears the relevant IFR bit — useful in handlers.
 - A timer write while IRQs are enabled, with the timer already at a small count, may produce an IRQ between the C-L write and C-H write. Disable IRQs around the load to be safe.
 
-See `[[hardware/via-6522]]` for register layout. See `[[sources/naug-ch08-interrupts]]` (pending) for the IRQ dispatch chain.
+See [[hardware/via-6522]] for register layout. See [[sources/naug-ch08-interrupts]] (pending) for the IRQ dispatch chain.

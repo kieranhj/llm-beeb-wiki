@@ -8,7 +8,7 @@ updated: 2026-05-13
 
 # Tube — Software Protocol
 
-How code on either side of the Tube uses it. For the chip-level hardware reference, see `[[hardware/tube-ula]]`.
+How code on either side of the Tube uses it. For the chip-level hardware reference, see [[hardware/tube-ula]].
 
 ## Detect a Tube — OSBYTE `&EA`
 
@@ -156,7 +156,7 @@ Slow (full OSWORD round-trip per byte) but simple. For bulk data, use the `&406`
 
 - A **single OSWRCH from the parasite** is ~10× slower than on a non-Tube machine. For text-heavy parasite code, that adds up fast.
 - **Bulk transfers via reason 6/7** approach 100 KB/s — limited by the 10 µs/byte (16 cycles between reads at 2 MHz host). The actual throughput depends on the parasite's CPU speed and the inter-byte instruction overhead.
-- A **6502 second processor at 3 MHz** runs user code ~50% faster than the host (`[[hardware/6502]]`), but every I/O call pays Tube round-trip. Compute-heavy code wins; I/O-heavy code loses.
+- A **6502 second processor at 3 MHz** runs user code ~50% faster than the host ([[hardware/6502]]), but every I/O call pays Tube round-trip. Compute-heavy code wins; I/O-heavy code loses.
 - **Direct hardware pokes on the parasite** are pointless — the parasite has no I/O. Any "use direct STA &FE21 for fast palette change" trick must run **on the host**, installed there by the parasite (via `&406` reason 1 + reason 4 to write then execute the code in host memory).
 
 ## NVWRCH / NVRDCH and the Tube
@@ -170,9 +170,9 @@ For Tube-transparent code, **don't** use NVWRCH/NVRDCH.
 
 ## See also
 
-- `[[hardware/tube-ula]]` — Tube ULA registers + IRQ sources.
-- `[[memory/memory-map]]` — Tube at `&FEE0-&FEFF` (host) / `&FEF8-&FEFF` (parasite).
-- `[[memory/shadow-ram]]` — ACCCON `ITU` bit (Master internal/external Tube select).
-- `[[hardware/6502]]` — 6502 2P at 3 MHz, Master Turbo at 4 MHz.
-- `[[os/calls]]` — OS entry points (all Tube-aware except NVWRCH/NVRDCH).
-- `[[os/paged-roms]]` — service ROMs as the right place for Tube transfer code.
+- [[hardware/tube-ula]] — Tube ULA registers + IRQ sources.
+- [[memory/memory-map]] — Tube at `&FEE0-&FEFF` (host) / `&FEF8-&FEFF` (parasite).
+- [[memory/shadow-ram]] — ACCCON `ITU` bit (Master internal/external Tube select).
+- [[hardware/6502]] — 6502 2P at 3 MHz, Master Turbo at 4 MHz.
+- [[os/calls]] — OS entry points (all Tube-aware except NVWRCH/NVRDCH).
+- [[os/paged-roms]] — service ROMs as the right place for Tube transfer code.

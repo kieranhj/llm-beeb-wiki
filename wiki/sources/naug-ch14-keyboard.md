@@ -26,9 +26,9 @@ Conversion: `INKEY = IK_no EOR &FF`. So `INKEY = -1` (`&FF`) = IK 0 (SHIFT), `IN
 
 System VIA owns the keyboard:
 
-1. **System VIA** constantly scans columns. When any key is pressed, **CA2** generates an IRQ (`[[hardware/system-via]]`, `[[os/interrupts]]`).
+1. **System VIA** constantly scans columns. When any key is pressed, **CA2** generates an IRQ ([[hardware/system-via]], [[os/interrupts]]).
 2. MOS reads the column counter, scans rows to identify the key, stores the IKN in zero-page "current keys pressed" state, sets a flag.
-3. **100 Hz background poll** (System VIA T1) translates IKN → ASCII (applying SHIFT/CTRL/CAPS LOCK/etc.) and inserts the byte into the keyboard buffer (ID 0, see `[[os/buffers]]`).
+3. **100 Hz background poll** (System VIA T1) translates IKN → ASCII (applying SHIFT/CTRL/CAPS LOCK/etc.) and inserts the byte into the keyboard buffer (ID 0, see [[os/buffers]]).
 
 Two-key rollover: zero page holds the *current* and *previous* keypress IKNs so a second press is recognised before the first releases.
 
@@ -56,7 +56,7 @@ BREAK is **wired directly to the 6502 reset line** — it's not part of the matr
 
 ## Soft keys (function keys + others)
 
-Function keys f0-f9 expand into user-defined strings (`*KEY 1 "LIST|M"` etc.). Stored at page B (`&B00-&BFF`, see `[[memory/os-workspace]]`).
+Function keys f0-f9 expand into user-defined strings (`*KEY 1 "LIST|M"` etc.). Stored at page B (`&B00-&BFF`, see [[memory/os-workspace]]).
 
 | OSBYTE | Function |
 |---|---|
@@ -112,10 +112,10 @@ Set TAB to `&80+n` to make TAB act as soft key n.
 
 ## Filed into
 
-- `[[os/keyboard]]` — Keyboard reference: scan model, all three numbering schemes (with full table), OSBYTE summary, auto-repeat, soft keys.
+- [[os/keyboard]] — Keyboard reference: scan model, all three numbering schemes (with full table), OSBYTE summary, auto-repeat, soft keys.
 
 ## Open follow-ups
 
-- Full ASCII / INKEY / IKN table is ~100 rows. Captured in `[[os/keyboard]]` as a structured table.
+- Full ASCII / INKEY / IKN table is ~100 rows. Captured in [[os/keyboard]] as a structured table.
 - Master numeric keypad layout — covered briefly; defer detailed per-key table unless needed.
-- Electron firm keys (`OSBYTE &CC`/`&CD`) cross-reference `[[os/paged-roms]]` Electron language-ROM section.
+- Electron firm keys (`OSBYTE &CC`/`&CD`) cross-reference [[os/paged-roms]] Electron language-ROM section.

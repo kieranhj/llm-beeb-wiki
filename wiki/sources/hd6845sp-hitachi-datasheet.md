@@ -199,7 +199,7 @@ The BBC requires features 1, 2, 3 above — explaining why "HD6845S" is the spec
 
 ### Major contradiction: R10 BLK encoding
 
-Our existing `[[hardware/crtc-6845]]` page (updated 2026-05-14 from `[[sources/beebwiki-crtc]]`) currently says:
+Our existing [[hardware/crtc-6845]] page (updated 2026-05-14 from [[sources/beebwiki-crtc]]) currently says:
 
 | BLK | Effect (our wiki / BeebWiki) | Effect (THIS DATASHEET) |
 |---|---|---|
@@ -224,5 +224,5 @@ The internal logic of the datasheet is self-consistent: B = blink enable; with B
 
 ## Filed into
 
-- Updated: `[[hardware/crtc-6845]]` (R10 BLK encoding fix, R9 -2 in interlace-sync-&-video, programming restrictions, anomalous-rewrite summary, HD6845S features list, reset behaviour).
-- The advanced register-rewrite table is the natural body for the long-planned `[[hardware/crtc-6845-advanced]]` stub.
+- Updated: [[hardware/crtc-6845]] (R10 BLK encoding fix, R9 -2 in interlace-sync-&-video, programming restrictions, anomalous-rewrite summary, HD6845S features list, reset behaviour).
+- The advanced register-rewrite table is the natural body for the long-planned [[hardware/crtc-6845-advanced]] stub.

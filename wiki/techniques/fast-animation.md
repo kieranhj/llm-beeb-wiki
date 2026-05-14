@@ -77,7 +77,7 @@ Pre-shifted tables trade ROM/RAM for cycles. For a 16×16 MODE 2 sprite at 2 pre
 
 ## Hardware scroll as foundation
 
-For **scrolling games** (Planetoid, Frak!, anything with a horizontally-moving world), don't redraw the screen — use `[[video/hardware-scrolling]]` to slew the 6845 screen-start register, and only redraw the **leading edge** column each frame.
+For **scrolling games** (Planetoid, Frak!, anything with a horizontally-moving world), don't redraw the screen — use [[video/hardware-scrolling]] to slew the 6845 screen-start register, and only redraw the **leading edge** column each frame.
 
 A common pattern in MODE 2:
 - Maintain an off-screen "compose" column one cell-row tall, one cell wide (8 bytes).
@@ -96,7 +96,7 @@ To avoid tearing, do **all** screen writes during vertical blanking. Two ways:
 
 Vsync is ~50 Hz on UK BBC, giving ~20 ms per frame. The visible-screen period is ~16 ms (320 scan lines × 64 µs); blanking is ~4 ms. Schedule **fast** writes for the blanking window; long writes can spill into visible scan but should land at lines below where the user is looking.
 
-See `[[techniques/raster-splits]]` (planned, after Ch8 ingest) for techniques that *exploit* mid-frame timing rather than fight it.
+See [[techniques/raster-splits]] (planned, after Ch8 ingest) for techniques that *exploit* mid-frame timing rather than fight it.
 
 ## Don't bother with MODE 7 for animation
 

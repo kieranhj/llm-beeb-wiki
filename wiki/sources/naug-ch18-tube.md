@@ -202,13 +202,13 @@ Zero page is usable up to `&EE` (the OS uses `&EE-&FF`). Page 2 indirection vect
 
 ## Filed into
 
-- `[[hardware/tube-ula]]` — Tube ULA register reference (host + parasite addresses).
-- `[[os/tube]]` — Tube software protocol: claim/release/transfer, OSBYTE `&EA`, OSWORDs `&05`/`&06`, parasite OS dispatch table, what changes when Tube is active.
-- Updates: cross-links to `[[hardware/6502]]` (6502 2P at 3 MHz), `[[memory/memory-map]]` (Tube at `&FEE0`), `[[os/calls]]` (Tube-safe vs non-vectored variants).
+- [[hardware/tube-ula]] — Tube ULA register reference (host + parasite addresses).
+- [[os/tube]] — Tube software protocol: claim/release/transfer, OSBYTE `&EA`, OSWORDs `&05`/`&06`, parasite OS dispatch table, what changes when Tube is active.
+- Updates: cross-links to [[hardware/6502]] (6502 2P at 3 MHz), [[memory/memory-map]] (Tube at `&FEE0`), [[os/calls]] (Tube-safe vs non-vectored variants).
 
 ## Open follow-ups
 
 - **Custom filing system implementation** over the Tube — chapter has worked example (§18.8 p346) for a 20 KB transfer ROM. Captured as pattern; full code lives in `raw/manuals/`.
-- **Z80 2P OS jump table** at `&FFCE-&FFFE` — captured in source page; if Z80 work matters, file as `[[os/z80-2p]]`.
+- **Z80 2P OS jump table** at `&FFCE-&FFFE` — captured in source page; if Z80 work matters, file as [[os/z80-2p]].
 - **32016 2P PANOS** — UNIX-like OS, separate documentation; out of scope.
 - **80186 2P (Master 512)** — IBM PC emulation; out of scope.

@@ -19,7 +19,7 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.157-161. Five-page chapter t
 - System block diagram (§p151) — the CPU plus three buses (data, address, control), with peripherals memory-mapped into the address space.
 - 6502 / 65C12 generic family — both chips referred to as just "6502" throughout the rest of the book.
 - 16-bit address bus → 64 KB max. Data bus bidirectional, address bus unidirectional (with video circuit exceptions allowing 6845 / 5050 to provide addresses for RAM fetches).
-- Page `&FE` (SHEILA) holds the system hardware registers; `&FC` (FRED) and `&FD` (JIM) are for the 1 MHz expansion bus / cartridges (`[[memory/memory-map]]`).
+- Page `&FE` (SHEILA) holds the system hardware registers; `&FC` (FRED) and `&FD` (JIM) are for the 1 MHz expansion bus / cartridges ([[memory/memory-map]]).
 - Co-processors connect via the Tube — Ch18 (separately ingested).
 
 ## Extra SHEILA assignments not previously captured
@@ -40,7 +40,7 @@ Note: on **Master / Compact**, the ADC moves from `&FEC0-&FEDF` (B/B+) to `&FEC0
 
 ## Filed into
 
-- `[[memory/memory-map]]` — SHEILA table updated with the above entries.
+- [[memory/memory-map]] — SHEILA table updated with the above entries.
 
 ## Open follow-ups
 

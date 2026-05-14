@@ -15,14 +15,14 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.387-408. Two Rockwell 6522 V
 - **System VIA** @ SHEILA `&FE40-&FE4F` — owned by MOS. Drives keyboard, sound, speech, CMOS (Master), joystick fire, ADC EOC, light pen strobe, vsync IRQ, hardware-scroll wrap latch, CAPS/SHIFT LEDs.
 - **User/Printer VIA** @ SHEILA `&FE60-&FE6F` — Port A = parallel printer (output-only, buffered), Port B + CB1/CB2 = user port (general-purpose I/O).
 
-Both chips have the same 16-register map (§22.4 p387 — see `[[hardware/via-6522]]`). Both have two 16-bit 1 MHz timers (T1, T2) and a shift register.
+Both chips have the same 16-register map (§22.4 p387 — see [[hardware/via-6522]]). Both have two 16-bit 1 MHz timers (T1, T2) and a shift register.
 
 ## Key facts captured
 
-- Register block repeats every 16 bytes at the base address. Register numbers are 0-15 (see `[[hardware/via-6522]]` for the canonical table).
+- Register block repeats every 16 bytes at the base address. Register numbers are 0-15 (see [[hardware/via-6522]] for the canonical table).
 - **Timers decrement at 1 MHz**, not the 2 MHz CPU clock (§22.4.3 p391). T1 timeout = `(N+2) × 1 µs` where `N` is the loaded value.
 - **Slow peripheral bus** (System VIA Port A): CPU writes only via System VIA with all interrupts disabled — MOS uses this constantly for keyboard scan etc. (§22.3.1 p384). Direct access strongly discouraged.
-- **System VIA addressable latch** (PB0-PB3 of System VIA) is the gateway to 8 different peripheral functions, including the **hardware-scroll wrap addend** (B4, B5) referenced by `[[video/hardware-scrolling]]`. Full assignment in `[[hardware/system-via]]`.
+- **System VIA addressable latch** (PB0-PB3 of System VIA) is the gateway to 8 different peripheral functions, including the **hardware-scroll wrap addend** (B4, B5) referenced by [[video/hardware-scrolling]]. Full assignment in [[hardware/system-via]].
 - **Vsync interrupt** = System VIA CA1 (PCR programmed for negative edge by MOS). IFR bit 1. Fires every 20 ms.
 - **Keyboard interrupt** = System VIA CA2. IFR bit 0.
 - **Light pen strobe** = System VIA CB2. IFR bit 3.
@@ -51,10 +51,10 @@ So `STA &FE4E` with `&xx` where bit 7 is the set/clear selector, bits 0-6 are th
 
 ## Filed into
 
-- `[[hardware/via-6522]]` — Generic 6522 entity: register map, port semantics, PCR/ACR/IFR/IER bit layout.
-- `[[hardware/system-via]]` — System VIA specifics: line assignments, addressable latch table, IRQ uses.
-- `[[hardware/user-via]]` — User/Printer VIA: printer pinout, user port pinout, handshake usage.
-- `[[timing/via-timers]]` — T1 (one-shot/free-run/PB7 toggle) and T2 (interval/pulse-count) modes. Use cases for raster timing, audio, etc.
+- [[hardware/via-6522]] — Generic 6522 entity: register map, port semantics, PCR/ACR/IFR/IER bit layout.
+- [[hardware/system-via]] — System VIA specifics: line assignments, addressable latch table, IRQ uses.
+- [[hardware/user-via]] — User/Printer VIA: printer pinout, user port pinout, handshake usage.
+- [[timing/via-timers]] — T1 (one-shot/free-run/PB7 toggle) and T2 (interval/pulse-count) modes. Use cases for raster timing, audio, etc.
 
 ## Open follow-ups
 

@@ -8,7 +8,7 @@ updated: 2026-05-13
 
 # Filing Systems — MOS API
 
-Eight (well, nine) filing systems on the BBC family, all sharing a common API. For chip-level direct disc access (bypassing the FS), see `[[hardware/wd1770]]`.
+Eight (well, nine) filing systems on the BBC family, all sharing a common API. For chip-level direct disc access (bypassing the FS), see [[hardware/wd1770]].
 
 ## Filing systems available
 
@@ -142,7 +142,7 @@ LDY #handle
 JSR &FFD4          ; OSBPUT: writes byte, advances pointer
 ```
 
-**Fast Tube OSBPUT**: from a 6502 second processor, `OSBYTE &9D` (X=byte, Y=handle) is faster than going through OSBPUT — bypasses one level of vector dispatch (`[[sources/naug-ch18-tube]]`).
+**Fast Tube OSBPUT**: from a 6502 second processor, `OSBYTE &9D` (X=byte, Y=handle) is faster than going through OSBPUT — bypasses one level of vector dispatch ([[sources/naug-ch18-tube]]).
 
 ## OSGBPB — bulk transfer
 
@@ -179,7 +179,7 @@ Exit C=1 if transfer couldn't complete (partial); +5..+8 holds remaining byte co
 
 The OS calls FSCV (`&21E`) for filing-system housekeeping. User code shouldn't call FSCV directly, but service ROMs may intercept FSCV to add custom filing-system commands.
 
-Reason codes: see `[[sources/naug-ch16-filing]]` §16.1.7.
+Reason codes: see [[sources/naug-ch16-filing]] §16.1.7.
 
 ## Filing-system OSBYTEs
 
@@ -188,7 +188,7 @@ Reason codes: see `[[sources/naug-ch16-filing]]` §16.1.7.
 | `&77` (119) | Close all `*SPOOL`/`*EXEC` files |
 | `&7F` (127) | EOF check (X = handle, returns X ≠ 0 if EOF) |
 | `&82` (130) | Read 32-bit machine high-order address (Tube prefix) |
-| `&87` (135) | (also char at cursor — `[[sources/naug-ch13-video]]`) |
+| `&87` (135) | (also char at cursor — [[sources/naug-ch13-video]]) |
 | `&89` (137) | Cassette motor (X=0/1) |
 | `&8B` (139) | Perform `*OPT` (X = option, Y = value) |
 | `&8C` (140) | Select CFS (X=0 default, X=3 = 300 baud, X=12 = 1200) |
@@ -209,7 +209,7 @@ Reason codes: see `[[sources/naug-ch16-filing]]` §16.1.7.
 | **`&7F`** | DFS | **Issue raw 1770 FDC command** |
 | `&80` | IEEE | Issue IEEE-488 command |
 
-OSWORD `&7F` is the direct-FDC path — bypasses DFS's high-level routines and lets you issue Type I/II/III commands directly via the parameter block. Useful for custom disc formats, IBM/CP/M disc reads, and disc repair tools. Parameter block layout in `[[sources/naug-ch16-filing]]`.
+OSWORD `&7F` is the direct-FDC path — bypasses DFS's high-level routines and lets you issue Type I/II/III commands directly via the parameter block. Useful for custom disc formats, IBM/CP/M disc reads, and disc repair tools. Parameter block layout in [[sources/naug-ch16-filing]].
 
 ## Per-filing-system variation summary
 
@@ -225,7 +225,7 @@ OSWORD `&7F` is the direct-FDC path — bypasses DFS's high-level routines and l
 
 ## Master FS handler — multiple FS simultaneously
 
-On Master, the FS handler in HAZEL (`&DF00-&DFFF`, see `[[memory/shadow-ram]]`) lets you run with **current**, **library**, and **temporary** filing systems all known simultaneously. Use the prefix syntax:
+On Master, the FS handler in HAZEL (`&DF00-&DFFF`, see [[memory/shadow-ram]]) lets you run with **current**, **library**, and **temporary** filing systems all known simultaneously. Use the prefix syntax:
 
 ```
 *LOAD -DISC-prog          rem use DFS for this command only
@@ -249,7 +249,7 @@ HAZEL's state:
 ## Bypass-MOS strategies for fast disc I/O
 
 1. **OSWORD `&7F`** (DFS direct FDC command) — lets you issue Type II read/write sector commands with custom parameter blocks. Still goes through DFS workspace but skips file-level dispatch.
-2. **Direct `&FE28`/`&FE29`/`&FE2A`/`&FE2B`** writes (`[[hardware/wd1770]]`) — fully bypass DFS. Must install NMI handler yourself.
+2. **Direct `&FE28`/`&FE29`/`&FE2A`/`&FE2B`** writes ([[hardware/wd1770]]) — fully bypass DFS. Must install NMI handler yourself.
 3. **Stay with OSGBPB** for sequential reads — already the fastest MOS-blessed bulk transfer.
 
 The trade-offs:
@@ -265,8 +265,8 @@ For game / demo loaders: OSGBPB with a custom NMI handler captured from DFS is t
 
 ## See also
 
-- `[[hardware/wd1770]]` — FDC chip reference.
-- `[[sources/naug-ch16-filing]]` — Detailed catalogue formats (DFS, ADFS), per-FS specifics.
-- `[[os/calls]]` — All MOS entry points including filing-system vectors.
-- `[[os/paged-roms]]` — Filing systems implement themselves as service ROMs; service-call dispatch.
-- `[[memory/shadow-ram]]` — Master HAZEL FS-handler workspace.
+- [[hardware/wd1770]] — FDC chip reference.
+- [[sources/naug-ch16-filing]] — Detailed catalogue formats (DFS, ADFS), per-FS specifics.
+- [[os/calls]] — All MOS entry points including filing-system vectors.
+- [[os/paged-roms]] — Filing systems implement themselves as service ROMs; service-call dispatch.
+- [[memory/shadow-ram]] — Master HAZEL FS-handler workspace.

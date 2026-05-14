@@ -8,7 +8,7 @@ updated: 2026-05-14
 
 # OS Workspace — Pages 1, 2, 3
 
-Beyond zero page (`[[memory/zero-page]]`), MOS occupies three more pages of low RAM. Knowing the layout matters when:
+Beyond zero page ([[memory/zero-page]]), MOS occupies three more pages of low RAM. Knowing the layout matters when:
 
 - You want to **read MOS state** without using OSBYTEs (faster lookups).
 - You want to **bypass MOS** for a particular function and need to know what state to restore.
@@ -66,7 +66,7 @@ From NAUG §6.6.2:
 
 | Range | Use |
 |---|---|
-| `&200-&235` | OS vector table (see `[[os/calls]]`) |
+| `&200-&235` | OS vector table (see [[os/calls]]) |
 | `&236-&28F` | OS variables — accessible via OSBYTE `&A6-&FF`. Direct read is faster than OSBYTE. |
 | `&290`-`&291` | *TV vertical adjust + interlace |
 | `&292-&296` | TIME — first copy (dual-clock to allow atomic 5-byte read) |
@@ -94,11 +94,11 @@ The OSBYTE-variable address is `&0236 + (osbyte_number - &A6)`. So `&D2` (sound 
 | `&028C` | Current language ROM | `&FC` (fx252) |
 | `&028D` | Last BREAK type | `&FD` (fx253) |
 
-Exact addresses are stable across BBC/B+/Master — the formula above always holds. Reading directly is **faster** than calling OSBYTE (saves the dispatch overhead). For full table see `[[sources/allmem-ripley-harston]]` lines 179-287, or query `OSBYTE &A6/&A7` to get the base address dynamically (in case a future MOS shifts it).
+Exact addresses are stable across BBC/B+/Master — the formula above always holds. Reading directly is **faster** than calling OSBYTE (saves the dispatch overhead). For full table see [[sources/allmem-ripley-harston]] lines 179-287, or query `OSBYTE &A6/&A7` to get the base address dynamically (in case a future MOS shifts it).
 
 ## Page 3 (`&0300-&03FF`) — VDU workspace + filing buffers
 
-From NAUG §13.2.2 (already in `[[sources/naug-ch13-video]]`):
+From NAUG §13.2.2 (already in [[sources/naug-ch13-video]]):
 
 | Range | Use |
 |---|---|
@@ -140,21 +140,21 @@ If you're going fully native (game / demo style, no return to BASIC):
 
 If you're returning to BASIC after a routine:
 
-- Page 0: save `&70-&8F` and whatever else you touch (see `[[memory/zero-page]]`).
+- Page 0: save `&70-&8F` and whatever else you touch (see [[memory/zero-page]]).
 - OS palette (`&FE21` + page 3 colour palette copy at `&380+`): if you wrote `&FE21` directly, also write the same value (XOR 7) into the OS copy, or restore the original.
 - `&350`/`&351` if you moved R12/R13.
 - IRQ vectors `&204-&207` if you hooked them.
-- Sideways ROM register `&FE30`: **never set** — see `[[memory/paged-rom]]`.
+- Sideways ROM register `&FE30`: **never set** — see [[memory/paged-rom]].
 
 If you're inside an IRQ handler:
 
 - A is in `&FC` (MOS save). Don't touch.
-- Keep your handler under 2 ms (NAUG §8.5 — `[[os/interrupts]]`).
+- Keep your handler under 2 ms (NAUG §8.5 — [[os/interrupts]]).
 - Don't call any OS routine.
 
 ## See also
 
-- `[[memory/zero-page]]` — Page 0 detail.
-- `[[memory/memory-map]]` — Big picture.
-- `[[os/calls]]` — OS entry-point reference.
-- `[[os/interrupts]]` — IRQ handler conventions and `&FC` usage.
+- [[memory/zero-page]] — Page 0 detail.
+- [[memory/memory-map]] — Big picture.
+- [[os/calls]] — OS entry-point reference.
+- [[os/interrupts]] — IRQ handler conventions and `&FC` usage.

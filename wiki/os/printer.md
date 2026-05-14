@@ -83,7 +83,7 @@ MOS will resume calls (reason A=1) when the buffer gets a byte again.
 
 ## Pulling bytes — REMV (`&22C`)
 
-Inside your A=0 / A=1 handler, use `[[os/buffers]]` REMV to pull bytes from the printer buffer (ID 3):
+Inside your A=0 / A=1 handler, use [[os/buffers]] REMV to pull bytes from the printer buffer (ID 3):
 
 ```asm
 LDX #3                 ; buffer ID
@@ -109,12 +109,12 @@ Already supported via `*FX 5,4`. NETV reason codes 0/1/2/3/5 mirror UPTV.
 ## Performance notes
 
 - Printer buffer is **64 bytes by default**. Filled by OSWRCH when output goes to printer.
-- The custom-buffer pattern (NAUG §9.4 worked example, `[[os/buffers]]`) extends the printer buffer to many KB by intercepting INSV/REMV/CNPV for buffer ID 3.
+- The custom-buffer pattern (NAUG §9.4 worked example, [[os/buffers]]) extends the printer buffer to many KB by intercepting INSV/REMV/CNPV for buffer ID 3.
 - For high-throughput output to a fast printer / serial-attached peripheral, use the OSBYTE / UPTV path rather than direct STA to the printer port — the buffered/IRQ-driven path lets the foreground task do other work.
 
 ## See also
 
-- `[[os/buffers]]` — Printer buffer (ID 3); INSV/REMV/CNPV vectors.
-- `[[hardware/user-via]]` — Parallel printer port (Port A + CA1/CA2).
-- `[[os/osbyte]]` — `&05`, `&06`, `&7B`, `&F5`, `&F6` printer entries.
-- `[[sources/naug-ch24-misc]]` — Full source page.
+- [[os/buffers]] — Printer buffer (ID 3); INSV/REMV/CNPV vectors.
+- [[hardware/user-via]] — Parallel printer port (Port A + CA1/CA2).
+- [[os/osbyte]] — `&05`, `&06`, `&7B`, `&F5`, `&F6` printer entries.
+- [[sources/naug-ch24-misc]] — Full source page.

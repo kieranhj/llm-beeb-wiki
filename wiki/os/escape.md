@@ -71,7 +71,7 @@ The user can still press it; it just doesn't cause an abort. Read it from the ke
 
 ### Game — handle ESCAPE manually
 
-Hook **event 6** (`[[os/events]]`):
+Hook **event 6** ([[os/events]]):
 
 ```asm
 LDA #&0E : LDX #6 : JSR &FFF4         ; enable event 6
@@ -103,7 +103,7 @@ LDA #&E6 : LDX #0 : LDY #0 : JSR &FFF4     ; restore default for next time
 
 ## See also
 
-- `[[os/osbyte]]` — All ESCAPE-related entries (`&7C-&7E`, `&C8`, `&DC`, `&E5`, `&E6`).
-- `[[os/events]]` — Event 6 = ESCAPE detected.
-- `[[os/brk]]` — BREAK is a different thing (direct reset line).
-- `[[os/keyboard]]` — TAB / ESCAPE character defaults.
+- [[os/osbyte]] — All ESCAPE-related entries (`&7C-&7E`, `&C8`, `&DC`, `&E5`, `&E6`).
+- [[os/events]] — Event 6 = ESCAPE detected.
+- [[os/brk]] — BREAK is a different thing (direct reset line).
+- [[os/keyboard]] — TAB / ESCAPE character defaults.

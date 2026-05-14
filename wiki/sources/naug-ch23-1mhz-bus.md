@@ -14,7 +14,7 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.409-425. The 1MHz bus is the
 
 ## Key facts captured
 
-- **Two expansion routes**: User port (8 GPIO from User VIA, `[[hardware/user-via]]`) or **1MHz bus** (full address bus + buffered data bus + control signals). For anything beyond simple I/O, you need 1MHz bus.
+- **Two expansion routes**: User port (8 GPIO from User VIA, [[hardware/user-via]]) or **1MHz bus** (full address bus + buffered data bus + control signals). For anything beyond simple I/O, you need 1MHz bus.
 - **1MHz bus connector**: 34-pin IDC, under-keyboard front edge of mainboard. All machines except Master Compact and Electron (which use the cartridge slot instead).
 - **FRED** = page `&FC` (`&FC00-&FCFF`) for memory-mapped peripherals (up to 255 registers + paging register at `&FCFF`).
 - **JIM** = page `&FD` (`&FD00-&FDFF`) for paged memory — 256 bytes × paging register = **up to 64 KB of paged expansion memory**. Page selector is in FRED at `&FCFF` (the "JIM paging register").
@@ -116,7 +116,7 @@ These are minimums — assume **one peripheral on the bus**. Heavier load extend
 
 Cartridge slot on Master 128 / Master Compact / Electron Plus 1. Carries 1MHz bus signals **plus extra signals** (ROM selection, 16 MHz clock, audio routing, ROMQA paging bit, OE2/LPSTB).
 
-**Critical Master detail**: cartridge slot can run at **1 MHz or 2 MHz**, selectable via the `IFJ` bit of ACCCON (`[[memory/shadow-ram]]`) or `OSBYTE &6B`:
+**Critical Master detail**: cartridge slot can run at **1 MHz or 2 MHz**, selectable via the `IFJ` bit of ACCCON ([[memory/shadow-ram]]) or `OSBYTE &6B`:
 
 - X=0 (`*FX 107,0`): external 1MHz bus active.
 - X=1 (`*FX 107,1`): internal cartridge bus active at 2 MHz.
@@ -141,8 +141,8 @@ STA &8000        ; any address inside the EPROM works
 
 ## Filed into
 
-- `[[hardware/1mhz-bus]]` — Bus reference, FRED/JIM allocations, clean-up circuits, design rules.
-- Updates: `[[memory/memory-map]]` — FRED/JIM cross-link refreshed.
+- [[hardware/1mhz-bus]] — Bus reference, FRED/JIM allocations, clean-up circuits, design rules.
+- Updates: [[memory/memory-map]] — FRED/JIM cross-link refreshed.
 
 ## Open follow-ups
 

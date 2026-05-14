@@ -10,7 +10,7 @@ updated: 2026-05-14
 
 # 6845 CRTC — Advanced
 
-Companion to `[[hardware/crtc-6845]]`. This page is for performance and raster-tight code: which registers tolerate mid-frame rewrites, sampling phases, raster split tricks. Primary source: Hitachi HD6845S datasheet `[[sources/hd6845sp-hitachi-datasheet]]`.
+Companion to [[hardware/crtc-6845]]. This page is for performance and raster-tight code: which registers tolerate mid-frame rewrites, sampling phases, raster split tricks. Primary source: Hitachi HD6845S datasheet [[sources/hd6845sp-hitachi-datasheet]].
 
 ## When can you rewrite each register mid-frame?
 
@@ -67,9 +67,9 @@ Because R12/R13 are sampled only once per field, you **cannot** use them for ras
 1. **R12/R13 writes at the field-end sample**: simply reprogram once per frame. Standard hardware scroll. Cost: 2 stretched accesses = ~12c per field.
 2. **R0 (HTC) and R4 (VTC) tricks**: officially NG, but a tightly-timed write to R0 can shorten the horizontal scan for a few lines, producing a "screen split" effect. Used in some demos. Requires raster-cycle-exact timing.
 3. **R6/R7 mid-field rewrite**: marked OK / NG respectively in the datasheet. Some demos rewrite R7 to advance vsync; results are display-dependent.
-4. **Indirect via the Video ULA**: palette flips at `&FE21` are *not* stretched (`[[timing/cycle-stretching]]`) and are the cheapest way to get mid-frame visual changes. Combine with R12/R13 once-per-frame.
+4. **Indirect via the Video ULA**: palette flips at `&FE21` are *not* stretched ([[timing/cycle-stretching]]) and are the cheapest way to get mid-frame visual changes. Combine with R12/R13 once-per-frame.
 
-For raster-line-exact timing, see `[[techniques/raster-splits]]` (planned).
+For raster-line-exact timing, see [[techniques/raster-splits]] (planned).
 
 ## Cursor as a raster signal
 
@@ -79,7 +79,7 @@ In MODE 7 the CUDISP delay is 2 characters (R8 bits 6-7 = 10), so the cursor sig
 
 ## Light pen as a horizontal-position latch
 
-R16/R17 latch the current MA on LPSTB rising edge. Per `[[hardware/system-via]]` the LPSTB pin is connected to the analogue port's light-pen input (CA2 on System VIA via IFR bit 1). Software-controlled LPSTB pulses (e.g. via the user port wired back to the light-pen line) can capture the current display address at a known time — a form of raster snooping.
+R16/R17 latch the current MA on LPSTB rising edge. Per [[hardware/system-via]] the LPSTB pin is connected to the analogue port's light-pen input (CA2 on System VIA via IFR bit 1). Software-controlled LPSTB pulses (e.g. via the user port wired back to the light-pen line) can capture the current display address at a known time — a form of raster snooping.
 
 ## Timing inside a field (PAL non-interlaced, default modes)
 
@@ -100,9 +100,9 @@ For MODE 7 (R4=30, R5=2, R9=18): one field = 31 × 20 + 2 = 622 half-rasters ≈
 
 ## See also
 
-- `[[hardware/crtc-6845]]` — primary register reference.
-- `[[hardware/address-translation]]` — how MA → DRAM address.
-- `[[hardware/video-ula]]` — companion chip; preferred for raster-tight visual changes.
-- `[[timing/cycle-stretching]]` — CRTC writes pay 1-2c extra; Video ULA writes do not.
-- `[[techniques/raster-splits]]` (planned) — applying these primitives to produce split-screen effects.
-- `[[sources/hd6845sp-hitachi-datasheet]]` — primary source for everything on this page.
+- [[hardware/crtc-6845]] — primary register reference.
+- [[hardware/address-translation]] — how MA → DRAM address.
+- [[hardware/video-ula]] — companion chip; preferred for raster-tight visual changes.
+- [[timing/cycle-stretching]] — CRTC writes pay 1-2c extra; Video ULA writes do not.
+- [[techniques/raster-splits]] (planned) — applying these primitives to produce split-screen effects.
+- [[sources/hd6845sp-hitachi-datasheet]] — primary source for everything on this page.

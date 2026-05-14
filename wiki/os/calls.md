@@ -117,7 +117,7 @@ In hot game loops, #1 (precompose) is almost always the right answer.
 
 ## See also
 
-- `[[os/osbyte]]` and `[[os/osword]]` — directory tables.
-- `[[os/interrupts]]` — IRQ vector chain.
-- `[[os/brk]]` — BRK protocol.
-- `[[memory/os-workspace]]` — Page 2 vector table + OS variables.
+- [[os/osbyte]] and [[os/osword]] — directory tables.
+- [[os/interrupts]] — IRQ vector chain.
+- [[os/brk]] — BRK protocol.
+- [[memory/os-workspace]] — Page 2 vector table + OS variables.

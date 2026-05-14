@@ -9,9 +9,9 @@ updated: 2026-05-14
 
 # Address Translation
 
-The BBC's discrete-logic address translator maps three different address spaces (CPU, CRTC + line counter, [[hardware/saa5050]] input) onto the 15-bit DRAM space. **This is what makes hardware scrolling work** — and the only reason you can write a 14-bit screen-start address to R12/R13 of the `[[hardware/crtc-6845]]` and have it land cleanly in screen RAM regardless of mode.
+The BBC's discrete-logic address translator maps three different address spaces (CPU, CRTC + line counter, [[hardware/saa5050]] input) onto the 15-bit DRAM space. **This is what makes hardware scrolling work** — and the only reason you can write a 14-bit screen-start address to R12/R13 of the [[hardware/crtc-6845]] and have it land cleanly in screen RAM regardless of mode.
 
-Implemented as SSI (small-scale integration) logic, not a ULA: ICs 8-15 (data + address gating), IC 32 (System VIA addressable latch — see `[[hardware/system-via]]`), IC 39 (quad adder for the wraparound). On the **Electron** the function is absorbed into the ULA, with restrictions (no hardware scroll, no Teletext fetch — MODE 7 is software-rendered). On the **Master** it lives in the memory-management ULA with B/B+ compatibility.
+Implemented as SSI (small-scale integration) logic, not a ULA: ICs 8-15 (data + address gating), IC 32 (System VIA addressable latch — see [[hardware/system-via]]), IC 39 (quad adder for the wraparound). On the **Electron** the function is absorbed into the ULA, with restrictions (no hardware scroll, no Teletext fetch — MODE 7 is software-rendered). On the **Master** it lives in the memory-management ULA with B/B+ compatibility.
 
 ## DRAM address space
 
@@ -33,7 +33,7 @@ Selected by the 2 MHz monotonic clock and the CRTC's `MA13`:
 |---|---|---|---|---|
 | Low | x | **CPU** | The CPU itself | ROW: IC 12 / COL: IC 13 |
 | High | High | **TTX VDU** (MODE 7) | SAA 5050 Teletext chip | ROW: IC 10 / COL: IC 11 |
-| High | Low | **HI RES** (MODES 0-6) | `[[hardware/video-ula]]` serialiser | ROW: IC 8 / COL: IC 9 |
+| High | Low | **HI RES** (MODES 0-6) | [[hardware/video-ula]] serialiser | ROW: IC 8 / COL: IC 9 |
 
 CPU and video alternate at 2 MHz. CPU mode does **direct A → DA mapping** with no translation — meaning **no DRAM refresh is guaranteed by CPU access alone**. Refresh is provided incidentally by the video fetches in the other two modes.
 
@@ -117,20 +117,20 @@ phys_addr = ((MA & 0x800) << 3) | 0x3C00 | (MA & 0x3FF)
 - `RA` is ignored — same `MA` is held across all 20 scanlines of a teletext character row.
 - **Special trick:** programming start address `&2400` gives a 2K linear stream `&3C00-&3FFF` then `&7C00-&7FFF` — useful for double-buffered teletext.
 
-This is also the mechanism behind R12/R13's "XOR `&54`" rule documented on `[[hardware/crtc-6845]]`: writing the desired physical-RAM-address-divided-by-8 directly would land in the wrong region of the DRAM map; XORing flips the bits that drive `MA11` and the upper translator inputs into the `&2000-&2FFF` window the translator interprets as Teletext mode.
+This is also the mechanism behind R12/R13's "XOR `&54`" rule documented on [[hardware/crtc-6845]]: writing the desired physical-RAM-address-divided-by-8 directly would land in the wrong region of the DRAM map; XORing flips the bits that drive `MA11` and the upper translator inputs into the `&2000-&2FFF` window the translator interprets as Teletext mode.
 
 ## Why this matters for performance code
 
-- **Hardware scrolling**: pick R12/R13 wisely — moves of one character row (40 or 80 bytes) cost a single 6845 write and the translator handles the wrap. See `[[video/hardware-scrolling]]`.
+- **Hardware scrolling**: pick R12/R13 wisely — moves of one character row (40 or 80 bytes) cost a single 6845 write and the translator handles the wrap. See [[video/hardware-scrolling]].
 - **DRAM refresh**: the CPU-only mode does not refresh. If you ever stop video fetches (very unusual — MODE 7 with `MA12=0`?), you must refresh manually.
 - **MODE 7 buffering**: the `&2400`-start trick gives you a 2 KB linear teletext buffer if you want to double-buffer.
 - **Custom modes**: if you change R12/R13 to a value that makes the hardware-scroll wraparound point at the wrong address (e.g. you set up a 16K mode via R6 but keep the 20K wraparound bits in the addressable latch), the bottom of the screen will display garbage from the wrong RAM region. Set the addressable latch via OSBYTE `&D5/&D6/&D7` or the 50/51/52 bits of System VIA Port B before reprogramming the 6845.
 
 ## See also
 
-- `[[hardware/system-via]]` — IC 32 addressable latch (bits 4-5 = C0/C1 here).
-- `[[hardware/crtc-6845]]` — what produces `MA0-MA13` and `RA0-RA2`.
-- `[[hardware/video-ula]]` — the consumer of HI RES fetches.
-- `[[video/hardware-scrolling]]` — how to use the wraparound for scrolling.
-- `[[memory/memory-map]]` — DRAM layout.
-- `[[sources/beebwiki-address-translation]]` — primary reference for this page.
+- [[hardware/system-via]] — IC 32 addressable latch (bits 4-5 = C0/C1 here).
+- [[hardware/crtc-6845]] — what produces `MA0-MA13` and `RA0-RA2`.
+- [[hardware/video-ula]] — the consumer of HI RES fetches.
+- [[video/hardware-scrolling]] — how to use the wraparound for scrolling.
+- [[memory/memory-map]] — DRAM layout.
+- [[sources/beebwiki-address-translation]] — primary reference for this page.

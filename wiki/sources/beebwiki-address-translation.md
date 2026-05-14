@@ -121,8 +121,8 @@ phys_addr = ((MA & 0x800) << 3) | 0x3C00 | (MA & 0x3FF)
 
 ## Filed into
 
-- Created: `[[hardware/address-translation]]` (new entity page, primary host).
-- Cross-references: `[[hardware/system-via]]` (IC 32 = addressable latch — already documented), `[[video/hardware-scrolling]]` (replaces hand-wavy "subtract 2 bits on the latch" with the real table).
+- Created: [[hardware/address-translation]] (new entity page, primary host).
+- Cross-references: [[hardware/system-via]] (IC 32 = addressable latch — already documented), [[video/hardware-scrolling]] (replaces hand-wavy "subtract 2 bits on the latch" with the real table).
 
 ## Notes
 

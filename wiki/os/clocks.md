@@ -8,10 +8,10 @@ updated: 2026-05-13
 
 # System Clock & Interval Timer
 
-Two **5-byte counters** in OS workspace, incremented every centisecond (100 Hz) by the System VIA T1 IRQ handler (`[[os/interrupts]]`).
+Two **5-byte counters** in OS workspace, incremented every centisecond (100 Hz) by the System VIA T1 IRQ handler ([[os/interrupts]]).
 
 - **System clock**: ever-increasing tick count since reset. Read by BASIC's `TIME` function.
-- **Interval timer**: decrements every tick; when it crosses zero, **event 5** fires (`[[os/events]]`).
+- **Interval timer**: decrements every tick; when it crosses zero, **event 5** fires ([[os/events]]).
 
 ## OSWORD calls
 
@@ -58,7 +58,7 @@ For most uses just call `OSWORD &01` — it handles the dual-copy logic internal
 
 ## Tick rate
 
-100 Hz on all standard machines. Source: System VIA T1 timer running free-run with PB7 output disabled, period programmed to fire every 10 ms. See `[[timing/via-timers]]` and `[[os/interrupts]]`.
+100 Hz on all standard machines. Source: System VIA T1 timer running free-run with PB7 output disabled, period programmed to fire every 10 ms. See [[timing/via-timers]] and [[os/interrupts]].
 
 This is the **same timer** the OS uses for sound envelope updates, key-buffer servicing, RS423 6850 takeover timeout, etc. **Don't steal T1** unless you've turned off MOS sound (`OSBYTE &D2 X=1`).
 
@@ -100,8 +100,8 @@ For per-frame tick counting, prefer hooking the 100 Hz handler directly (or usin
 
 ## See also
 
-- `[[os/events]]` — Event 5 = interval timer crossed zero.
-- `[[os/interrupts]]` — 100 Hz T1 source; full background-task list per tick.
-- `[[timing/via-timers]]` — System VIA T1 details + "don't steal T1" warning.
-- `[[memory/os-workspace]]` — Clock storage around `&292-&29F`.
-- `[[hardware/cmos-rtc]]` — Master's real-time clock (separate; battery-backed).
+- [[os/events]] — Event 5 = interval timer crossed zero.
+- [[os/interrupts]] — 100 Hz T1 source; full background-task list per tick.
+- [[timing/via-timers]] — System VIA T1 details + "don't steal T1" warning.
+- [[memory/os-workspace]] — Clock storage around `&292-&29F`.
+- [[hardware/cmos-rtc]] — Master's real-time clock (separate; battery-backed).

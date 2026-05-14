@@ -307,14 +307,14 @@ top byte bits 1-0: total sectors high 2 bits
 
 ## Filed into
 
-- `[[os/filing-systems]]` — Standard FS API (OSFILE/OSARGS/etc), FS numbering, per-FS variation summary.
-- `[[hardware/wd1770]]` — FDC chip register reference + commands + NMI protocol + direct-sector example.
-- Updates: `[[os/osbyte]]` — filing-system entries linked.
-- Updates: `[[os/calls]]` — FILEV/ARGSV/BGETV/BPUTV/GBPBV/FINDV/FSCV cross-links.
+- [[os/filing-systems]] — Standard FS API (OSFILE/OSARGS/etc), FS numbering, per-FS variation summary.
+- [[hardware/wd1770]] — FDC chip register reference + commands + NMI protocol + direct-sector example.
+- Updates: [[os/osbyte]] — filing-system entries linked.
+- Updates: [[os/calls]] — FILEV/ARGSV/BGETV/BPUTV/GBPBV/FINDV/FSCV cross-links.
 
 ## Open follow-ups
 
 - **OSWORD `&7F` parameter block format** (direct 1770 command) — captured at hint level only; if writing a disc-image utility, refer back to DFS source disassembly for the exact block layout.
-- **Acorn CP/M disc format** (Z80 2P, NAUG §18.10.4) — covered in `[[sources/naug-ch18-tube]]` already.
+- **Acorn CP/M disc format** (Z80 2P, NAUG §18.10.4) — covered in [[sources/naug-ch18-tube]] already.
 - **NFS protocol detail** — Acorn defers to Econet Advanced User Guide; out of scope here.
 - **Per-FS detailed OSBYTE/OSWORD additions** — captured at headline level; specifics belong in per-FS pages if needed.

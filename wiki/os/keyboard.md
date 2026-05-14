@@ -8,7 +8,7 @@ updated: 2026-05-13
 
 # Keyboard
 
-Reference for keyboard scan, key numbering, and MOS keyboard calls. For the hardware path (System VIA CA2 IRQ + slow bus matrix scan), see `[[hardware/system-via]]`.
+Reference for keyboard scan, key numbering, and MOS keyboard calls. For the hardware path (System VIA CA2 IRQ + slow bus matrix scan), see [[hardware/system-via]].
 
 ## Three key numbering schemes
 
@@ -124,7 +124,7 @@ For games / responsive UI: `*FX 11,0` disables repeat. Keys still scan on press/
 
 ## Soft keys (function keys + others)
 
-Function keys f0-f9 expand into user-defined strings stored at `&B00-&BFF` (`[[memory/os-workspace]]`).
+Function keys f0-f9 expand into user-defined strings stored at `&B00-&BFF` ([[memory/os-workspace]]).
 
 | OSBYTE | Function |
 |---|---|
@@ -187,11 +187,11 @@ After writing the status byte directly, call `OSBYTE &76` to update the keyboard
 - **MOS scan via `OSBYTE &81` or `&7A`** costs several hundred cycles per call.
 - **Direct matrix scan** (custom System VIA driver) can poll all 80-something keys in ~200 cycles total — useful for games needing per-frame full-keyboard read.
 - **Disabling auto-repeat** (`*FX 11,0`) is mandatory for any game that distinguishes "key down" from "auto-repeated".
-- The keyboard buffer (ID 0) carries the type-ahead — purge with `OSBYTE &15, X=0` if you want a clean slate (`[[os/buffers]]`).
+- The keyboard buffer (ID 0) carries the type-ahead — purge with `OSBYTE &15, X=0` if you want a clean slate ([[os/buffers]]).
 
 ## See also
 
-- `[[hardware/system-via]]` — CA2 IRQ source, slow-bus matrix scan via addressable latch line 3.
-- `[[os/buffers]]` — keyboard buffer (ID 0).
-- `[[os/events]]` — events 2 (char entering input) and 6 (ESCAPE).
-- `[[memory/os-workspace]]` — soft-key string storage at `&B00-&BFF`.
+- [[hardware/system-via]] — CA2 IRQ source, slow-bus matrix scan via addressable latch line 3.
+- [[os/buffers]] — keyboard buffer (ID 0).
+- [[os/events]] — events 2 (char entering input) and 6 (ESCAPE).
+- [[memory/os-workspace]] — soft-key string storage at `&B00-&BFF`.

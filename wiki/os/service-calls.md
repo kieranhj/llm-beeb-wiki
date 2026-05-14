@@ -8,7 +8,7 @@ updated: 2026-05-13
 
 # Paged ROM Service Calls — Reference
 
-Every paged ROM with a service entry receives these calls from MOS. See `[[os/paged-roms]]` for the dispatch mechanism (MOS scans ROMs in descending priority; first to set `A=0` claims).
+Every paged ROM with a service entry receives these calls from MOS. See [[os/paged-roms]] for the dispatch mechanism (MOS scans ROMs in descending priority; first to set `A=0` claims).
 
 Entry to service routine:
 - `A` = reason code (table below)
@@ -35,7 +35,7 @@ Exit:
 | `&0B` | NMI released | filing-system ID of previous owner | Issued via `OSBYTE &8F`. |
 | `&0C` | NMI claim | `&FF` | Current NMI owner returns its FS id in Y. |
 | `&0D` | RFS initialise | 15 - next_rom_num | Only claim if `&F4 >= invert(Y)`. Store `&F5`, set `&F6/&F7` = data start. |
-| `&0E` | RFS get byte | negative = OSRDRM available; positive = old OS | Return byte in Y. See `[[sources/naug-ch17-paged-roms]]` for OS-version split. |
+| `&0E` | RFS get byte | negative = OSRDRM available; positive = old OS | Return byte in Y. See [[sources/naug-ch17-paged-roms]] for OS-version split. |
 | `&0F` | Vectors claimed | — | Notification — issued by a ROM after hooking a vector. |
 | `&10` | Close `*SPOOL`/`*EXEC` | — | Issued by FS during init. |
 | `&11` | Font implosion/explosion | new OSHWM | Electron/Model B only. Language ROMs should adjust HIMEM. |
@@ -115,6 +115,6 @@ The 100 Hz polling call (`&15`) is OK for periodic background work (CMOS RTC upd
 
 ## See also
 
-- `[[os/paged-roms]]` — ROM header format and dispatch mechanism.
-- `[[memory/paged-rom]]` — Hardware paging register `&FE30`.
-- `[[os/calls]]` — OS vector table.
+- [[os/paged-roms]] — ROM header format and dispatch mechanism.
+- [[memory/paged-rom]] — Hardware paging register `&FE30`.
+- [[os/calls]] — OS vector table.

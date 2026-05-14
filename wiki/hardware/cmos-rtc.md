@@ -14,7 +14,7 @@ Battery-backed real-time clock + 50 bytes of CMOS RAM. **Master 128 only** — r
 - Master Compact: no RTC chip; has an EEPROM (128 or 256 bytes) for config but no time-keeping.
 - Model B, B+, Electron: no RTC at all.
 
-The chip is **not directly memory-mapped** — it sits on the System VIA's slow peripheral bus (`[[hardware/system-via]]`), accessed via Port A + addressable-latch lines (PB6 = chip enable, PB7 = address strobe).
+The chip is **not directly memory-mapped** — it sits on the System VIA's slow peripheral bus ([[hardware/system-via]]), accessed via Port A + addressable-latch lines (PB6 = chip enable, PB7 = address strobe).
 
 ## Address space (64 bytes)
 
@@ -54,7 +54,7 @@ OSWORDs `&0E` / `&0F` handle the time/date read/write end:
 | `&0E` | Read RTC (string, BCD, or BCD→string conversion modes) |
 | `&0F` | Write RTC (time only, date only, or both) |
 
-See `[[os/clocks]]` for full parameter blocks.
+See [[os/clocks]] for full parameter blocks.
 
 ## Master CMOS layout (50 user bytes)
 
@@ -101,7 +101,7 @@ Periodic IRQ rates (when PIE = 1 in Register B):
 | ... | ... |
 | `1111` | 500 ms |
 
-Full table in `[[sources/naug-ch19-clocks-cmos]]` §19.6 p361.
+Full table in [[sources/naug-ch19-clocks-cmos]] §19.6 p361.
 
 ## Register B — IRQ enables (`&0B`)
 
@@ -191,13 +191,13 @@ Combined with hooking IRQ2V (because CMOS RTC IRQs come through the normal IRQ p
 
 - MOS OSBYTE access (`&A1`/`&A2`) is ~hundreds of cycles per byte (slow-bus dance through OSBYTE dispatch).
 - Direct chip access (above) is faster but you take over the slow bus — incompatible with MOS sound, keyboard scan, etc. for the duration.
-- For high-frequency periodic IRQ work (e.g. >100 Hz timer), the System VIA T1 (`[[timing/via-timers]]`) is cheaper and doesn't require the slow bus.
+- For high-frequency periodic IRQ work (e.g. >100 Hz timer), the System VIA T1 ([[timing/via-timers]]) is cheaper and doesn't require the slow bus.
 - For day-of-week / date-aware applications, the RTC is unique — System VIA timers don't track wall-clock time across power-off.
 
 ## See also
 
-- `[[os/clocks]]` — OS-level time interface (OSWORDs `&0E`, `&0F`).
-- `[[hardware/system-via]]` — Slow peripheral bus protocol.
-- `[[memory/shadow-ram]]` — Master ACCCON for related architecture.
-- `[[os/interrupts]]` — IRQ dispatch (RTC IRQs come in via System VIA when LK4 is closed).
-- `[[sources/naug-ch19-clocks-cmos]]` — Full worked alarm-IRQ example.
+- [[os/clocks]] — OS-level time interface (OSWORDs `&0E`, `&0F`).
+- [[hardware/system-via]] — Slow peripheral bus protocol.
+- [[memory/shadow-ram]] — Master ACCCON for related architecture.
+- [[os/interrupts]] — IRQ dispatch (RTC IRQs come in via System VIA when LK4 is closed).
+- [[sources/naug-ch19-clocks-cmos]] — Full worked alarm-IRQ example.

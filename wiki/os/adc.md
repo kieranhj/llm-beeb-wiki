@@ -8,7 +8,7 @@ updated: 2026-05-13
 
 # ADC & Joystick — MOS Interface
 
-For chip-level details see `[[hardware/upd7002-adc]]`. This page covers MOS-level access (OSBYTEs + ADVAL semantics).
+For chip-level details see [[hardware/upd7002-adc]]. This page covers MOS-level access (OSBYTEs + ADVAL semantics).
 
 ## OSBYTE summary
 
@@ -29,7 +29,7 @@ X selects mode:
 |---|---|
 | 0 | Returns last-converted channel + fire button states |
 | 1-4 | Read ADC channel X (= BASIC ADVAL(X)) |
-| `&FF`-`&F7` | Read buffer status (see `[[os/buffers]]`) |
+| `&FF`-`&F7` | Read buffer status (see [[os/buffers]]) |
 
 The X=0 path returns (in **X** on exit; A is preserved by OSBYTE):
 - X = channel number of last completed conversion (0 if none yet — i.e. immediately after `&10` or `&11`).
@@ -55,7 +55,7 @@ LDA #&80 : LDX #0 : JSR &FFF4    ; fire buttons
 STX fire_buttons                 ; bit 0 = J1, bit 1 = J2 (active low)
 ```
 
-For per-frame game polling, run this once per vsync (`[[os/events]]` event 4 or `[[os/interrupts]]` CA1 hook).
+For per-frame game polling, run this once per vsync ([[os/events]] event 4 or [[os/interrupts]] CA1 hook).
 
 ## Faster sampling: 8-bit mode
 
@@ -88,7 +88,7 @@ Theoretical max: ~250 samples/sec on a single channel in 8-bit mode. Good enough
 
 `OSBYTE &80, X=0` is the canonical path. The fire buttons are physically connected to **System VIA PB4 (J1) and PB5 (J2)**, active-low.
 
-The naive "read `&FE40` directly" doesn't necessarily work as expected — see `[[hardware/via-6522]]` "IRA vs IRB asymmetry". When PB4/PB5 are configured as inputs, the 6522's behaviour for reading IRB is hardware-revision-dependent: some sources say IRB always returns the last value written to ORB (no live pin read), others say input-mode pins do reflect live state. MOS's joystick read uses the slow-bus protocol (set DDRB appropriately, then read), which works regardless.
+The naive "read `&FE40` directly" doesn't necessarily work as expected — see [[hardware/via-6522]] "IRA vs IRB asymmetry". When PB4/PB5 are configured as inputs, the 6522's behaviour for reading IRB is hardware-revision-dependent: some sources say IRB always returns the last value written to ORB (no live pin read), others say input-mode pins do reflect live state. MOS's joystick read uses the slow-bus protocol (set DDRB appropriately, then read), which works regardless.
 
 **Verify against real hardware before relying on direct LDA**. The safest fast path is to hook the OSBYTE-internal poll instead of replacing it — or use the keyboard-event mechanism if all you want is "did the user press fire".
 
@@ -96,7 +96,7 @@ Faster than OSBYTE if you can do it: typically a hand-rolled read of the System 
 
 ## Master Compact joystick simulator
 
-The Compact has no real ADC. MOS synthesises ADVAL values from **User VIA** (`[[hardware/user-via]]`, base `&FE60`) port-B pins on the combined joystick/user-port connector:
+The Compact has no real ADC. MOS synthesises ADVAL values from **User VIA** ([[hardware/user-via]], base `&FE60`) port-B pins on the combined joystick/user-port connector:
 
 ```
 User VIA PB0 = joystick FIRE
@@ -129,7 +129,7 @@ With bit 6 set, Compact joystick acts as cursor keys (no extra game code needed 
 
 ## Conversion-complete event (event 3)
 
-`[[os/events]]` event 3 fires when an ADC conversion completes. X on entry = channel that just finished.
+[[os/events]] event 3 fires when an ADC conversion completes. X on entry = channel that just finished.
 
 Useful pattern: enable event 3 + ADC auto-cycle, then handle each result as it arrives. Lower latency than polling `OSBYTE &80`:
 
@@ -141,7 +141,7 @@ LDA #&10 : LDX #4 : JSR &FFF4    ; auto-cycle 4 channels
 
 ## See also
 
-- `[[hardware/upd7002-adc]]` — Chip-level reference.
-- `[[hardware/system-via]]` — CB1 = EOC IRQ; PB4/PB5 = fire buttons.
-- `[[os/events]]` — Event 3 = ADC conversion complete.
-- `[[os/buffers]]` — OSBYTE `&80` X-range collision with buffer status.
+- [[hardware/upd7002-adc]] — Chip-level reference.
+- [[hardware/system-via]] — CB1 = EOC IRQ; PB4/PB5 = fire buttons.
+- [[os/events]] — Event 3 = ADC conversion complete.
+- [[os/buffers]] — OSBYTE `&80` X-range collision with buffer status.

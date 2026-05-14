@@ -8,7 +8,7 @@ updated: 2026-05-13
 
 # Paged ROMs — Software System
 
-How code in the `&8000-&BFFF` window participates in the MOS. For the **hardware** side (paging register `&FE30`, sideways RAM testing, ANDY, why never write `&FE30` directly) see `[[memory/paged-rom]]`. This page is about the **software contract**.
+How code in the `&8000-&BFFF` window participates in the MOS. For the **hardware** side (paging register `&FE30`, sideways RAM testing, ANDY, why never write `&FE30` directly) see [[memory/paged-rom]]. This page is about the **software contract**.
 
 ## Header format
 
@@ -87,7 +87,7 @@ There is **no return** from the language entry — it's a `JMP` to the language'
 
 When MOS calls the service entry at offset 3:
 
-- `A` = reason code (see `[[os/service-calls]]`).
+- `A` = reason code (see [[os/service-calls]]).
 - `X` = this ROM's slot number (0-15).
 - `Y` = call-specific parameter.
 
@@ -189,6 +189,6 @@ Sideways RAM persists across soft reset (BREAK) but is lost on power-off. *FX 14
 
 ## See also
 
-- `[[os/service-calls]]` — Full service-call reason-code table.
-- `[[memory/paged-rom]]` — Hardware paging mechanics, `&FE30`, sideways RAM testing.
-- `[[os/calls]]` — OS entry points and vectors.
+- [[os/service-calls]] — Full service-call reason-code table.
+- [[memory/paged-rom]] — Hardware paging mechanics, `&FE30`, sideways RAM testing.
+- [[os/calls]] — OS entry points and vectors.

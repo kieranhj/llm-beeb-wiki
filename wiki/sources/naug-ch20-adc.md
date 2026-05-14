@@ -39,13 +39,13 @@ Each chip has 3 visible registers:
 
 ### `OSBYTE &80` (128) — Read channel / read buffer status
 
-Dual-purpose call (collision with buffer-status, see `[[os/buffers]]`):
+Dual-purpose call (collision with buffer-status, see [[os/buffers]]):
 
 | X | Action |
 |---|---|
 | 0 | Return last-completed channel in X; bits 0-1 = fire button states (ADVAL(0)) |
 | 1-4 | Return ADC value for channel X in (X, Y) — ADVAL(1)..(4) |
-| 255-247 (`&FF`-`&F7`) | Buffer status (see `[[os/buffers]]`) |
+| 255-247 (`&FF`-`&F7`) | Buffer status (see [[os/buffers]]) |
 
 ### `OSBYTE &10` (16) — Select ADC channels
 
@@ -101,7 +101,7 @@ Writing this register starts the conversion immediately.
 | 6 | 0 = busy, 1 = not busy |
 | 7 | 0 = conversion complete, 1 = not complete |
 
-The "End-of-conversion" IRQ on System VIA CB1 (`[[hardware/system-via]]`) fires when bit 7 transitions 1→0. MOS hooks this IRQ to advance the channel cycle.
+The "End-of-conversion" IRQ on System VIA CB1 ([[hardware/system-via]]) fires when bit 7 transitions 1→0. MOS hooks this IRQ to advance the channel cycle.
 
 ### Reading the result
 
@@ -165,10 +165,10 @@ Useful for keyboard-driven games to support a joystick without bespoke handling.
 
 ## Filed into
 
-- `[[hardware/upd7002-adc]]` — Chip reference (register map, conversion timing).
-- `[[os/adc]]` — OSBYTE-level ADC interface + joystick reading patterns.
-- Updates: `[[os/osbyte]]` — `&10`, `&11`, `&80`, `&BC`, `&BD`, `&BE` linked.
-- Updates: `[[hardware/system-via]]` — ADC EOC on CB1 cross-link.
+- [[hardware/upd7002-adc]] — Chip reference (register map, conversion timing).
+- [[os/adc]] — OSBYTE-level ADC interface + joystick reading patterns.
+- Updates: [[os/osbyte]] — `&10`, `&11`, `&80`, `&BC`, `&BD`, `&BE` linked.
+- Updates: [[hardware/system-via]] — ADC EOC on CB1 cross-link.
 
 ## Open follow-ups
 

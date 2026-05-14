@@ -10,7 +10,7 @@ updated: 2026-05-14
 
 # Acorn Video ULA
 
-Custom Acorn chip — partner to the `[[hardware/crtc-6845]]`. Responsibilities:
+Custom Acorn chip — partner to the [[hardware/crtc-6845]]. Responsibilities:
 
 - Generate the pixel clock (low-frequency / high-frequency) and supply it to the 6845.
 - Serialise video data fetched from RAM into RGB output streams.
@@ -78,7 +78,7 @@ Observations:
 - **Bit 7 = 1 in all modes 0-6**, **0 only in MODE 7** — bit 7 is essentially "first 8 dots of cursor enabled". MODE 7's cursor is *delayed* by one character (driven by bit 6 alone) because the SAA5050 character generator pipelines its output one character behind the 6845's emitted address.
 - **Cursor width scales with bpp**: 1 char in 1-bpp modes, 2 chars in 2-bpp, 4 chars in 4-bpp. Same on-screen physical width regardless of pixel depth, because each pixel occupies more dots in the lower-resolution modes.
 - **HF/LF clock (bit 4) tracks** the 80-displayed-char vs 40-displayed-char split exactly: modes 0-3 use HF (`R0=127`), modes 4-7 use LF (`R0=63`).
-- **Chars/line (bits 2-3) and 6845 R1 don't have to match**: this field tells the ULA how to serialise each fetched byte into pixels. R1 controls how many bytes per scanline get fetched. For a custom mode you set R1 to your byte width but pick the ULA bits 2-3 from `{10, 20, 40, 80}` based on your pixel-stretch goal. See `[[techniques/custom-modes]]`.
+- **Chars/line (bits 2-3) and 6845 R1 don't have to match**: this field tells the ULA how to serialise each fetched byte into pixels. R1 controls how many bytes per scanline get fetched. For a custom mode you set R1 to your byte width but pick the ULA bits 2-3 from `{10, 20, 40, 80}` based on your pixel-stretch goal. See [[techniques/custom-modes]].
 - **MODE 7** is the only entry with teletext bit set (bit 1 = 1), routing RGB from the SAA5050 chip instead of the ULA serialiser. The "chars per line = 40" setting on bits 2-3 still applies but is largely cosmetic since the teletext chip drives video data anyway.
 - **MODE 3 and MODE 0** have identical control-register values (`&9C`). They differ only in CRTC settings (R6, R5, R9) — both are 1 bpp, 80 displayed chars, HF clock. Same goes for MODE 4 and MODE 6 (both `&88`). The CRTC and the ULA are independent — the ULA doesn't know whether the framebuffer is 32 rows tall or 25 rows with padding.
 
@@ -115,7 +115,7 @@ Only the **significant** logical-colour bits are compared against the screen pix
 | 4-colour (1, 5) | Bits 7 & 5 — must write 4 palette entries (bits 4 & 6 = all combos) |
 | 16-colour (2) | Bits 7, 5, 3, 1 — every byte indexes uniquely (16 entries, one each) |
 
-(For a 16-colour mode at the 1 MHz LF clock — the community-named "MODE 8" — see `[[synthesis/mode-8-16colour-lf]]`.)
+(For a 16-colour mode at the 1 MHz LF clock — the community-named "MODE 8" — see [[synthesis/mode-8-16colour-lf]].)
 
 Using `VDU 19` or `OSWORD &0C` from the OS handles this expansion automatically — only relevant if you write `&FE21` directly via OSBYTE `&9B`.
 
@@ -144,7 +144,7 @@ Flash duration: `OSBYTE 9` sets mark (1st colour), `OSBYTE 10` sets space (2nd c
 
 ### Default palette write sequences (MOS, after `VDU 20`)
 
-For when you bypass `VDU 19` / OSBYTE `&9B` and write `&FE21` directly. From `[[sources/beebwiki-video-ula]]`:
+For when you bypass `VDU 19` / OSBYTE `&9B` and write `&FE21` directly. From [[sources/beebwiki-video-ula]]:
 
 | Modes | Sequence (16 bytes, written in order) |
 |---|---|
@@ -158,7 +158,7 @@ For when you bypass `VDU 19` / OSBYTE `&9B` and write `&FE21` directly. From `[[
 - Switching the chars-per-line bits (bits 2-3) mid-frame at the right horizontal time changes MODE width without a full mode reset — used for split-mode tricks.
 - Direct `&FE20`/`&FE21` writes are 4 cycles (STA abs); OSBYTE round-trip costs hundreds of cycles. For raster-tight work, save the OS copy yourself and use direct STA inside an SEI/CLI window — but only when you control the whole machine state (no Tube).
 
-The user-level palette workflow (VDU 19, OSWORD `&0C`, expansion rules) is fully captured on this page above. For mid-frame palette change techniques, see `[[techniques/raster-splits]]` (planned).
+The user-level palette workflow (VDU 19, OSWORD `&0C`, expansion rules) is fully captured on this page above. For mid-frame palette change techniques, see [[techniques/raster-splits]] (planned).
 
 ## Hardware history
 

@@ -8,7 +8,7 @@ updated: 2026-05-13
 
 # Serial I/O — MOS Interface
 
-Reference for MOS-level serial port use. For the chip-level details, see `[[hardware/6850-acia]]` and `[[hardware/serial-ula]]`.
+Reference for MOS-level serial port use. For the chip-level details, see [[hardware/6850-acia]] and [[hardware/serial-ula]].
 
 ## The 5-pin DIN socket
 
@@ -52,7 +52,7 @@ A "null modem with hardware handshake" cable is what works.
 | `&CB` (203) | R/W RS423 handshake threshold | Default 9 bytes |
 | `&CC` (204) | R/W RS423 input suppression | Non-zero = ignore input |
 | `&CD` (205) | R/W RS423/cassette select | `&00` serial, `&40` cassette |
-| `&E8` (232) | R/W 6850 IRQ bit mask | See `[[os/interrupts]]` |
+| `&E8` (232) | R/W 6850 IRQ bit mask | See [[os/interrupts]] |
 | `&EC` (236) | R/W output stream destination flag | Used by `&03` |
 | `&F2` (242) | Read shadow of serial ULA register | Read-only access |
 
@@ -189,7 +189,7 @@ CFS timeout via `OSBYTE &B0` is a vsync-counted (50 Hz) timer for tape block gap
 
 ## See also
 
-- `[[hardware/6850-acia]]` — Chip details.
-- `[[hardware/serial-ula]]` — Baud rate + cassette switch.
-- `[[os/interrupts]]` — 6850 IRQ in MOS dispatch chain.
-- `[[os/buffers]]` — RS423 in/out buffers (IDs 1, 2).
+- [[hardware/6850-acia]] — Chip details.
+- [[hardware/serial-ula]] — Baud rate + cassette switch.
+- [[os/interrupts]] — 6850 IRQ in MOS dispatch chain.
+- [[os/buffers]] — RS423 in/out buffers (IDs 1, 2).

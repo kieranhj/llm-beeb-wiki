@@ -17,7 +17,7 @@ When you'd want a custom mode:
 - **Match an arbitrary resolution** — porting from another machine, hitting a specific pixel grid.
 - **Raster-rate mode switching** — flip ULA bits 2-3 (chars-per-line) or bit 4 (HF/LF clock) mid-frame for split-mode effects (Master Spy, Exile-style status bars).
 
-This page is the **recipe**; for the *why* of each register, see `[[hardware/crtc-6845]]` and `[[hardware/video-ula]]`.
+This page is the **recipe**; for the *why* of each register, see [[hardware/crtc-6845]] and [[hardware/video-ula]].
 
 ## The five things you must set
 
@@ -35,7 +35,7 @@ Issue `VDU 22,n` (the MOS-level mode change — there's no `*MODE` star-command)
 
 The starting mode you pick really only matters for two things:
 
-- **Bits per pixel** — determines colour depth and pixel-packing layout (1, 2, or 4 bpp; see `[[video/modes]]`).
+- **Bits per pixel** — determines colour depth and pixel-packing layout (1, 2, or 4 bpp; see [[video/modes]]).
 - **6845 pixel clock** — high-frequency (modes 0-3, 2 MHz char clock) or low-frequency (modes 4-7, 1 MHz char clock). This determines `R0` (horizontal total) and `R3` (sync widths) for you, plus the Video ULA's clock-select bit.
 
 Everything else — display width, height, screen-RAM base, where the image sits in the frame — you'll override. Custom modes can be **overscanned** (more or fewer scanlines than the standard 256-line image, off-centre horizontally, etc.) as long as the totals still satisfy the PAL-rate timing (R0+1 char times per scanline at the chosen pixel clock; R4·(R9+1)+R5 scanlines per frame ≈ 312 for 50 Hz).
@@ -84,7 +84,7 @@ Each register's unit is given in the column headers. R0/R1/R2 are in **chars** (
 | R12 | high 6 bits of addr/8 | `(screen_base / 8) >> 8` | Screen-start high byte. |
 | R13 | low 8 bits of addr/8 | `(screen_base / 8) & 0xFF` | Screen-start low byte. |
 
-R12/R13 are latched and apply at the next CRTC frame cycle — see `[[hardware/crtc-6845#register-latching]]`.
+R12/R13 are latched and apply at the next CRTC frame cycle — see [[hardware/crtc-6845#register-latching]].
 
 Modes 3 and 6 are **graphics** modes (they have the same pixel layout as MODE 0 and MODE 4 respectively); they just trade vertical pixel count (192/200 vs 256) for inter-row padding that makes text readable. Treat them as "graphics with text spacing", not "text-only".
 
@@ -100,19 +100,19 @@ In practice almost all BBC games and demos run non-interlaced. Leave interlace o
 
 MODE 7 (teletext) uses the SAA5050 character generator instead of the Video ULA serialiser, has its own scrolling correction, its own R8 setting (3 = interlace sync + video — the only mode that uses interlace video), R9=18 (20 scanlines per character row), 1 KB screen RAM at `&7C00-&7FE7`, and a separate set of byte-level conventions (each byte is a teletext control code or character, not pixel data).
 
-**MODE 7 customisation is out of scope for this page.** Building a custom teletext-style mode is genuinely different from custom graphics modes — covered separately in `[[video/teletext-mode]]` (planned). If you're after a 4-colour or 16-colour image, you're starting from a graphics mode (0-6), not 7.
+**MODE 7 customisation is out of scope for this page.** Building a custom teletext-style mode is genuinely different from custom graphics modes — covered separately in [[video/teletext-mode]] (planned). If you're after a 4-colour or 16-colour image, you're starting from a graphics mode (0-6), not 7.
 
 ### Worked example: community "MODE 8" 16-colour LF mode
 
-For a concrete reference custom mode that combines MODE 2's 16-colour palette with MODE 5's LF clock (giving a 160×256 16-colour playfield instead of MODE 2's 160×256 8 KB cost in 20 KB), see `[[synthesis/mode-8-16colour-lf]]`. Worked CRTC and Video ULA register values; what the BBC community has historically called "MODE 8".
+For a concrete reference custom mode that combines MODE 2's 16-colour palette with MODE 5's LF clock (giving a 160×256 16-colour playfield instead of MODE 2's 160×256 8 KB cost in 20 KB), see [[synthesis/mode-8-16colour-lf]]. Worked CRTC and Video ULA register values; what the BBC community has historically called "MODE 8".
 
 ## Step 4: patch the Video ULA (only if base mode is wrong)
 
-If the base mode already has the right colour depth and clock, you don't need to touch `&FE20` — leave it at the base mode's value (see `[[hardware/video-ula]]` per-mode table). For mid-frame mode-switching tricks, write `&FE20` (or via OSBYTE `&9A` for Tube safety) at the raster split point.
+If the base mode already has the right colour depth and clock, you don't need to touch `&FE20` — leave it at the base mode's value (see [[hardware/video-ula]] per-mode table). For mid-frame mode-switching tricks, write `&FE20` (or via OSBYTE `&9A` for Tube safety) at the raster split point.
 
 ## Step 5: pick screen base & set the wrap addend
 
-The 6845 hardware-wrap (`[[hardware/system-via]]`) adds a fixed value to fetch addresses ≥ `&8000`. The addend is set by addressable-latch lines **B4/B5** on the System VIA, and the four options match the standard mode sizes:
+The 6845 hardware-wrap ([[hardware/system-via]]) adds a fixed value to fetch addresses ≥ `&8000`. The addend is set by addressable-latch lines **B4/B5** on the System VIA, and the four options match the standard mode sizes:
 
 | Screen size | Standard start | Addend | B5 | B4 |
 |---|---|---|---|---|
@@ -136,7 +136,7 @@ LDX #0
     ...                     ; (one STA abs,X per page, or two-pointer loop)
 ```
 
-Then write pixels directly per the bpp layout in `[[video/modes]]`. Don't expect `OSWRCH` to plot text correctly — it uses the OS's idea of geometry.
+Then write pixels directly per the bpp layout in [[video/modes]]. Don't expect `OSWRCH` to plot text correctly — it uses the OS's idea of geometry.
 
 ## MOS compatibility — what breaks
 
@@ -144,7 +144,7 @@ In MOS-bypass mode, accept that the following stop working:
 
 - **`OSWRCH` / `OSNEWL` / `OSASCI`** plot text using page-3 workspace geometry (`&34F`, `&350/&351`, `&352/&353`, `&356`, `&360-&363`, `&36C`). Without patching these, characters land at the wrong pixel offsets and scrolling is wrong. **Workaround**: render text yourself (font lookup + direct STA to screen RAM).
 - **Cursor** position tracking (`&31F`/`&320` = POS/VPOS) — same issue.
-- **Hardware scroll via `VDU 23,12/13`** — the VDU driver computes from its stale geometry. Hardware-scroll directly via R12/R13 instead (`[[video/hardware-scrolling]]`).
+- **Hardware scroll via `VDU 23,12/13`** — the VDU driver computes from its stale geometry. Hardware-scroll directly via R12/R13 instead ([[video/hardware-scrolling]]).
 - **Light pen** — NAUG's per-mode correction factor doesn't cover custom geometry.
 - **`OSWORD &09`** (read pixel) and **`OSWORD &0A`** (read character) — also use page-3 workspace.
 - **Palette via `VDU 19` / `OSBYTE &9B`** technically still works because the palette mechanics are mode-independent (only the colour-bit expansion rule depends on bpp). The OS shadow palette copy at `&380+` may go stale if you write `&FE21` directly.
@@ -160,19 +160,19 @@ In MOS-bypass mode, accept that the following stop working:
 - `&361` — pixels per byte - 1.
 - `&362`, `&363` — leftmost/rightmost pixel bit masks (mode-specific).
 
-Exact addresses are NAUG-documented but Acorn-internal; verify against MOS source disassembly for the target machine. `[[memory/os-workspace]]` has the source citations.
+Exact addresses are NAUG-documented but Acorn-internal; verify against MOS source disassembly for the target machine. [[memory/os-workspace]] has the source citations.
 
 ## Reset / BREAK survival
 
 A hard reset reverts to MODE 7. A soft BREAK re-enters the current language which typically issues `VDU 22,1` (MODE 1). Either way, your custom mode is gone.
 
-To survive BREAK: hook the BREAK intercept via `OSBYTE &F7/&F8/&F9` (a JMP + 16-bit address). The intercept code re-applies your CRTC/ULA writes. See `[[os/osbyte]]` `&F7-&F9`.
+To survive BREAK: hook the BREAK intercept via `OSBYTE &F7/&F8/&F9` (a JMP + 16-bit address). The intercept code re-applies your CRTC/ULA writes. See [[os/osbyte]] `&F7-&F9`.
 
 ## Shadow / B+ / Master complications
 
 The B+ and Master have shadow RAM at `&3000-&7FFF`. If shadow is selected (`*SHADOW`, MODE 128-135, or ACCCON forced), your direct writes to screen RAM may land in main while the 6845 reads shadow. Either:
 
-- Force non-shadow: `OSBYTE &72` with X≠0 (`[[memory/shadow-ram]]`).
+- Force non-shadow: `OSBYTE &72` with X≠0 ([[memory/shadow-ram]]).
 - Or use ACCCON `D`/`E`/`X` bits to drive write target and display source explicitly. Master's `OSBYTE &6C/&70/&71` are the safe path.
 
 ## Things to verify by experiment
@@ -187,18 +187,18 @@ Custom-mode geometry is hard to validate without a real screen:
 
 ## Mid-frame mode changes (deferred)
 
-Switching modes mid-frame (e.g. high-res top + low-colour bottom) requires raster-cycle-accurate writes to `&FE20` and possibly `&FE21`/`&FE00`/`&FE01`. The timing window is roughly 64 µs per scan line, with the visible-area boundary determined by R0/R1/R2. Detailed coverage deferred to `[[hardware/crtc-6845-advanced]]` and `[[techniques/raster-splits]]` (both planned).
+Switching modes mid-frame (e.g. high-res top + low-colour bottom) requires raster-cycle-accurate writes to `&FE20` and possibly `&FE21`/`&FE00`/`&FE01`. The timing window is roughly 64 µs per scan line, with the visible-area boundary determined by R0/R1/R2. Detailed coverage deferred to [[hardware/crtc-6845-advanced]] and [[techniques/raster-splits]] (both planned).
 
 ## Worked example
 
-A full worked example for 288×192 at 4 colours lives at `[[synthesis/custom-mode-288x192]]` (planned). The synthesis call covered: R1=72, R6=24, R2≈94, R7≈31, R8=0 (non-interlaced for game use), screen at `&4000-&73FF` (within a 16 KB addend window), Video ULA stays at MODE 1's `&D8`, palette via OSWORD `&0C`.
+A full worked example for 288×192 at 4 colours lives at [[synthesis/custom-mode-288x192]] (planned). The synthesis call covered: R1=72, R6=24, R2≈94, R7≈31, R8=0 (non-interlaced for game use), screen at `&4000-&73FF` (within a 16 KB addend window), Video ULA stays at MODE 1's `&D8`, palette via OSWORD `&0C`.
 
 ## See also
 
-- `[[hardware/crtc-6845]]` — Register reference per chip.
-- `[[hardware/video-ula]]` — Control register, palette mechanics, cursor width.
-- `[[hardware/system-via]]` — Addressable latch (incl. wrap-addend lines B4/B5).
-- `[[video/modes]]` — Pixel layouts for 1/2/4 bpp.
-- `[[video/hardware-scrolling]]` — R12/R13 lever.
-- `[[memory/os-workspace]]` — Page-3 VDU workspace.
-- `[[memory/shadow-ram]]` — Shadow RAM and ACCCON on B+/Master.
+- [[hardware/crtc-6845]] — Register reference per chip.
+- [[hardware/video-ula]] — Control register, palette mechanics, cursor width.
+- [[hardware/system-via]] — Addressable latch (incl. wrap-addend lines B4/B5).
+- [[video/modes]] — Pixel layouts for 1/2/4 bpp.
+- [[video/hardware-scrolling]] — R12/R13 lever.
+- [[memory/os-workspace]] — Page-3 VDU workspace.
+- [[memory/shadow-ram]] — Shadow RAM and ACCCON on B+/Master.

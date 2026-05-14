@@ -16,7 +16,7 @@ grep "^## \[" wiki/log.md | tail -10
 - Created: wiki/sources/naug.md (master source page with full chapter TOC, citation convention, ingest plan)
 - Updated: wiki/index.md (added Sources section)
 - Source: raw/manuals/New_Advanced_User_Guide.pdf (458pp, OCR'd, Holmes & Dickens, Adder)
-- Mode: chapter-by-chapter — no chapter content extracted yet. Per-chapter ingests will populate entity/concept pages and cite back via `[[sources/naug-ch<N>-<slug>]]`.
+- Mode: chapter-by-chapter — no chapter content extracted yet. Per-chapter ingests will populate entity/concept pages and cite back via [[sources/naug-ch<N>-<slug>]].
 - Appendices A (OSBYTE) and B (OSWORD) queued for full-table extraction into `wiki/os/osbyte.md` and `wiki/os/osword.md`.
 - Next: pick first chapter to ingest in depth.
 
@@ -130,9 +130,9 @@ grep "^## \[" wiki/log.md | tail -10
 - Cross-link payoff: 1MHz bus connects to memory/memory-map.md FRED/JIM/SHEILA + memory/shadow-ram.md ACCCON IFJ + os/osbyte.md &6B/&92-&97. WD1770 connects to os/interrupts.md NMI handling + os/paged-roms.md NMI claim/release service calls.
 
 ## [2026-05-13] lint | post-Ch16/Ch23 wiki health check
-- Fixed: `[[memory/vdu-workspace]]` brackets → backticks in sources/naug-ch06-os-introduction.md line 15 (last stale ref).
+- Fixed: [[memory/vdu-workspace]] brackets → backticks in sources/naug-ch06-os-introduction.md line 15 (last stale ref).
 - Fixed: os/buffers.md storage range — was claiming `&800-&9BF`, now correctly spans `&800-&9FF` with sub-range breakdown.
-- Removed `[[video/palette]]` stub link from hardware/video-ula.md — content was always on that page; replaced with reference to planned [[techniques/raster-splits]].
+- Removed [[video/palette]] stub link from hardware/video-ula.md — content was always on that page; replaced with reference to planned [[techniques/raster-splits]].
 - No contradictions found across high-risk shared facts (ACCCON, Tube ULA addrs, WD1770 addrs, addressable-latch lines, 100Hz/50Hz attribution, NMI &D00, R3 sync widths, MODE 1/5 pixel layout).
 - No orphans.
 - Remaining intentional stubs: crtc-6845-advanced, techniques/{raster-splits,exploding-font,pixel-plot}, video/teletext-mode, os/z80-2p, synthesis/custom-mode-288x192. All "planned" or conditional.
@@ -215,7 +215,7 @@ grep "^## \[" wiki/log.md | tail -10
 ## [2026-05-14] lint | post-BeebWiki ingest health check & fixes
 - Fixed: wiki/hardware/1mhz-bus.md — corrected stale "8 cycles per LDA abs / factor 2" to actual 5-6c per cycle-stretching page.
 - Fixed: wiki/memory/memory-map.md — Master ANDY was wrongly attributed to ACCCON; it's ROMSEL bit 7 (consistent with paged-rom.md and beebwiki-andy).
-- Fixed: broken link `[[synthesis/mode-8]]` → `[[synthesis/mode-8-16colour-lf]]` in wiki/sources/beebwiki-video-ula.md.
+- Fixed: broken link [[synthesis/mode-8]] → [[synthesis/mode-8-16colour-lf]] in wiki/sources/beebwiki-video-ula.md.
 - Fixed: orphan wiki/synthesis/mode-8-16colour-lf.md — added inbound refs from wiki/techniques/custom-modes.md and wiki/hardware/video-ula.md.
 - No-action items: BeebWiki R0=127 row stays a flagged discrepancy in source page only (ours matches NAUG and is correct); known stubs (raster-splits, crtc-6845-advanced, etc.) untouched; code-block dialect annotations all correct on spot-check.
 - Suggested next sources to seek (likely on bitshifters/bbc-documents):

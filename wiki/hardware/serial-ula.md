@@ -10,7 +10,7 @@ updated: 2026-05-13
 
 # Acorn Serial ULA
 
-Custom Acorn chip — partner to the 6850 ACIA (`[[hardware/6850-acia]]`). Provides:
+Custom Acorn chip — partner to the 6850 ACIA ([[hardware/6850-acia]]). Provides:
 
 - Baud-rate clock generation for both transmit and receive (split, can be different).
 - RS423-vs-cassette routing.
@@ -50,7 +50,7 @@ The 3-bit code is "inverted-plus-1" relative to the OSBYTE `&07`/`&08` value:
 
 The OS does the inversion. If you write `&FE10` directly, compute `ULA_bits = (OSBYTE_X + 1) AND 7` (with X=0 and X=8 both mapping to ULA `000`, but for different baud rates — context-dependent on whether RS423 or cassette is selected).
 
-These rates rely on the **6850's clock divider being set to ÷64** (`[[hardware/6850-acia]]`). The default RS423 control word includes this divider.
+These rates rely on the **6850's clock divider being set to ÷64** ([[hardware/6850-acia]]). The default RS423 control word includes this divider.
 
 ## Reading the current ULA state
 
@@ -103,6 +103,6 @@ Going direct (`STA &FE10`) is faster (~5 cycles vs OSBYTE's hundreds) but you mu
 
 ## See also
 
-- `[[hardware/6850-acia]]` — 6850 chip (data path).
-- `[[os/serial]]` — Higher-level serial OS reference.
-- `[[memory/memory-map]]` — `&FE10-&FE17` in SHEILA.
+- [[hardware/6850-acia]] — 6850 chip (data path).
+- [[os/serial]] — Higher-level serial OS reference.
+- [[memory/memory-map]] — `&FE10-&FE17` in SHEILA.

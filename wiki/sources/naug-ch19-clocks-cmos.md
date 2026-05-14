@@ -12,13 +12,13 @@ updated: 2026-05-13
 
 Holmes & Dickens, *The New Advanced User Guide*, pp.359-371. Three things bundled together:
 
-1. **System clock + interval timer** — two 5-byte software clocks updated 100×/sec by the System VIA T1 IRQ (`[[os/interrupts]]`).
+1. **System clock + interval timer** — two 5-byte software clocks updated 100×/sec by the System VIA T1 IRQ ([[os/interrupts]]).
 2. **Master 146818 real-time clock** — battery-backed, keeps time across power-off. Compact has no RTC.
 3. **CMOS RAM** (Master) / **EEPROM** (Compact) — non-volatile config storage accessed via slow-bus.
 
 ## System clock + interval timer
 
-Both are **5-byte values, LSB first**, in OS workspace around `&292-&29F` (`[[memory/os-workspace]]`). Incremented every centisecond by the 100 Hz T1 handler.
+Both are **5-byte values, LSB first**, in OS workspace around `&292-&29F` ([[memory/os-workspace]]). Incremented every centisecond by the 100 Hz T1 handler.
 
 | OSWORD | Function | Block size |
 |---|---|---|
@@ -29,7 +29,7 @@ Both are **5-byte values, LSB first**, in OS workspace around `&292-&29F` (`[[me
 
 X+Y point to the parameter block in memory.
 
-**System clock** is what BASIC's `TIME` function reads. **Interval timer** is decremented per tick; when it reaches zero, **event 5** fires (`[[os/events]]`) — useful as a one-shot timer callback.
+**System clock** is what BASIC's `TIME` function reads. **Interval timer** is decremented per tick; when it reaches zero, **event 5** fires ([[os/events]]) — useful as a one-shot timer callback.
 
 ### Dual-clock atomicity
 
@@ -141,10 +141,10 @@ Like the sound chip and keyboard, the CMOS/RTC sits on the System VIA's slow per
 
 ## Filed into
 
-- `[[os/clocks]]` — System clock + interval timer reference.
-- `[[hardware/cmos-rtc]]` — 146818 chip + register layout + IRQ sources (Master only).
-- Updates: `[[os/osword]]` — `&01-&04`, `&0E`, `&0F` linked.
-- Updates: `[[os/osbyte]]` — `&A1`, `&A2`, `&F3` linked.
+- [[os/clocks]] — System clock + interval timer reference.
+- [[hardware/cmos-rtc]] — 146818 chip + register layout + IRQ sources (Master only).
+- Updates: [[os/osword]] — `&01-&04`, `&0E`, `&0F` linked.
+- Updates: [[os/osbyte]] — `&A1`, `&A2`, `&F3` linked.
 
 ## Open follow-ups
 

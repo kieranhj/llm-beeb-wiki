@@ -14,7 +14,7 @@ updated: 2026-05-13
 
 **Hands off** unless you really know what you're doing — MOS IRQ handlers fight you for the chip. Direct manipulation requires SEI / careful state restore.
 
-See `[[hardware/via-6522]]` for the generic 6522 register layout (T1/T2/SR/ACR/PCR/IFR/IER are identical across both VIAs).
+See [[hardware/via-6522]] for the generic 6522 register layout (T1/T2/SR/ACR/PCR/IFR/IER are identical across both VIAs).
 
 ## Line assignments
 
@@ -73,7 +73,7 @@ To "set line 3 to 1": clock PB0-PB3 = `0,1,1,1` → addressable latch line 3 bec
 
 ## Hardware-scroll wrap addend
 
-`[[video/hardware-scrolling]]` mentions hardware wrap-around. Lines 4-5 of this latch select **which value gets added to the 6845's fetch address when it goes above `&7FFF`**, so the screen image wraps cleanly through screen RAM:
+[[video/hardware-scrolling]] mentions hardware wrap-around. Lines 4-5 of this latch select **which value gets added to the 6845's fetch address when it goes above `&7FFF`**, so the screen image wraps cleanly through screen RAM:
 
 | Mode | Screen size | Start | Addend | B5 (line 5) | B4 (line 4) |
 |---|---|---|---|---|---|
@@ -117,6 +117,6 @@ MOS hooks IRQ1V (`&204/&205`) and reads `IFR` at `&FE4D` to dispatch:
 
 ## Performance use cases
 
-- **Vsync IRQ hook**: hook IRQ1V, in your handler check `&FE4D` bit 1, if set then run frame-start work and clear the flag by *reading* ORA (`&FE41`). Use **`BIT &FE41`** rather than `LDA &FE41` — same 4 cycles, same bus read (so the chip still clears the IFR bit), but `BIT` doesn't clobber the accumulator. That matters in an IRQ handler, where A is already stashed at `&FC` by MOS and reloading it costs cycles. See `[[techniques/fast-animation]]`.
+- **Vsync IRQ hook**: hook IRQ1V, in your handler check `&FE4D` bit 1, if set then run frame-start work and clear the flag by *reading* ORA (`&FE41`). Use **`BIT &FE41`** rather than `LDA &FE41` — same 4 cycles, same bus read (so the chip still clears the IFR bit), but `BIT` doesn't clobber the accumulator. That matters in an IRQ handler, where A is already stashed at `&FC` by MOS and reloading it costs cycles. See [[techniques/fast-animation]].
 - **Free-running T1**: if MOS isn't using T1 for sound (test by reading IER bit 6), repurpose T1 to fire raster splits at a specific scan line within a frame. Set ACR for free-run + PB7 toggle, load latches with `lines_per_split × 64`.
 - **Manual sound-chip writes** are tricky — between writing the sound data byte to PA and pulsing line 0 of the latch you need to ensure MOS doesn't preempt and overwrite. Many demos disable IRQs across the whole sequence.

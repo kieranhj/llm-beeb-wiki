@@ -67,7 +67,7 @@ Handler skeleton:
 
 | OSBYTE | Function |
 |---|---|
-| `&C8` (200) | ESCAPE-disable + BREAK-clears-memory flags (see `[[os/escape]]`) |
+| `&C8` (200) | ESCAPE-disable + BREAK-clears-memory flags (see [[os/escape]]) |
 | `&D7` (215) | R/W startup message suppression flag (bit 7) + boot-error behaviour (bit 0) |
 | `&FD` (253) | R/W last-BREAK type (0/1/2) |
 | `&FF` (255) | R/W start-up options byte — Model B keyboard links, or any machine via `*FX` |
@@ -105,7 +105,7 @@ Custom printer drivers hook this. MOS calls UPTV every 10 ms (when active) plus 
 
 | A | Reason |
 |---|---|
-| 0 | 10 ms tick — pull byte from printer buffer via REMV (`[[os/buffers]]`); declare dormant via `OSBYTE &7B` when buffer empty |
+| 0 | 10 ms tick — pull byte from printer buffer via REMV ([[os/buffers]]); declare dormant via `OSBYTE &7B` when buffer empty |
 | 1 | Printer buffer non-empty — driver should activate; return C=0 if activated |
 | 2 | `VDU 2` received |
 | 3 | `VDU 3` received |
@@ -196,10 +196,10 @@ One byte of OS workspace reserved for user code's own use. Default 0.
 
 ## Filed into
 
-- `[[os/break-intercept]]` — BREAK / reset detection + the `&F7-&F9` intercept pattern (closes the stub referenced from many other pages).
-- `[[os/printer]]` — UPTV + printer destination + ignore character (new).
-- Updates: `[[os/osbyte]]` — many entries linked.
-- Updates: `[[os/calls]]` — NETV, KEYV cross-links.
+- [[os/break-intercept]] — BREAK / reset detection + the `&F7-&F9` intercept pattern (closes the stub referenced from many other pages).
+- [[os/printer]] — UPTV + printer destination + ignore character (new).
+- Updates: [[os/osbyte]] — many entries linked.
+- Updates: [[os/calls]] — NETV, KEYV cross-links.
 
 ## Open follow-ups
 

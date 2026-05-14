@@ -73,7 +73,7 @@ Master's split of **D** (display source) and **E** (VDU-writes destination) plus
 3. Render the next frame into bank B.
 4. Flip: switch D so 6845 shows bank B, redirect VDU writes to bank A.
 
-The visible frame is never half-drawn. Vsync alignment still required (see `[[video/hardware-scrolling]]` vsync section) for the flip itself.
+The visible frame is never half-drawn. Vsync alignment still required (see [[video/hardware-scrolling]] vsync section) for the flip itself.
 
 Note: **B+ cannot do this** — its single S bit ties together "write" and "display". Master is required for clean double-buffering.
 

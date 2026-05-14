@@ -95,7 +95,7 @@ These would be useful for some custom-mode effects but rarely seen in software.
 | 9 | `&80` | `1000 0000` |
 | 10 | `&84` | `1000 0100` |
 
-(Not the same as the BBC community's "MODE 8" 16-colour LF mode synthesised in `[[synthesis/mode-8-16colour-lf]]` — see notes there.)
+(Not the same as the BBC community's "MODE 8" 16-colour LF mode synthesised in [[synthesis/mode-8-16colour-lf]] — see notes there.)
 
 ### Palette register `&FE21` (write-only, MOS RAM copy `&249`)
 
@@ -125,7 +125,7 @@ These are the actual `&FE21` byte streams MOS issues — useful when bypassing O
 
 ## Cross-check against existing wiki
 
-All defaults and bit assignments match our existing `[[hardware/video-ula]]` page. Material to add:
+All defaults and bit assignments match our existing [[hardware/video-ula]] page. Material to add:
 - 80@1MHz / 10@2MHz observed undefined behaviour
 - Default palette write-sequence tables (3 mode groups)
 - Clock divider output pin numbers (8/4/2/1 MHz on pins 7/6/5/4)
@@ -134,4 +134,4 @@ All defaults and bit assignments match our existing `[[hardware/video-ula]]` pag
 
 ## Filed into
 
-- Updated: `[[hardware/video-ula]]` (added gotchas, default palette tables, clock-pin notes, second-source citation).
+- Updated: [[hardware/video-ula]] (added gotchas, default palette tables, clock-pin notes, second-source citation).

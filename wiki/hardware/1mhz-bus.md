@@ -9,7 +9,7 @@ updated: 2026-05-14
 
 # 1MHz Bus & Cartridge Interface
 
-The BBC's primary hardware expansion path. Where the user port (`[[hardware/user-via]]`) gives you 8 GPIO + 2 control lines, the 1MHz bus gives you the **full 6502 address+data bus + interrupt lines + system clock**, enough to attach memory-mapped peripherals, paged memory, FDCs, sound chips, sample players, anything that wants real bus access.
+The BBC's primary hardware expansion path. Where the user port ([[hardware/user-via]]) gives you 8 GPIO + 2 control lines, the 1MHz bus gives you the **full 6502 address+data bus + interrupt lines + system clock**, enough to attach memory-mapped peripherals, paged memory, FDCs, sound chips, sample players, anything that wants real bus access.
 
 ## Architecture
 
@@ -19,9 +19,9 @@ Three special pages of the 6502 address space are routed through the 1MHz bus (o
 |---|---|---|---|
 | `&FC` | **FRED** | Memory-mapped I/O — 255 registers + paging register | 256 bytes |
 | `&FD` | **JIM** | Paged memory — 256 bytes × selectable page | up to **64 KB** |
-| `&FE` | **SHEILA** | Internal I/O (CRTC, ULA, VIAs, etc.) — see `[[memory/memory-map]]` | 256 bytes |
+| `&FE` | **SHEILA** | Internal I/O (CRTC, ULA, VIAs, etc.) — see [[memory/memory-map]] | 256 bytes |
 
-The CPU runs at 2 MHz; the 1MHz bus runs at 1 MHz. When the CPU accesses `&FC` or `&FD`, **the clock is stretched** by 1-2 extra cycles to align with the 1 MHz peripheral clock. See `[[timing/cycle-stretching]]` for full per-instruction cost and the (sometimes-surprising) list of other SHEILA addresses that pay the same penalty.
+The CPU runs at 2 MHz; the 1MHz bus runs at 1 MHz. When the CPU accesses `&FC` or `&FD`, **the clock is stretched** by 1-2 extra cycles to align with the 1 MHz peripheral clock. See [[timing/cycle-stretching]] for full per-instruction cost and the (sometimes-surprising) list of other SHEILA addresses that pay the same penalty.
 
 ## The connector
 
@@ -111,7 +111,7 @@ LDA #page : STA &FCFF   ; select JIM page
 LDA &FDxx        ; access JIM
 ```
 
-Fastest — clock-stretching is automatic. `LDA abs` to a `&FC`/`&FD` address costs **5-6c** vs 4c at a non-stretched address (the extra is variable by 1 MHz phase — see `[[timing/cycle-stretching]]`).
+Fastest — clock-stretching is automatic. `LDA abs` to a `&FC`/`&FD` address costs **5-6c** vs 4c at a non-stretched address (the extra is variable by 1 MHz phase — see [[timing/cycle-stretching]]).
 
 **Doesn't work from a Tube parasite** — the parasite has no `&FCxx` mapping. Parasite code that needs FRED access must trampoline via the Tube using OSBYTE `&92`-`&97` or via OSWORD `&05`/`&06`.
 
@@ -121,7 +121,7 @@ Fastest — clock-stretching is automatic. `LDA abs` to a `&FC`/`&FD` address co
 
 ## Clock-stretching gotchas
 
-The 2 MHz CPU clock is stretched to align with the 1 MHz peripheral clock on every `&FC`/`&FD` access. Stretch is **2 or 3 normal cycles** depending on the phase of the access — not a flat 2c. The same mechanism applies to most SHEILA peripherals (CRTC, ACIA, Serial ULA, both VIAs, ADC) — see `[[timing/cycle-stretching]]` for the full address-by-address breakdown.
+The 2 MHz CPU clock is stretched to align with the 1 MHz peripheral clock on every `&FC`/`&FD` access. Stretch is **2 or 3 normal cycles** depending on the phase of the access — not a flat 2c. The same mechanism applies to most SHEILA peripherals (CRTC, ACIA, Serial ULA, both VIAs, ADC) — see [[timing/cycle-stretching]] for the full address-by-address breakdown.
 
 Two problems result for the hardware designer attaching new devices to FRED/JIM:
 
@@ -203,7 +203,7 @@ Interrupts must be handled carefully — IRQ entry in block 1, 2, or 3 means the
 
 ## See also
 
-- `[[memory/memory-map]]` — Where FRED/JIM/SHEILA sit in the 64 KB map.
-- `[[hardware/user-via]]` — Simpler 8-line GPIO alternative.
-- `[[memory/shadow-ram]]` — Master ACCCON `IFJ` bit (cartridge select).
-- `[[os/osbyte]]` — `&6B` (cart/bus select), `&92-&97` (Tube-safe FRED/JIM/SHEILA access).
+- [[memory/memory-map]] — Where FRED/JIM/SHEILA sit in the 64 KB map.
+- [[hardware/user-via]] — Simpler 8-line GPIO alternative.
+- [[memory/shadow-ram]] — Master ACCCON `IFJ` bit (cartridge select).
+- [[os/osbyte]] — `&6B` (cart/bus select), `&92-&97` (Tube-safe FRED/JIM/SHEILA access).

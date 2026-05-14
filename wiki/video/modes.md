@@ -23,13 +23,13 @@ Eight MODEs (0-7) on BBC Model B / B+ / Master. Each is a particular combination
 | 6 | (text)   | 40×25 | 2  | 1 | `&6000` | 8 KB  | 320  | 8000  |
 | 7 | (text)   | 40×25 | teletext | — | `&7C00` | 1 KB | 40 | 1000 |
 
-Screen always ends at `&7FFF` on a non-shadow Model B. On B+/Master in shadow mode the screen lives at `&3000-&7FFF` in the shadow bank regardless of MODE (see `[[memory/shadow-ram]]`, pending Ch12 ingest).
+Screen always ends at `&7FFF` on a non-shadow Model B. On B+/Master in shadow mode the screen lives at `&3000-&7FFF` in the shadow bank regardless of MODE (see [[memory/shadow-ram]], pending Ch12 ingest).
 
 Source: NAUG §13.4 p210-217 (per-mode diagrams), §13.2 page-3 `&356` "Size of screen memory: 20K=0,16K=1,10K=2,8K=3,1K=4".
 
 ## Byte → pixel layout (modes 0-6)
 
-The screen is laid out in **character cells of 8 scan lines**. Within a cell, 8 bytes occupy 8 consecutive memory addresses (one byte per scan line). Cells are laid out **left-to-right then top-to-bottom in rows of cells**. This is why hardware scrolling is in character-row units — see `[[video/hardware-scrolling]]`.
+The screen is laid out in **character cells of 8 scan lines**. Within a cell, 8 bytes occupy 8 consecutive memory addresses (one byte per scan line). Cells are laid out **left-to-right then top-to-bottom in rows of cells**. This is why hardware scrolling is in character-row units — see [[video/hardware-scrolling]].
 
 Pixel bit assignment within a byte:
 
@@ -78,15 +78,15 @@ pixel:  P2d P1d P2c P1c P2b P1b P2a P1a
 - `P1a..P1d` = pixel 1's 4-bit colour (a=LSB).
 - `P2a..P2d` = pixel 2's 4-bit colour.
 
-Same interleaving principle as MODE 1/5 but with 4 bits per pixel instead of 2: every odd bit position carries pixel-1's bits, every even bit position carries pixel-2's bits. The byte-aligned sprite movement performance win in `[[techniques/fast-animation]]` comes from this layout — moving a whole byte moves both pixels together.
+Same interleaving principle as MODE 1/5 but with 4 bits per pixel instead of 2: every odd bit position carries pixel-1's bits, every even bit position carries pixel-2's bits. The byte-aligned sprite movement performance win in [[techniques/fast-animation]] comes from this layout — moving a whole byte moves both pixels together.
 
 ### MODE 7 (teletext)
 
-1 byte per character. Screen RAM is `&7C00-&7FFF` (1 KB, but only `&7C00-&7FE7` is displayed). Characters are interpreted by the [[hardware/saa5050]] teletext chip, not the Video ULA serialiser. Hardware scrolling uses a different correction — see `[[video/hardware-scrolling#mode-7]]`.
+1 byte per character. Screen RAM is `&7C00-&7FFF` (1 KB, but only `&7C00-&7FE7` is displayed). Characters are interpreted by the [[hardware/saa5050]] teletext chip, not the Video ULA serialiser. Hardware scrolling uses a different correction — see [[video/hardware-scrolling#mode-7]].
 
 ## "6845 chars" vs "displayed chars"
 
-The 6845 always emits 80 chars/line in modes 0-3 and 40 chars/line in modes 4-7 (R1). The Video ULA stretches each char to occupy more pixels in lower-colour modes — see `[[hardware/video-ula]]` bits 2-3 of `&FE20`. This is why **all 0-6 modes use 640 bytes per scanline-row** but show different pixel counts.
+The 6845 always emits 80 chars/line in modes 0-3 and 40 chars/line in modes 4-7 (R1). The Video ULA stretches each char to occupy more pixels in lower-colour modes — see [[hardware/video-ula]] bits 2-3 of `&FE20`. This is why **all 0-6 modes use 640 bytes per scanline-row** but show different pixel counts.
 
 Important consequence: hardware-scrolling sideways moves by **1 byte = 1 6845 char**. The pixel cost per byte-step depends on how many pixels the ULA stretches one 6845 char into:
 
@@ -113,4 +113,4 @@ addr    = screen_base + char_y * bytes_per_row + char_x * 8 + scan
 
 Where `bytes_per_row` is the screen width in bytes (640 for 80-col modes, 320 for 40-col modes 4-6).
 
-This 2D-into-1D layout is unusual — the screen is **column-major within a row of cells, row-major over rows**. Per-pixel plotting touches 8 bytes for the cell. See `[[techniques/pixel-plot]]` (planned).
+This 2D-into-1D layout is unusual — the screen is **column-major within a row of cells, row-major over rows**. Per-pixel plotting touches 8 bytes for the cell. See [[techniques/pixel-plot]] (planned).

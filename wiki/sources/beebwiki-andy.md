@@ -12,7 +12,7 @@ updated: 2026-05-14
 
 ## Summary
 
-Short page describing the ANDY paged-RAM area on the B+ and Master. Most of the content is already covered in `[[memory/paged-rom]]` and `[[memory/memory-map]]`; the new material worth adding is OSWORD-based access (`&05`/`&06` with `&FFFExxxx` addresses), the B+ `&A000-&AFFF` shadow-display-manipulation trick, and the MOS-won't-scan-it-for-languages rule.
+Short page describing the ANDY paged-RAM area on the B+ and Master. Most of the content is already covered in [[memory/paged-rom]] and [[memory/memory-map]]; the new material worth adding is OSWORD-based access (`&05`/`&06` with `&FFFExxxx` addresses), the B+ `&A000-&AFFF` shadow-display-manipulation trick, and the MOS-won't-scan-it-for-languages rule.
 
 ## Key technical claims
 
@@ -23,7 +23,7 @@ Short page describing the ANDY paged-RAM area on the B+ and Master. Most of the 
 | B+ | 12 KB | `&8000-&AFFF` (top of shadow RAM, above the 20 KB shadow screen) | Paged in by setting top bit of `&FE30` ROMSEL |
 | Master 128 | 4 KB | `&8000-&8FFF` | Reserved for MOS system variables (see AllMem `&8000-&8FFF` workspace breakdown) |
 
-Master also exposes a separate 8 KB area as **HAZEL** at `&C000-&DFFF` (controlled by ACCCON `Y` — see `[[memory/shadow-ram]]`).
+Master also exposes a separate 8 KB area as **HAZEL** at `&C000-&DFFF` (controlled by ACCCON `Y` — see [[memory/shadow-ram]]).
 
 ### Access methods
 
@@ -53,12 +53,12 @@ Original B+ documentation warned ANDY "may not be available in 'other Acorn prod
 
 | Claim | Wiki state | Resolution |
 |---|---|---|
-| ANDY on B+ = 12 KB at `&8000-&AFFF` | covered in `[[memory/paged-rom]]` and `[[memory/memory-map]]` | no change |
+| ANDY on B+ = 12 KB at `&8000-&AFFF` | covered in [[memory/paged-rom]] and [[memory/memory-map]] | no change |
 | ANDY on Master = 4 KB at `&8000-&8FFF` | covered | no change |
-| OSWORD `&05`/`&06` extended addressing | not documented | **add to `[[memory/paged-rom]]`** |
-| B+ `&A000-&AFFF` window onto shadow display | not documented | **add to `[[memory/paged-rom]]`** + cross-link `[[memory/shadow-ram]]` |
-| MOS won't scan ANDY for languages | not stated | **add a one-liner to `[[memory/paged-rom]]`** |
+| OSWORD `&05`/`&06` extended addressing | not documented | **add to [[memory/paged-rom]]** |
+| B+ `&A000-&AFFF` window onto shadow display | not documented | **add to [[memory/paged-rom]]** + cross-link [[memory/shadow-ram]] |
+| MOS won't scan ANDY for languages | not stated | **add a one-liner to [[memory/paged-rom]]** |
 
 ## Filed into
 
-- Updated: `[[memory/paged-rom]]` (OSWORD `&05`/`&06` access; B+ `&A000-&AFFF` shadow trick; MOS scan rule).
+- Updated: [[memory/paged-rom]] (OSWORD `&05`/`&06` access; B+ `&A000-&AFFF` shadow trick; MOS scan rule).

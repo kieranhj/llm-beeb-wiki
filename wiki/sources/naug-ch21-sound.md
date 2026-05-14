@@ -15,8 +15,8 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.379-386. The BBC's **TI SN76
 ## Sound system overview
 
 - **76489** sound chip: 3 tone generators + 1 white-noise generator, mixed on-chip. Volume per channel (0-15, **0 = max**, 15 = off).
-- MOS provides a high-level `SOUND`/`ENVELOPE` interface via OSWORDs that enqueues sound events into the 4 channel buffers (IDs 4-7, see `[[os/buffers]]`).
-- The **100 Hz IRQ** (System VIA T1, `[[os/interrupts]]`) services those buffers — pulls the next byte, applies envelope, writes to the chip.
+- MOS provides a high-level `SOUND`/`ENVELOPE` interface via OSWORDs that enqueues sound events into the 4 channel buffers (IDs 4-7, see [[os/buffers]]).
+- The **100 Hz IRQ** (System VIA T1, [[os/interrupts]]) services those buffers — pulls the next byte, applies envelope, writes to the chip.
 - For maximum control / minimum overhead, write the chip directly via the slow peripheral bus. NAUG gives a worked example (§21.3 p378).
 
 ## MOS interface
@@ -133,7 +133,7 @@ bit:  7   6   5   4   3   2   1   0
 
 ## Direct chip write — the slow-bus dance (NAUG §21.3 p378)
 
-The 76489 isn't on the 6502 bus — it hangs off the System VIA's **slow peripheral bus** (Port A) with `/WE` driven by System VIA addressable-latch line 0 (`[[hardware/system-via]]`).
+The 76489 isn't on the 6502 bus — it hangs off the System VIA's **slow peripheral bus** (Port A) with `/WE` driven by System VIA addressable-latch line 0 ([[hardware/system-via]]).
 
 Sequence to write one byte:
 
@@ -160,14 +160,14 @@ The 8 µs hold time is a chip requirement, not a 6502 timing constraint. At 2 MH
 
 ## Filed into
 
-- `[[hardware/sn76489]]` — Chip reference: registers, frequency math, byte formats.
-- `[[os/sound]]` — MOS sound interface: OSWORDs, suppression OSBYTEs, BELL.
-- Updates: `[[hardware/system-via]]` slow-bus section — already documents the dance; cross-link added.
-- Updates: `[[os/buffers]]` — sound channel buffers 4-7 referenced.
+- [[hardware/sn76489]] — Chip reference: registers, frequency math, byte formats.
+- [[os/sound]] — MOS sound interface: OSWORDs, suppression OSBYTEs, BELL.
+- Updates: [[hardware/system-via]] slow-bus section — already documents the dance; cross-link added.
+- Updates: [[os/buffers]] — sound channel buffers 4-7 referenced.
 
 ## Open follow-ups
 
 - **ENVELOPE format detail** — NAUG just says "14 bytes matching BASIC ENVELOPE". The 14-parameter breakdown is in the User Guide / BASIC manual; capture if it becomes relevant for fast envelope work.
 - **OSWORD `&07` channel encoding** — high byte of the 2-byte channel field controls sync-channel and "queue or flush" behaviour. Acorn docs the encoding (`&00xx`-`&FFxx` semantics). Worth filing if writing music engines.
 - **Speech chip** (TMS5220-family) — Ch21 §21.4 mentions OSBYTE `&9E`/`&9F` + the SOUND `&FFxx` channel encoding triggers speech. Detailed protocol is in the Speech System User Guide, not this book.
-- **Master vs Model B sound timing** — Master's 65C12 BCD penalty (`[[hardware/6502]]`) may affect tight MOS sound-IRQ loops by a few cycles; investigate if envelope timing differs perceptibly.
+- **Master vs Model B sound timing** — Master's 65C12 BCD penalty ([[hardware/6502]]) may affect tight MOS sound-IRQ loops by a few cycles; investigate if envelope timing differs perceptibly.

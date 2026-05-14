@@ -12,7 +12,7 @@ updated: 2026-05-14
 
 ## Summary
 
-Brief but high-value page. Documents the BBC's mechanism for slowing the 6502 clock when accessing 1 MHz peripherals — and crucially, the **complete list of devices that trigger stretching**. We previously documented this only for `&FC`/`&FD` (FRED/JIM) on `[[hardware/1mhz-bus]]`; in fact it applies to most of `&FE00-&FEFF` (SHEILA) too. This is critical performance information: every `LDA &FE40` (System VIA) or `LDA &FE00` (CRTC) costs more than a normal `LDA abs`.
+Brief but high-value page. Documents the BBC's mechanism for slowing the 6502 clock when accessing 1 MHz peripherals — and crucially, the **complete list of devices that trigger stretching**. We previously documented this only for `&FC`/`&FD` (FRED/JIM) on [[hardware/1mhz-bus]]; in fact it applies to most of `&FE00-&FEFF` (SHEILA) too. This is critical performance information: every `LDA &FE40` (System VIA) or `LDA &FE00` (CRTC) costs more than a normal `LDA abs`.
 
 ## Key technical claims
 
@@ -58,16 +58,16 @@ So a single instruction that accesses a 1 MHz peripheral pays a variable extra c
 
 | Claim | Wiki state | Resolution |
 |---|---|---|
-| `&FC`/`&FD` accesses are stretched | covered in `[[hardware/1mhz-bus]]` | confirmed |
-| Stretching also applies to CRTC/ACIA/Serial-ULA/VIAs/ADC | **NOT documented** | **add to a new `[[timing/cycle-stretching]]`** |
+| `&FC`/`&FD` accesses are stretched | covered in [[hardware/1mhz-bus]] | confirmed |
+| Stretching also applies to CRTC/ACIA/Serial-ULA/VIAs/ADC | **NOT documented** | **add to a new [[timing/cycle-stretching]]** |
 | Stretch is 2× or 3× depending on phase | only "2 cycles" hand-waved on 1mhz-bus.md | **clarify** |
 | Mechanism: IC 23 → IC 33 → 6502 ΦIN | not documented | add to source-page; mention briefly in entity page |
 | Video ULA, ACCCON, Tube, FDC, ROM are NOT stretched | implicit but not stated | **add explicit "what is NOT stretched" note** to new page |
 
 ## Filed into
 
-- Created: `[[timing/cycle-stretching]]` — new dedicated page.
-- Updated: `[[hardware/1mhz-bus]]` — clarify variable 2-3 cycle penalty; cross-link to new page; note that the same mechanism applies to most SHEILA addresses, not just FRED/JIM.
+- Created: [[timing/cycle-stretching]] — new dedicated page.
+- Updated: [[hardware/1mhz-bus]] — clarify variable 2-3 cycle penalty; cross-link to new page; note that the same mechanism applies to most SHEILA addresses, not just FRED/JIM.
 
 ## Notes
 

@@ -71,7 +71,7 @@ NMI on data transfer is what makes 2 MHz throughput possible: the parasite can b
 
 ## Hands off (mostly)
 
-**Direct Tube register pokes are dangerous.** Writing arbitrary bytes triggers unserviceable interrupts on the other side → crash. Direct access is only appropriate when implementing a custom filing system or transfer protocol — see `[[os/tube]]` for the safe `&406` entry point.
+**Direct Tube register pokes are dangerous.** Writing arbitrary bytes triggers unserviceable interrupts on the other side → crash. Direct access is only appropriate when implementing a custom filing system or transfer protocol — see [[os/tube]] for the safe `&406` entry point.
 
 The one exception: during a bulk transfer initiated via `&406`, you **do** read/write `&FEE5` directly (the R3 data register) to move bytes — but only after the transfer has been set up through `&406` and with the prescribed inter-byte delays.
 
@@ -85,11 +85,11 @@ The one exception: during a bulk transfer initiated via `&406`, you **do** read/
 | Master Compact | External (via cartridge port) |
 | Electron | **No Tube** (uses ULA pins differently) |
 
-The **ACCCON `ITU` bit** (`[[memory/shadow-ram]]`) on Master selects internal vs external Tube.
+The **ACCCON `ITU` bit** ([[memory/shadow-ram]]) on Master selects internal vs external Tube.
 
 ## See also
 
-- `[[os/tube]]` — Software protocol: claim/release, data transfer, OS dispatch.
-- `[[memory/memory-map]]` — Tube range `&FEE0-&FEFF` in the SHEILA map.
-- `[[memory/shadow-ram]]` — ACCCON ITU bit.
-- `[[os/calls]]` — OSWRCH / OSRDCH non-vectored variants (`NVWRCH` / `NVRDCH`) that don't pass over Tube.
+- [[os/tube]] — Software protocol: claim/release, data transfer, OS dispatch.
+- [[memory/memory-map]] — Tube range `&FEE0-&FEFF` in the SHEILA map.
+- [[memory/shadow-ram]] — ACCCON ITU bit.
+- [[os/calls]] — OSWRCH / OSRDCH non-vectored variants (`NVWRCH` / `NVRDCH`) that don't pass over Tube.

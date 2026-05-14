@@ -12,7 +12,7 @@ updated: 2026-05-13
 
 Holmes & Dickens, *The New Advanced User Guide*, pp.443-448. These appendices are **directory tables** — they list every OSBYTE (`&00`-`&FF`) and OSWORD (`&00`-`&FF`) with a one-line function description and a page reference to where the full semantics live in the body of the book.
 
-For each call, the **detailed protocol** (entry params, exit state, side effects, machine-specific behaviour) is in the chapter listed in the `page` column. The wiki files `[[os/osbyte]]` and `[[os/osword]]` hold the directory; full semantics for individual calls are filled in as the referenced chapter is ingested.
+For each call, the **detailed protocol** (entry params, exit state, side effects, machine-specific behaviour) is in the chapter listed in the `page` column. The wiki files [[os/osbyte]] and [[os/osword]] hold the directory; full semantics for individual calls are filled in as the referenced chapter is ingested.
 
 ## OSBYTE — `JSR &FFF4` (indirected through `&20A`)
 
@@ -42,8 +42,8 @@ OSWORD always uses a **parameter block** in memory at the address in `X+Y`. The 
 
 ## Filed into
 
-- `[[os/osbyte]]` — Full directory of OSBYTE calls. Each row links to the wiki chapter source page (e.g. `[[sources/naug-ch13-video]]`) when ingested; otherwise lists the NAUG page number.
-- `[[os/osword]]` — Full directory of OSWORD calls, same format.
+- [[os/osbyte]] — Full directory of OSBYTE calls. Each row links to the wiki chapter source page (e.g. [[sources/naug-ch13-video]]) when ingested; otherwise lists the NAUG page number.
+- [[os/osword]] — Full directory of OSWORD calls, same format.
 
 ## Open follow-ups
 

@@ -19,7 +19,7 @@ MOS maintains nine FIFO buffers servicing slow peripherals — keyboard scan, RS
 | 4-7 | Sound channels 0-3 | 16 bytes each | `OSWORD &07` (SOUND) | 100 Hz timer IRQ |
 | 8 | Speech | — | speech driver | speech chip (Model B/B+ only) |
 
-Buffer storage spans `&800-&9FF` (`[[memory/os-workspace]]`): sound + envelope + (optional) printer in `&800-&8FF`, CFS/RS423/speech output in `&900-&9BF`, speech/CFS input in `&9C0-&9FF`. Per-buffer base addresses, removal pointers, insertion pointers, and busy flags live in OS workspace bytes around `&2C3-&2DD` on Model B and similar regions on Master.
+Buffer storage spans `&800-&9FF` ([[memory/os-workspace]]): sound + envelope + (optional) printer in `&800-&8FF`, CFS/RS423/speech output in `&900-&9BF`, speech/CFS input in `&9C0-&9FF`. Per-buffer base addresses, removal pointers, insertion pointers, and busy flags live in OS workspace bytes around `&2C3-&2DD` on Model B and similar regions on Master.
 
 ## Vectors
 
@@ -31,7 +31,7 @@ Buffer storage spans `&800-&9FF` (`[[memory/os-workspace]]`): sound + envelope +
 
 The default routines validate nothing — passing an out-of-range buffer ID is undefined. Hooks must check `X` themselves.
 
-**Not available across Tube.** Buffer hooks must reside on the I/O processor — ideally in a service ROM (`[[os/paged-roms]]`).
+**Not available across Tube.** Buffer hooks must reside on the I/O processor — ideally in a service ROM ([[os/paged-roms]]).
 
 ## INSV — insert
 
@@ -77,7 +77,7 @@ JSR cnp_chain     ; X+Y = 16-bit count (low+high) for count modes
 | `&8A` (138) | Insert | X = buffer, Y = byte. C=1 if full. |
 | `&91` (145) | Get byte | X = buffer. Y = byte. C=1 if empty. |
 | `&98` (152) | Examine next | X = buffer. **OS 1.20 / Model B**: Y = pointer offset from `&FA/&FB`; **later OS**: Y = byte itself. |
-| `&99` (153) | Insert into input | X = 0 (kbd) or 1 (RS423). Generates event 2 (`[[os/events]]`). Honours ESCAPE-character (`OSBYTE &DC`) by generating event 6 if matched. |
+| `&99` (153) | Insert into input | X = 0 (kbd) or 1 (RS423). Generates event 2 ([[os/events]]). Honours ESCAPE-character (`OSBYTE &DC`) by generating event 6 if matched. |
 
 The OSBYTE `&80` ID-inversion is unique to this call. Other buffer OSBYTEs use the direct ID (0-8).
 
@@ -106,7 +106,7 @@ NAUG §9.4 p137-138 has a complete worked example installing a user-defined prin
 
 ## Buffer events
 
-The buffer system feeds events (`[[os/events]]`):
+The buffer system feeds events ([[os/events]]):
 
 - **Event 0** (output buffer empty) — fires just after REMV takes the last byte. X = buffer.
 - **Event 1** (input buffer full) — fires when INSV would fail. X = buffer, Y = byte that couldn't fit.
@@ -116,12 +116,12 @@ The buffer system feeds events (`[[os/events]]`):
 
 - Buffer ops are **IRQ-driven** for hardware-fed buffers (keyboard, 6850, printer ACK, sound timer). Foreground reads/writes via OSWRCH/OSRDCH and OSBYTE wrappers walk the buffers without polling the hardware.
 - For **maximum throughput** to the printer or RS423, bypass MOS entirely: hook the relevant device IRQ yourself, and drive the chip register-by-register. Buffers add per-byte overhead (vector dispatch + ptr math + IRQ wakeup). The trade-off is reimplementing flow control / ACK handshake.
-- The **sound channel buffers** are the one place you can't really bypass and still use MOS sound — if you want fully custom sound, drive the SN76489 directly (`[[hardware/sn76489]]`) and ignore the buffers.
+- The **sound channel buffers** are the one place you can't really bypass and still use MOS sound — if you want fully custom sound, drive the SN76489 directly ([[hardware/sn76489]]) and ignore the buffers.
 
 ## See also
 
-- `[[memory/os-workspace]]` — Buffer RAM at `&800-&9BF`, pointer table around `&2C3-&2DD`.
-- `[[os/events]]` — Buffer events 0/1/2.
-- `[[hardware/system-via]]` — Keyboard CA2, ADC CB1 (consumers).
-- `[[hardware/user-via]]` — Printer CA1 (printer-buffer consumer).
-- `[[hardware/sn76489]]` — Sound chip (sound-buffer consumer).
+- [[memory/os-workspace]] — Buffer RAM at `&800-&9BF`, pointer table around `&2C3-&2DD`.
+- [[os/events]] — Buffer events 0/1/2.
+- [[hardware/system-via]] — Keyboard CA2, ADC CB1 (consumers).
+- [[hardware/user-via]] — Printer CA1 (printer-buffer consumer).
+- [[hardware/sn76489]] — Sound chip (sound-buffer consumer).

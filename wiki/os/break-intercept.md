@@ -118,8 +118,8 @@ The IRQ-mask + reset combo causes MOS to detect a power-on reset (return `OSBYTE
 
 ## See also
 
-- `[[os/escape]]` — ESCAPE handling (separate from BREAK).
-- `[[os/osbyte]]` — All BREAK-related OSBYTE entries.
-- `[[os/calls]]` — BRKV (`&202`) vs the `&F7-&F9` intercept (different mechanisms).
-- `[[os/paged-roms]]` — Service ROMs use their own service-call &27 reset notification (Master) in addition to the BREAK intercept.
-- `[[sources/naug-ch24-misc]]` — Full source page with worked examples.
+- [[os/escape]] — ESCAPE handling (separate from BREAK).
+- [[os/osbyte]] — All BREAK-related OSBYTE entries.
+- [[os/calls]] — BRKV (`&202`) vs the `&F7-&F9` intercept (different mechanisms).
+- [[os/paged-roms]] — Service ROMs use their own service-call &27 reset notification (Master) in addition to the BREAK intercept.
+- [[sources/naug-ch24-misc]] — Full source page with worked examples.

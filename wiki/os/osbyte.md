@@ -8,7 +8,7 @@ updated: 2026-05-13
 
 # OSBYTE Calls
 
-Complete OSBYTE directory. **Call: `JSR &FFF4`** (indirected through `&20A`) with `A` = call number, `X`/`Y` per call. Most are documented in `[[sources/naug-appendix-ab]]` Appendix A (NAUG p443-447).
+Complete OSBYTE directory. **Call: `JSR &FFF4`** (indirected through `&20A`) with `A` = call number, `X`/`Y` per call. Most are documented in [[sources/naug-appendix-ab]] Appendix A (NAUG p443-447).
 
 Many OSBYTEs follow the **read/modify/write byte protocol**: `NEW = (OLD AND Y) EOR X`, with the old value returned in X. Read: `X=0, Y=&FF`. Write: `X=val, Y=0`.
 
@@ -237,4 +237,4 @@ OSBYTE round-trip is **expensive** — JSR + indirect through `&20A` + dispatch 
 
 For tight raster code: read state via the OSBYTE once, cache the result, then do direct hardware writes inside your loop. E.g. for palette updates, query the OS palette copy once via OSBYTE `&B9`, then `STA &FE21` directly inside the hot loop — the OS shadow goes stale, but you'll restore it before exiting your routine (or accept the desync if MOS won't be called again).
 
-See `[[hardware/video-ula]]` for the OSBYTE-vs-direct trade-off discussion.
+See [[hardware/video-ula]] for the OSBYTE-vs-direct trade-off discussion.

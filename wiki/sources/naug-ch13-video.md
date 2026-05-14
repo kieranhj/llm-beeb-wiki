@@ -31,16 +31,16 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.172-224. The chapter has thr
 
 ## Filed into
 
-- `[[hardware/crtc-6845]]` — 6845 entity + register reference, with per-mode register values.
-- `[[hardware/video-ula]]` — Video ULA entity, control register, palette mechanics, mode encoding.
-- `[[video/modes]]` — Mode summary table + screen memory maps.
-- `[[video/hardware-scrolling]]` — Vertical/sideways scroll, wrap-around, MODE 7 quirk, vsync timing.
-- `[[techniques/fast-animation]]` — MODE 2 byte-move technique, MODE 0 shift, hardware-scroll as substrate.
-- `[[memory/os-workspace]]` — Page 3 VDU workspace + zero-page VDU bytes captured here. `[[memory/zero-page]]` has the page-0 detail.
+- [[hardware/crtc-6845]] — 6845 entity + register reference, with per-mode register values.
+- [[hardware/video-ula]] — Video ULA entity, control register, palette mechanics, mode encoding.
+- [[video/modes]] — Mode summary table + screen memory maps.
+- [[video/hardware-scrolling]] — Vertical/sideways scroll, wrap-around, MODE 7 quirk, vsync timing.
+- [[techniques/fast-animation]] — MODE 2 byte-move technique, MODE 0 shift, hardware-scroll as substrate.
+- [[memory/os-workspace]] — Page 3 VDU workspace + zero-page VDU bytes captured here. [[memory/zero-page]] has the page-0 detail.
 
 ## Open follow-ups
 
-- §13.2 page-3 VDU workspace fully filed into `[[memory/os-workspace]]` after Ch6 ingest.
-- §13.1.6 character-explosion (`*FX 20`) detail captured only at the headline level — write a dedicated `[[techniques/exploding-font]]` page if it comes up.
+- §13.2 page-3 VDU workspace fully filed into [[memory/os-workspace]] after Ch6 ingest.
+- §13.1.6 character-explosion (`*FX 20`) detail captured only at the headline level — write a dedicated [[techniques/exploding-font]] page if it comes up.
 - VDU 23,n function table (Master, n=2..16) summarised — full ECF pattern detail not extracted.
 - PLOT number table (§13.1.4) summarised but not filed back as a dedicated page — most PLOT details belong with VDU 25 docs, not performance work.

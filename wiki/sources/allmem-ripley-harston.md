@@ -66,7 +66,7 @@ Citations are line numbers in `raw/AllMem.txt`.
 
 ### OS vectors at `&0200-&0235` (lines 149-177)
 
-Full 27-vector table. All present in our existing `[[os/calls]]` page; AllMem confirms.
+Full 27-vector table. All present in our existing [[os/calls]] page; AllMem confirms.
 
 ### OSBYTE variables `&0236-&028F` (lines 179-287)
 
@@ -189,7 +189,7 @@ The Master DFS `OSWORD &7F` writes to page `&C2` **regardless of who owns the sh
 
 ### Page FE — SHEILA (lines 927-948)
 
-Confirms our existing `[[memory/memory-map]]` table. AllMem additions:
+Confirms our existing [[memory/memory-map]] table. AllMem additions:
 
 - `&FE18-&FE1F` Station ID / NMI Control (BBC B / B+) vs ADC (Master) — note the **Master ADC is at `&FE18`, not `&FEC0`** (which holds the BBC's ADC).
 - `&FE20-&FE2F` Video ULA **plus border control plus network NMI control**.
@@ -203,14 +203,14 @@ Full list of public entry points `&FFB3-&FFF9` plus hardware vectors `&FFFA-&FFF
 
 ## Filed into
 
-This ingest produces no new wiki pages — it's a reference cross-check. The audit findings are listed in `[[synthesis/allmem-cross-reference-report]]` (filing this back depends on user approval — see report).
+This ingest produces no new wiki pages — it's a reference cross-check. The audit findings are listed in [[synthesis/allmem-cross-reference-report]] (filing this back depends on user approval — see report).
 
 Pages whose claims were validated against this source:
 
-- `[[memory/zero-page]]`
-- `[[memory/os-workspace]]`
-- `[[memory/memory-map]]`
-- `[[os/calls]]`
-- `[[os/buffers]]`
+- [[memory/zero-page]]
+- [[memory/os-workspace]]
+- [[memory/memory-map]]
+- [[os/calls]]
+- [[os/buffers]]
 
 Contradictions found are listed below for human review.
