@@ -2,8 +2,8 @@
 title: OS Workspace (Pages 1, 2, 3)
 type: memory
 tags: [workspace, mos, vectors, page-two, page-three]
-sources: [naug-ch06-os-introduction, naug-ch13-video]
-updated: 2026-05-13
+sources: [naug-ch06-os-introduction, naug-ch13-video, allmem-ripley-harston]
+updated: 2026-05-14
 ---
 
 # OS Workspace — Pages 1, 2, 3
@@ -31,10 +31,10 @@ From NAUG §6.6 p114:
 | `&850-&85F` | Sound channel 1 |
 | `&860-&86F` | Sound channel 2 |
 | `&870-&87F` | Sound channel 3 |
-| `&880-&8BF` | Printer buffer (alt usage of part of sound area) |
-| `&8C0-&8FF` | Envelope storage 1-4 |
-| `&900-&9BF` | CFS / RS423 / Speech output buffer (envelope storage on Electron) |
-| `&9C0-&9FF` | Speech / CFS buffer |
+| `&880-&8BF` | Printer buffer (distinct region — NOT shared with sound) |
+| `&8C0-&8FF` | Envelope storage 1-4 (13 bytes each + 3 spare) |
+| `&900-&9BF` | RS423 output buffer — OR Envelopes 5-16 — OR (overlap) CFS/RFS BPUT sequential output buffer |
+| `&9C0-&9FF` | Speech buffer — overlapped by CFS/RFS BPUT output buffer when CFS active |
 
 ## Page B (`&0B00-&0BFF`) — Function keys
 
@@ -79,15 +79,22 @@ Master and Electron differ in the exact addresses of some of these — NAUG p115
 
 ### Useful direct reads
 
-| Addr | What | Equivalent OSBYTE |
-|---|---|---|
-| `&20E-&20F` | OSWRCH vector | — |
-| `&242` | Output stream destination | `&EC` |
-| `&269` | Active ROM number at last BRK | `&BA` |
-| `&27D` | Sound suppression | `&D2` |
-| `&27E` | Speech suppression | `&D1` |
+The OSBYTE-variable address is `&0236 + (osbyte_number - &A6)`. So `&D2` (sound suppression) lives at `&0236 + (&D2 - &A6) = &0262`. Worked examples:
 
-Exact addresses vary by machine. Reading the OSBYTE-mapped variables directly is **faster** than calling OSBYTE — but you must know which OS you're on. Probe with `OSBYTE &81` (read machine type) or use `OSBYTE &A6`/`&A7` to get the base address dynamically.
+| Addr | What | OSBYTE-var # |
+|---|---|---|
+| `&020E-&020F` | OSWRCH vector | — |
+| `&024A` | ROM active at last BRK | `&BA` (fx186) |
+| `&0261` | Speech suppression status | `&D1` (fx209) |
+| `&0262` | Sound suppression status | `&D2` (fx210) |
+| `&0277` | User VIA IRQ mask | `&E7` (fx231) |
+| `&0279` | System VIA IRQ mask | `&E9` (fx233) |
+| `&027C` | Output stream destination (FX3) | `&EC` (fx236) |
+| `&027D` | Cursor key status (FX4) | `&ED` (fx237) |
+| `&028C` | Current language ROM | `&FC` (fx252) |
+| `&028D` | Last BREAK type | `&FD` (fx253) |
+
+Exact addresses are stable across BBC/B+/Master — the formula above always holds. Reading directly is **faster** than calling OSBYTE (saves the dispatch overhead). For full table see `[[sources/allmem-ripley-harston]]` lines 179-287, or query `OSBYTE &A6/&A7` to get the base address dynamically (in case a future MOS shifts it).
 
 ## Page 3 (`&0300-&03FF`) — VDU workspace + filing buffers
 
@@ -95,11 +102,18 @@ From NAUG §13.2.2 (already in `[[sources/naug-ch13-video]]`):
 
 | Range | Use |
 |---|---|
-| `&300-&31E` | Current graphics window, VDU 28 text window, VDU 29 graphics origin, current/old graphics cursor, VDU queue/workspace |
-| `&31F-&322` | POS, VPOS, POINT-within-cell |
-| `&323-&327` | VDU queue (anchored at `&323`) |
-| `&328-`onwards | More VDU workspace |
-| `&349-&34D` | Internal coords for cursor |
+| `&300-&30B` | Current graphics window (`&300`-`&307`, pixels) + text window (`&308`-`&30B`, chars) |
+| `&30C-&30F` | Graphics origin (external coords) |
+| `&310-&317` | Current + old graphics cursor (external coords) |
+| `&318`-`&319` | Text cursor X / Y |
+| `&31A` | Line within graphics cell of cursor |
+| `&31B` | Graphics workspace / VDU queue control |
+| `&31F-&323` | VDU queue (5 bytes) |
+| `&324-&327` | Current graphics cursor (internal coords) |
+| `&328-&32F` | Bitmap read from screen by OSBYTE 135 |
+| `&330-&349` | Graphics workspace |
+| `&34A-&34B` | Text cursor address for 6845 |
+| `&34C-&34D` | Text window width in bytes |
 | `&34E` | MSB of HIMEM (ignoring shadow) |
 | `&34F` | Bytes per character (current mode) |
 | `&350-&351` | **Top-left screen address as given to 6845** — this is the screen-start mirror for hardware scroll |

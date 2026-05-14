@@ -28,6 +28,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/naug-ch19-clocks-cmos]] — NAUG Ch19: Clocks/Timers/CMOS (p359-371). System clock + interval timer, Master 146818 RTC + 50-byte CMOS, alarm IRQ via LK4.
 - [[sources/naug-ch20-adc]] — NAUG Ch20: ADC system (p372-378). µPD7002 chip, conversion timing, joystick reading, Master Compact's switched-not-analogue simulator.
 - [[sources/naug-ch24-misc]] — NAUG Ch24: Miscellaneous (p426-438). BREAK intercept `&F7-&F9`, reset types, printer UPTV, `*CODE`/`*LINE` via USERV, machine identification, NETV/KEYV.
+- [[sources/allmem-ripley-harston]] — AllMem: BBC System Memory Map (Ripley/Harston, 2016). Byte-level catalogue of MOS workspace across BBC/Electron/Master variants. Authoritative cross-check for `&00`-`&FF`, `&0200`-`&02FF`, `&0300`-`&03FF`, buffer pages, `&FE00-&FEFF`, MOS jumpblock.
 
 ## Hardware
 

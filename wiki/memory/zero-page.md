@@ -2,8 +2,8 @@
 title: Zero Page
 type: memory
 tags: [zero-page, workspace, mos]
-sources: [naug-ch06-os-introduction, naug-ch13-video]
-updated: 2026-05-13
+sources: [naug-ch06-os-introduction, naug-ch13-video, allmem-ripley-harston]
+updated: 2026-05-14
 ---
 
 # Zero Page
@@ -30,16 +30,18 @@ From `[[sources/naug-ch13-video]]` §13.2:
 
 | Addr | Use |
 |---|---|
-| `&D0` | STATS — VDU status byte |
+| `&D0` | STATS — VDU status byte (= OSBYTE `&75`) |
 | `&D1` | ZMASK — current graphics-point bit mask |
 | `&D2` | ZORA — text colour OR mask |
 | `&D3` | ZEOR — text colour EOR mask |
 | `&D4` | Graphics colour OR mask |
 | `&D5` | Graphics colour EOR mask |
-| `&CB`-`&CE` | Graphics character-cell address (4 bytes) |
-| `&DD`-`&E0` | Text character-cell address |
-| `&D6`-`&DB` | Temporary VDU workspace (ZTEMP, ZTEMPA, ZTEMPB) |
-| `&E1` | Ptr to multiplication tables (not Master) |
+| `&D6`-`&D7` | Graphics character cell |
+| `&D8`-`&D9` | Top scan line |
+| `&DA`-`&DF` | Temporary workspace |
+| `&E0`-`&E1` | BBC/Electron: Row multiplication tables ptr. Master: General workspace. |
+
+(VDU character-cell *addresses* live in page 3, not zero page — see `[[memory/os-workspace]]` for `&034A-&034B` (text cursor 6845 address) and the graphics workspace at `&0330-&0349`.)
 
 Touching these while the VDU driver is active = visible corruption.
 
@@ -51,7 +53,7 @@ Touching these while the VDU driver is active = visible corruption.
 | `&EA` | Serial timeout counter |
 | `&EC` | Last key press (internal key number) |
 | `&ED` | Penultimate key press |
-| `&EE` | 1 MHz paging register copy |
+| `&EE` | 1 MHz bus paging-register RAM copy + internal-key-number to ignore (OSBYTE `&79`) |
 | `&EF` | OSBYTE/OSWORD A value (during call) |
 | `&F0` | OSBYTE/OSWORD X value |
 | `&F1` | OSBYTE/OSWORD Y value |
@@ -59,8 +61,10 @@ Touching these while the VDU driver is active = visible corruption.
 | `&F4` | Copy of ROM select register (paging) |
 | `&F5` | Speech PHROM / RFS ROM number |
 | `&F6`-`&F7` | OSRDSC address |
+| `&F8`-`&F9` | Master only: soft key expansion pointer (BBC/Electron unused) |
+| `&FA`-`&FB` | General OS workspace, used by buffer access during interrupts |
 | `&FC` | **A save during IRQ** |
-| `&FD`-`&FE` | Address after last BRK (post-BRK return pointer) |
+| `&FD`-`&FE` | Error message pointer — initialised to language version string; after BRK, points at the error text following the BRK opcode |
 | `&FF` | ESCAPE flag (bit 7 only) |
 
 ## Performance: claim more than `&70-&8F`

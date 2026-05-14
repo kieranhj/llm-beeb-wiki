@@ -172,3 +172,25 @@ grep "^## \[" wiki/log.md | tail -10
 - No orphans; smallest leaf pages (mode-8 synthesis, break-intercept, printer, 1mhz-bus) all healthy.
 - Open question: 6522 IRB-vs-pin-read behaviour for input-mode pins. Worth verifying against W65C22 datasheet + Acorn MOS disassembly.
 - Stubs still planned: techniques/{raster-splits, exploding-font, pixel-plot}, hardware/crtc-6845-advanced, video/teletext-mode, tools/beebasm, os/z80-2p, synthesis/custom-mode-288x192. `raster-splits` and `crtc-6845-advanced` have the most inbound refs (3 each) — write next when those topics come up.
+
+## [2026-05-14] ingest | AllMem.txt — Ripley/Harston BBC System Memory Map (18-Jun-2016)
+- Created: wiki/sources/allmem-ripley-harston.md
+- Reference-only ingest: byte-level catalogue of MOS workspace across BBC/Electron/Master variants. Most precise source we have for "what owns this byte?"
+- Cross-referenced against: wiki/memory/zero-page.md, wiki/memory/os-workspace.md, wiki/memory/memory-map.md, wiki/os/buffers.md
+- **Contradictions surfaced** (NOT auto-fixed; awaiting user approval):
+  1. zero-page.md VDU table lists `&CB-&CE` as "Graphics character-cell address" and `&DD-&E0` as "Text character-cell address". Per AllMem these are filing-system workspace (&CB-&CE) and general OS workspace (&DD-&DF) — they are NOT VDU. Graphics character cell is `&D6-&D7`; top scan line `&D8-&D9`.
+  2. zero-page.md "Critical OS" row for `&FD-&FE` says "Address after last BRK (post-BRK return pointer)". AllMem more accurate: "Error message pointer, initially set to language version string". Same physical content, but the wiki phrasing is misleading.
+  3. os-workspace.md "Useful direct reads" table — ALL FOUR addresses wrong:
+     - "&242 Output stream destination" → correct is `&27C` (`&242` is fx178 Keyboard semaphore).
+     - "&269 Active ROM at last BRK" → correct is `&24A` (`&269` is fx217 Screen-lines-since-last-page).
+     - "&27D Sound suppression" → correct is `&262` (`&27D` is fx237 Cursor-key status).
+     - "&27E Speech suppression" → correct is `&261` (`&27E` is fx238 unused/keypad-base).
+  4. os-workspace.md Page-3 row "&349-&34D cursor internal coords" conflates three entries: per AllMem, `&324-&327` is graphics cursor internal coords; `&34A-&34B` is text cursor address for 6845; `&34C-&34D` is text window width in bytes.
+  5. os-workspace.md Page-8 row "`&880-&8BF` Printer buffer (alt usage of part of sound area)" — wrong. Per AllMem the printer buffer is distinct from the sound area: sound channels live at `&840-&87F`, printer at `&880-&8BF`, envelopes at `&8C0-&8FF`. Not alternate uses.
+- Open question: should we expand zero-page.md `&EE` entry to note dual purpose (1MHz paging copy + OSBYTE-&79 key-ignore)? AllMem documents both.
+- AllMem deserves to be cited from at least: memory/zero-page, memory/os-workspace, memory/memory-map, memory/paged-rom (DF0-DFF), os/calls (FF jumpblock), os/buffers (page 8-9 layout). Cite-list update pending fixes.
+
+## [2026-05-14] fix | apply AllMem cross-reference fixes
+- Updated: wiki/memory/zero-page.md — VDU table corrected (removed wrong &CB-&CE and &DD-&E0 rows; added &D6-&D7 graphics char cell, &D8-&D9 top scan line, &DA-&DF temp); critical OS table fixed (&FD-&FE = error message pointer, not "post-BRK return"); &EE expanded to dual purpose (1MHz paging copy + OSBYTE-&79 key-ignore); added &F8-&F9, &FA-&FB rows.
+- Updated: wiki/memory/os-workspace.md — "Useful direct reads" all four wrong addresses corrected (&27C/&24A/&262/&261), added formula `&236 + (osbyte_num - &A6)`; Page-3 cursor row split into 6 correct entries; Page 8-9 buffer rows clarified (printer is distinct from sound).
+- Updated frontmatter sources to cite allmem-ripley-harston: zero-page.md, os-workspace.md, memory-map.md.
