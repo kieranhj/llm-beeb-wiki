@@ -34,19 +34,21 @@ jobs:
       # On Linux runner the Windows junction quartz/content -> wiki is a
       # broken directory entry. Quartz also doesn't follow symlinks for
       # content fetch, so we copy wiki/ into quartz/content/ for the build.
-      - name: Copy wiki/ into quartz/content/
+      - name: Stage wiki content for Quartz
         run: |
           rm -rf quartz/content
-          cp -a wiki quartz/content
-          echo "Copied $(find quartz/content -name '*.md' | wc -l) markdown files."
+          mkdir -p quartz/content
+          cp -a wiki/. quartz/content/
+          echo "Top-level entries:"; ls quartz/content
+          echo ""
+          echo "Markdown count: $(find quartz/content -name '*.md' | wc -l)"
+          echo "index.md present: $(test -f quartz/content/index.md && echo yes || echo NO)"
 
-      - name: Install Quartz dependencies
-        working-directory: quartz
-        run: npm ci
-
-      - name: Build Quartz site
-        working-directory: quartz
-        run: npx quartz build
+      - name: Install Quartz dependencies + build
+        run: |
+          cd quartz
+          npm ci
+          npx quartz build --verbose
 
       - uses: actions/configure-pages@v5
         with:
