@@ -11,23 +11,23 @@ updated: 2026-05-14
 64 KB visible to the 6502 across all BBC family machines. The common layout:
 
 ```
-&FFFF ┌──────────────────────────────────────┐
-      │ MOS ROM (vectors)              &FF00 │ 256 B
-&FF00 ├──────────────────────────────────────┤
-      │ SHEILA — memory-mapped I/O     &FE00 │ 256 B
-&FE00 ├──────────────────────────────────────┤
-      │ JIM — 1 MHz bus / cartridge    &FD00 │ 256 B
-&FD00 ├──────────────────────────────────────┤
-      │ FRED — 1 MHz bus / cartridge   &FC00 │ 256 B
-&FC00 ├──────────────────────────────────────┤
-      │ MOS ROM                              │ ~15 KB
-&C000 ├──────────────────────────────────────┤
-      │ Paged ROM / Sideways RAM (1 of 16)   │ 16 KB
-&8000 ├──────────────────────────────────────┤
-      │ Screen RAM (mode-dependent base)     │ up to 20 KB
-&3000 ├──────────────────────────────────────┤
-      │ User RAM + MOS workspace + lang/BASIC│ 12 KB
-&0000 └──────────────────────────────────────┘
+&FFFF +--------------------------------------+
+      | MOS ROM (vectors)              &FF00 | 256 B
+&FF00 +--------------------------------------+
+      | SHEILA -- memory-mapped I/O    &FE00 | 256 B
+&FE00 +--------------------------------------+
+      | JIM -- 1 MHz bus / cartridge   &FD00 | 256 B
+&FD00 +--------------------------------------+
+      | FRED -- 1 MHz bus / cartridge  &FC00 | 256 B
+&FC00 +--------------------------------------+
+      | MOS ROM                              | ~15 KB
+&C000 +--------------------------------------+
+      | Paged ROM / Sideways RAM (1 of 16)   | 16 KB
+&8000 +--------------------------------------+
+      | Screen RAM (mode-dependent base)     | up to 20 KB
+&3000 +--------------------------------------+
+      | User RAM + MOS workspace + lang/BASIC| 12 KB
+&0000 +--------------------------------------+
 ```
 
 Source: NAUG §12.1 p155-156.

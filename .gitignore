@@ -20,3 +20,12 @@ Thumbs.db
 # Obsidian workspace state (per-machine; not portable)
 .obsidian/workspace.json
 .obsidian/workspace-mobile.json
+
+# Quartz build artefacts
+quartz/node_modules/
+quartz/.quartz-cache/
+quartz/public/
+
+# Quartz content/ is a Windows junction to wiki/ — don't commit duplicates.
+# The Linux deploy workflow recreates it as a symlink at build time.
+quartz/content/

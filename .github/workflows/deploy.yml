@@ -1,0 +1,63 @@
+name: Deploy Quartz site to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "wiki/**"
+      - "quartz/**"
+      - ".github/workflows/deploy.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # Quartz uses git log for last-modified dates
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # On Linux runner the Windows junction quartz/content -> wiki is just a
+      # broken directory. Recreate it as a symlink before build.
+      - name: Link wiki/ into quartz/content/
+        run: |
+          rm -rf quartz/content
+          ln -s ../wiki quartz/content
+
+      - name: Install Quartz dependencies
+        working-directory: quartz
+        run: npm ci
+
+      - name: Build Quartz site
+        working-directory: quartz
+        run: npx quartz build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: quartz/public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-22.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

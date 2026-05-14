@@ -1,5 +1,5 @@
 ---
-title: "MODE 8" — 16-colour low-frequency mode
+title: '"MODE 8" — 16-colour low-frequency mode'
 type: synthesis
 tags: [custom-mode, mode-8, 16-colour, low-frequency, crtc, video-ula]
 sources: [naug-ch13-video, naug-ch22-vias]

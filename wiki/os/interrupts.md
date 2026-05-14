@@ -13,8 +13,8 @@ How an IRQ flows from chip to handler, what MOS does, and where user code interc
 ## Hardware → vector
 
 ```
-Chip raises IRQ line ─→ 6502 finishes current insn ─→ push PC, push P (B=0)
-                    ─→ set I flag ─→ JMP (&FFFE)
+Chip raises IRQ line --> 6502 finishes current insn --> push PC, push P (B=0)
+                    --> set I flag --> JMP (&FFFE)
 ```
 
 `(&FFFE)` points into MOS. The MOS handler:

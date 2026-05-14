@@ -15,15 +15,15 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.334-358. The **Tube** is the
 ## Architecture
 
 ```
-┌─────────────────────────────┐       ┌─────────────────────────────┐
-│   BBC (I/O processor)       │       │   Second processor          │
-│   - all I/O (screen, kbd,   │       │   - CPU (6502/Z80/32016/…)  │
-│     printer, disc, ADC…)    │  ┌──┐ │   - RAM (~64 KB to 4 MB)    │
-│   - current language ROM    │◀─┤T │▶│   - OS ROM (small)          │
-│   - paged ROMs              │  │ub│ │   - Tube ULA                │
-│   - 16/32K user RAM         │  │e │ │   - **no I/O hardware**     │
-│   - Tube ULA @ &FEE0-&FEFF  │  └──┘ │   - Tube ULA @ &FEF8-&FEFF  │
-└─────────────────────────────┘       └─────────────────────────────┘
++-----------------------------+      +-----------------------------+
+|   BBC (I/O processor)       |      |   Second processor          |
+|   - all I/O (screen, kbd,   |      |   - CPU (6502/Z80/32016/..) |
+|     printer, disc, ADC..)   | +--+ |   - RAM (~64 KB to 4 MB)    |
+|   - current language ROM    |<|T |>|   - OS ROM (small)          |
+|   - paged ROMs              | |ub| |   - Tube ULA                |
+|   - 16/32K user RAM         | |e | |   - **no I/O hardware**     |
+|   - Tube ULA @ &FEE0-&FEFF  | +--+ |   - Tube ULA @ &FEF8-&FEFF  |
++-----------------------------+      +-----------------------------+
 ```
 
 When a Tube is active:
@@ -172,20 +172,20 @@ For *single byte* host-memory access from the parasite, OSWORD `&05`/`&06` is th
 ## Parasite memory map
 
 ```
-&FFFF ┌──────────────────────────┐
-      │ Tube hardware            │
-      │ + parasite OS ROM        │ &F800-&FFFF (2 KB)
-&F800 ├──────────────────────────┤
-      │ user memory              │
-&C000 ├──────────────────────────┤
-      │ current language         │ &8000-&BFFF (16 KB, not relocated)
-&8000 ├──────────────────────────┤
-      │ main user memory         │
- OSHWM├──────────────────────────┤
-      │ language workspace       │ &0400-&07FF
-&0400 ├──────────────────────────┤
-      │ OS workspace             │
-&0000 └──────────────────────────┘
+&FFFF +--------------------------+
+      | Tube hardware            |
+      | + parasite OS ROM        | &F800-&FFFF (2 KB)
+&F800 +--------------------------+
+      | user memory              |
+&C000 +--------------------------+
+      | current language         | &8000-&BFFF (16 KB, not relocated)
+&8000 +--------------------------+
+      | main user memory         |
+ OSHWM+--------------------------+
+      | language workspace       | &0400-&07FF
+&0400 +--------------------------+
+      | OS workspace             |
+&0000 +--------------------------+
 ```
 
 OSHWM on a 6502 2P typically = `&0800`. Up to 44 KB user RAM available with BASIC relocated to `&B800`.
