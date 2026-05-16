@@ -49,6 +49,8 @@ Trivial. `A0-A14` map straight to `DA0-DA14`.
 
 MOS programs MODE 7 such that `MA11 = 1, MA12 = 0`, which forces `AA3 = 1` always. The XOR of `MA6` with the 1 MHz clock fetches *two distinct bytes per microsecond* — IC 15 routes one to the SAA 5050 and discards the other. Side effect: **all 128 DRAM rows are refreshed every scanline**, giving a worst-case refresh interval of **88 µs** (well within DRAM spec). Without the XOR trick the worst case would be 1.96 ms — out of spec.
 
+**Exploitable**: if you force TTX VDU mapping in a *graphics* mode (by setting R12/R13 to the teletext base while keeping the Video ULA in modes 0/1/2), the Video ULA sees **both** bytes per µs. Every other byte arrives from `addr XOR &40`. This isn't a bug — it's the foundation of [[techniques/chunky-mode]], a 1 KB chunky display with the EOR-64 interleave baked into the back-buffer layout. The Master adds an extra layer (MA6 vs MA7 toggle depending on RA0).
+
 This is why MODE 7 is special at the hardware level. The SAA 5050 only needs the same character cell address held across all 20 scanlines of a teletext row; the chip handles internal pixel generation. So `RA` is ignored; `MA` repeats per scanline.
 
 ## HI RES mode (MODES 0-6)

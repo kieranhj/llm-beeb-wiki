@@ -293,3 +293,12 @@ grep "^## \[" wiki/log.md | tail -10
   - 256-step angle (so 360° = 256): angle arithmetic via ADC, no modulo.
 - Outbound references added: Toby Lobster's multiply_test + sqrt_test benchmark repos (https://github.com/TobyLobster/multiply_test, https://github.com/TobyLobster/sqrt_test) as the authoritative comparison sources for 6502 math.
 - Open follow-ups: division/reciprocal page; S15×S15 or S15×S31 extension for larger-world perspective work.
+
+## [2026-05-16] ingest | chunky-mode.txt (Tom Seddon's "mythical chunky mode" + Julian Brown 2015)
+- Source: raw/notes/chunky-mode.txt (Seddon's modelb.bbcmicro.com tech page + Julian Brown's 2015 Stardot mailing-list post).
+- Created: wiki/sources/chunky-mode-notes.md (combined source with both authors' claims and the open mystery flagged).
+- Created: wiki/techniques/chunky-mode.md (framed as "high-res chunky IS achievable on Model B" with the EOR-64 interleave layout). Includes Seddon's chase-the-raster software workaround with cycle-budget breakdown.
+- Updated: wiki/hardware/address-translation.md — added the "exploitable" note: the MA6-XOR-clock fetches *two* bytes per µs in TTX VDU mode, normally one discarded but the second is the foundation of chunky-mode tricks.
+- Updated: wiki/index.md (1 source + 1 technique).
+- Key correction during ingest: my initial summary described modes 0/1/2 chunky as "scrambled" / broken on Model B; user pointed out (and our own address-translation page already documents) that the second byte comes from `addr XOR &40` — deterministic, exploitable. Re-framed the technique as achievable, not broken.
+- Genuine open mystery captured: the Model B's H/V sync corruption when TTXVDU is asserted in a non-MODE-7 graphics mode (Julian's hardware report). Separate from the address interleave. Speculated causes (IC 5 / IC 6 / IC 15 interaction) but no resolution. Needs scope work on real hardware.
