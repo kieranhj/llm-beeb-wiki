@@ -43,6 +43,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/hexwab-stable-raster]] — hexwab's "Cycle-exact display diddling" post (Retrosoftware, 2016). The canonical 2-cycle-precision stable-raster technique: narrowing-loop sync + T1 free-run + per-IRQ latch-read jitter compensation.
 - [[sources/accc-compendium]] — Serge Querné's *Amstrad CPC CRTC Compendium* (Logon System, v1.7 2023). 284-page chip-internal cycle-by-cycle reference for the 6845. CPC "CRTC 0" = BBC's HD6845S/SP — canonical reference for chip-internal CRTC behaviour.
 - [[sources/master-arm]] — Acorn *Advanced Reference Manual for the BBC Master Series* (~1986, 292 pages). Canonical reference for Master 128 / Compact / ET / Turbo. Ingested chapter-by-chapter.
+- [[sources/master-rm]] — Acorn *Master Series Reference Manual Parts 1 + 2* (~1986, 400+324 pages). User-and-programmer-level documentation: MOS, VDU driver (60 pages), filing systems, BASIC. Ingested chapter-by-chapter.
 - [[sources/bbc-user-guide]] — Acorn *BBC Microcomputer System User Guide* (Coll, 1982, 522 pages). Original Model B end-user manual. Mostly BASIC tutorial (out of scope); canonical for VDU control codes / PLOT codes / error messages.
 - [[sources/bbc-service-manual]] — Acorn *BBC Microcomputer Service Manual* (1982-85, 90 pages). Electrical-level circuit description + repair / link options for Model A/B PCB issues 1-7. Cross-checks for chip pages.
 

@@ -512,3 +512,7 @@ Lint findings deferred / left for human:
 
 <!-- llm-wiki-footer -->
 *This wiki is curated by **Claude** following the [LLM-Wiki methodology](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*
+
+## [2026-05-16] ingest | Master Reference Manual source page (Parts 1 + 2)
+- Created: wiki/sources/master-rm.md — source page covering both volumes of the user/programmer-level Master Reference Manual (400 + 324 pages). Distinguished from the deeper [[sources/master-arm]] (Advanced Reference Manual). Per-chapter status table for all Part 1 + 2 chapters.
+- Updated wiki/index.md with new source entry.
