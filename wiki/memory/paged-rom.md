@@ -2,7 +2,7 @@
 title: Paged ROM / Sideways RAM
 type: memory
 tags: [paged-rom, sideways-rom, sideways-ram, andy]
-sources: [naug-ch12-memory, beebwiki-andy]
+sources: [naug-ch12-memory, beebwiki-andy, master-arm]
 updated: 2026-05-14
 ---
 
@@ -22,6 +22,19 @@ bit:   7    6    5    4    3    2    1    0
   - **Master**: when set, swaps in 4 KB of private RAM ("**ANDY**") at `&8000-&8FFF` — MOS uses this during graphics ops.
   - **B+**: when set, swaps in 12 KB of paged RAM at `&8000-&AFFF`. Can hold ROM images (loadable as the current language with `*FX 142,128`, but not retained across BREAK).
   - **Model B / Electron**: bit 7 is unused.
+
+The Master ARM ([[sources/master-arm]] Ch 3) explicitly notes bits 4-6 of ROMSEL are reserved (always 0) — don't write them.
+
+## Master ROM organisation (matrix-decoded)
+
+Per [[sources/master-arm]] Ch 3 page 32, the Master's 16 ROM slots are *not* sixteen independent sockets. They are matrix-decoded:
+
+- **Slots 4-7** are paired into two 32 KB ROM positions on the board. The least significant bit of ROMSEL picks the upper vs lower 16 KB of each 32 KB ROM. (So slots 4+5 share a 32 KB chip; slots 6+7 share a 32 KB chip.)
+- **Slots 0-3** are similarly paired into two 32 KB positions on a "cartridge ROM" data path.
+- **Slots 8-15** live in a single 128 KB ROM on a separate data bus (this is where MOS, BASIC, the editor, and the on-board utilities live).
+- **Sideways RAM**: the Master 128 ships with **none**, but the four slots 4-7 can be link-selected to host 4 × 16 KB SWR instead of ROM (deselecting the corresponding ROM pair in 32 KB chunks). The Master Compact ships with 4 KB SWR (ANDY only).
+
+You don't usually need to care about this from software — ROMSEL is uniform 0-15 — but the matrix matters if you're populating ROM sockets: certain ROM-slot combinations require physical link changes.
 
 ## **DO NOT** write `&FE30` directly
 

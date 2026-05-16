@@ -50,7 +50,7 @@ For performance and demo work, the Master matters because:
 |---|---|---|---|
 | 1 | The Master Series Architecture | 14-20 | [[hardware/master-overview]] |
 | 2 | Circuit Description | 21-28 | *(not ingested — schematic-level detail)* |
-| 3 | Memory Organisation | 29-33 | *pending* |
+| 3 | Memory Organisation | 29-33 | Refined [[memory/shadow-ram]] (E-bit precise mechanism, region (a)/(b) vocabulary); refined [[memory/paged-rom]] (Master matrix ROM organisation, ROMSEL reserved bits) |
 | 4 | Slow Data Bus | 34-38 | *pending* |
 | 5 | Keyboard Controller | 39-43 | *pending* |
 | 6 | Screen Display | 44-53 | *pending* |
@@ -79,3 +79,4 @@ For performance and demo work, the Master matters because:
 Updated incrementally as chapters are ingested. Each entry: chapter → wiki pages created/extended.
 
 - **Ch 1 (architecture overview)** → created [[hardware/master-overview]]; cross-refs added from [[hardware/system-via]] and [[hardware/6502]].
+- **Ch 3 (memory organisation)** → refined [[memory/shadow-ram]] with the precise E-bit mechanism (flowchart-level: "previous opcode fetch from `&C000-&DFFF` AND current cycle not an opcode fetch") and Acorn region/LYNNE/HAZEL vocabulary; refined [[memory/paged-rom]] with Master ROM matrix-decoding details and the ROMSEL bits 4-6 reserved note.

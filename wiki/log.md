@@ -374,3 +374,8 @@ grep "^## \[" wiki/log.md | tail -10
 - Created: wiki/hardware/master-overview.md (Master 128 orientation: 65C12, 128 KB DRAM, ACCCON, SDB Port B reuse for CMOS, what's new vs B+, what's gone).
 - Updated: wiki/index.md (added source entry + hardware entry).
 - Per-chapter ingest plan registered as tasks 54-65; will commit after each chapter.
+
+## [2026-05-16] ingest | Master ARM Ch 3 (Memory Organisation)
+- Refined: wiki/memory/shadow-ram.md — E-bit precise mechanism via ARM Ch 3 flowchart (last opcode fetch from &C000-&DFFF AND this cycle not an opcode fetch). Added Acorn region (a)/(b) + LYNNE/HAZEL vocabulary. master-arm to sources.
+- Refined: wiki/memory/paged-rom.md — Master ROM matrix-decoding (slots 4-7 share 32 KB chips, slots 8-15 in 128 KB ROM on separate bus); ROMSEL bits 4-6 reserved. master-arm to sources.
+- Updated wiki/sources/master-arm.md filed-into log.

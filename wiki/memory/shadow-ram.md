@@ -2,7 +2,7 @@
 title: Shadow RAM & ACCCON
 type: memory
 tags: [shadow-ram, acccon, hazel, double-buffer]
-sources: [naug-ch12-memory]
+sources: [naug-ch12-memory, master-arm]
 machines: [BBC B+, Master 128, Master Compact]
 updated: 2026-05-13
 ---
@@ -36,14 +36,42 @@ bit:   7    6    5    4    3    2    1    0
 
 | Bit | Name | Effect when set | Effect when clear |
 |---|---|---|---|
-| 0 | **D** | 6845 displays from shadow RAM | 6845 displays from main RAM |
-| 1 | **E** | VDU driver writes go to shadow RAM | VDU driver writes go to main RAM |
-| 2 | **X** | CPU sees shadow at `&3000-&7FFF` | CPU sees main at `&3000-&7FFF` |
-| 3 | **Y** | HAZEL: 8 KB filing-system RAM at `&C000-&DFFF` | MOS VDU driver code at `&C000-&DFFF` |
+| 0 | **D** | 6845 displays from LYNNE (shadow) | 6845 displays from main RAM |
+| 1 | **E** | Auto-shadow: CPU access to `&3000-&7FFF` routes to LYNNE *iff* last opcode fetch was from `&C000-&DFFF* and this cycle is **not** an opcode fetch | CPU sees main always |
+| 2 | **X** | Unconditional: CPU sees LYNNE at `&3000-&7FFF` for every access (including opcode fetch) | CPU sees main always |
+| 3 | **Y** | HAZEL: 8 KB filing-system RAM at `&C000-&DFFF` overlays MOS VDU driver | MOS VDU driver code at `&C000-&DFFF` |
 | 4 | **ITU** | Internal Tube enabled | External Tube |
 | 5 | **IFJ** | FRED/JIM (`&FC00-&FDFF`) routed to cartridge | Routed to 1 MHz bus |
 | 6 | **TST** | Hardware test mode (do not set) | Normal |
-| 7 | **IRR** | Forces an IRQ to the CPU | After IRQ processed |
+| 7 | **IRR** | Open-drain pull on NIRQ — forces IRQ to the CPU | Clear (no forced IRQ) |
+
+Acorn-internal vocabulary used in the Master ARM ([[sources/master-arm]] Ch 3):
+
+- **Region (a)** = `&3000-&7FFF` (the screen area, what LYNNE can overlay).
+- **Region (b)** = `&C000-&DFFF` (the MOS VDU driver area, what HAZEL can overlay).
+- **LYNNE** = the 20 KB shadow display RAM (in DRAM at `&9000-&DFFF`; physically distinct from main RAM at `&3000-&7FFF`).
+- **HAZEL** = the 8 KB filing-system overlay RAM.
+
+### How the E-bit "magic" works (the precise mechanism)
+
+ARM Ch 3 page 31 shows the flowchart:
+
+```
+Wait until end of CPU clock cycle
+   ↓
+Was the last cycle an opcode fetch (SYNC=1) from &C000-&DFFF in RAM?
+   No → access main memory at &3000-&7FFF
+   Yes ↓
+Is *this* cycle an opcode fetch?
+   Yes → access main memory at &3000-&7FFF
+   No  → read/write LYNNE
+```
+
+This is what makes shadow MODE "just work" when the MOS VDU driver writes to the screen: VDU driver code runs from `&C000-&DFFF` (region b), so its data accesses to `&3000-&7FFF` get auto-redirected to LYNNE — without the user code (which runs from `&0E00-&7FFF` or similar) needing to know. User code's opcode fetches from `&3000-&7FFF` still hit main, so user programs in that area work normally.
+
+The dependency on "previous cycle was an opcode fetch" is the chip's way of distinguishing "VDU driver doing a screen write" from "VDU driver returning from RTS" (a stack pull, also not an opcode fetch but should go to stack). The MOS VDU driver always does *its* screen writes immediately after an instruction fetch from its own code region, so the heuristic catches the right case.
+
+For unconditional CPU-side LYNNE access (e.g. user code wants to write directly to the shadow screen without going through the VDU driver), use **X**, not E.
 
 ## The "running from where you switch from" trap
 
