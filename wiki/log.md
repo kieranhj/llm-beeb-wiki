@@ -516,3 +516,16 @@ Lint findings deferred / left for human:
 ## [2026-05-16] ingest | Master Reference Manual source page (Parts 1 + 2)
 - Created: wiki/sources/master-rm.md — source page covering both volumes of the user/programmer-level Master Reference Manual (400 + 324 pages). Distinguished from the deeper [[sources/master-arm]] (Advanced Reference Manual). Per-chapter status table for all Part 1 + 2 chapters.
 - Updated wiki/index.md with new source entry.
+
+## [2026-05-16] ingest | MRM Part 1 Ch E.1-E.3 (VDU driver intro + commands)
+- Extensively refined wiki/os/vdu.md:
+  - Added parsing model intro (byte-range interpretation table) + OSBYTE &DA queue-length call
+  - Expanded VDU 18 with GCOL mode 5 (leave unchanged) + complete ECF mode-byte encoding (16+n / 32+n / 48+n / 64+n) for the 4 ECF patterns
+  - Significantly expanded VDU 23,n sub-function reference: 4-level cursor (VDU 23,1), ECF row-byte pixel mapping per bpp (VDU 23,2-5), dotted-line pattern (VDU 23,6), direct window scroll (VDU 23,7) with full d/z parameter tables, clear-block (VDU 23,8) with base-position codes (0,1,2,4,5,6,8,9,10), default ECF pattern table (VDU 23,11), simple ECF (VDU 23,12-15), cursor-movement-control flags (VDU 23,16) bit-by-bit with all 8 X/Y direction encodings and the "81-column" scroll-protect mode
+- Extensively refined wiki/video/plot-codes.md:
+  - Replaced PLOT k structure section with the precise MRM Ch E.3 semantics: k MOD 8 coord-and-colour mode table (relative/absolute + foreground/background/invert/leave), k DIV 8 operation group table covering all 32 groups
+  - Added geometric primitive precise definitions: circles (centre = current cursor, radius limit < 16384), arc/chord/sector geometry (3-point centre/start/direction-of-end convention, anticlockwise), ellipses (centre = old cursor, X-intercept = current cursor X, (x,y) = highest/lowest point — Y of current ignored) with worked rotated-ellipse PROC from MRM p202
+  - Move/copy rectangle special k handling (PLOT 184-191 breaks usual k MOD 4 colour convention; codes 184/185 move-rel, 186/187 copy-rel, 188/189 move-abs, 190/191 copy-abs)
+  - Flood-fill workspace usage (&8400-&87FF in MOS sideways RAM on Master)
+  - Horizontal line fill 4-variant table (background-stop vs foreground-stop, R-only vs L+R)
+- master-rm added to sources of vdu.md + plot-codes.md.

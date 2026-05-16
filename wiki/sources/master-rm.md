@@ -39,7 +39,7 @@ For Master-internal electrical and chip-level detail, prefer [[sources/master-ar
 | B | The Machine Operating System (MOS) | 18-23 | *overview — cross-checked vs [[os/calls]]* |
 | C | MOS commands | 24-44 | *pending — *command reference* |
 | D | Using MOS routines | 45-164 | *cross-check vs [[os/osbyte]] / [[os/osword]] / [[os/calls]]* |
-| **E** | **The VDU driver (~60 pages)** | **165-224** | ***user-emphasis — significantly extend [[os/vdu]] + [[video/plot-codes]] with GXR detail (ellipses, fills, ECF patterns)*** |
+| **E** | **The VDU driver (~60 pages)** | **165-224** | E.1-E.3 filed: extensively extended [[os/vdu]] (parsing model, OSBYTE &DA, VDU 18 ECF modes, VDU 23,n complete sub-function reference) + [[video/plot-codes]] (precise k mod 8 semantics, GXR primitive geometry, move/copy rect). E.4-E.5 pending. |
 | F | Hardware and memory usage | 225-264 | *cross-check vs Master ARM* |
 | G | Filing Systems (common) | 265-296 | *pending — filing-system API* |
 | H | The Cassette Filing System | 297-308 | *pending* |
@@ -60,6 +60,8 @@ For Master-internal electrical and chip-level detail, prefer [[sources/master-ar
 ## Filed into (incremental audit trail)
 
 Populated as chapters are ingested. Each entry: chapter → wiki pages created/extended.
+
+- **Ch E.1-E.3 (VDU driver: intro, summary, descriptions)** → significantly extended [[os/vdu]] with: parsing model (byte-range table), `OSBYTE &DA` queue-length call, full VDU 18 GCOL mode 5 + ECF mode-byte encoding, VDU 23,n complete sub-function reference (cursor on/off levels, ECF row-byte pixel mapping per bpp, VDU 23,7 direct scroll, VDU 23,8 clear-block base-position table, VDU 23,16 cursor-movement-control flag bits). Significantly extended [[video/plot-codes]] with: precise "k mod 8" coord+colour semantics (relative/absolute + plot-mode selection), precise GXR primitive specifications (circles with radius limit, arc/chord/sector 3-point geometry, ellipse parameter convention with worked rotated-ellipse PROC, flood-fill workspace usage), move/copy rectangle special k handling.
 
 ---
 
