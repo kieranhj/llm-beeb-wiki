@@ -52,7 +52,7 @@ For performance and demo work, the Master matters because:
 | 2 | Circuit Description | 21-28 | *(not ingested — schematic-level detail)* |
 | 3 | Memory Organisation | 29-33 | Refined [[memory/shadow-ram]] (E-bit precise mechanism, region (a)/(b) vocabulary); refined [[memory/paged-rom]] (Master matrix ROM organisation, ROMSEL reserved bits) |
 | 4 | Slow Data Bus | 34-38 | Refined [[hardware/cmos-rtc]] (sideways-ROM alarm pattern via service calls &04/&05); cross-checked SDB control port table in [[hardware/system-via]] |
-| 5 | Keyboard Controller | 39-43 | *pending* |
+| 5 | Keyboard Controller | 39-43 | Refined [[os/keyboard]] with KBDENC three-mode scan (free-run / column / row) hardware section |
 | 6 | Screen Display | 44-53 | *pending* |
 | 7 | The User Port | 54-62 | *pending* |
 | 8 | The Serial Processor | 63-64 | *pending — low priority* |
@@ -81,3 +81,4 @@ Updated incrementally as chapters are ingested. Each entry: chapter → wiki pag
 - **Ch 1 (architecture overview)** → created [[hardware/master-overview]]; cross-refs added from [[hardware/system-via]] and [[hardware/6502]].
 - **Ch 3 (memory organisation)** → refined [[memory/shadow-ram]] with the precise E-bit mechanism (flowchart-level: "previous opcode fetch from `&C000-&DFFF` AND current cycle not an opcode fetch") and Acorn region/LYNNE/HAZEL vocabulary; refined [[memory/paged-rom]] with Master ROM matrix-decoding details and the ROMSEL bits 4-6 reserved note.
 - **Ch 4 (slow data bus)** → added master-arm to [[hardware/system-via]] sources; refined [[hardware/cmos-rtc]] with the sideways-ROM alarm-driver pattern (service calls `&04` + `&05`) and a strobe-ordering reminder for the slow-bus dance.
+- **Ch 5 (keyboard controller)** → refined [[os/keyboard]] with KBDENC three-mode scan section (free-run / column detection / row detection) and the 10 ms rescan loop.

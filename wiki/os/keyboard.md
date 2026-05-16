@@ -2,7 +2,7 @@
 title: Keyboard
 type: os
 tags: [keyboard, ascii, inkey, ikn, soft-keys, scan]
-sources: [naug-ch14-keyboard]
+sources: [naug-ch14-keyboard, master-arm]
 updated: 2026-05-13
 ---
 
@@ -188,6 +188,20 @@ After writing the status byte directly, call `OSBYTE &76` to update the keyboard
 - **Direct matrix scan** (custom System VIA driver) can poll all 80-something keys in ~200 cycles total — useful for games needing per-frame full-keyboard read.
 - **Disabling auto-repeat** (`*FX 11,0`) is mandatory for any game that distinguishes "key down" from "auto-repeated".
 - The keyboard buffer (ID 0) carries the type-ahead — purge with `OSBYTE &15, X=0` if you want a clean slate ([[os/buffers]]).
+
+## KBDENC scan modes (hardware)
+
+The Master's keyboard encoder (`KBDENC` IC, a custom Acorn ULA — same role on Model B / B+ via different parts) operates in three modes per [[sources/master-arm]] Ch 5:
+
+1. **Free-run** (idle, no key pressed): a 4-bit counter clocked at 1 MHz drives a 4-to-15 decoder, rippling a logic-low signal through columns C0-C14. If any key is pressed, the NAND output goes high and triggers CA2 → System VIA → IRQ. The CPU does nothing during free-run.
+2. **Column detection** (after IRQ, MOS scan): MOS asserts `nKBEN` (latch line 3 low) to stop free-run, then writes a column number to PA0-PA3 and reads PA7. The selected column output drives low; if a key on that column is pressed, PA7 reads low. MOS scans columns 0-14 to find the active one.
+3. **Row detection**: with the column held, MOS writes a row number to PA4-PA6 and reads PA7. The row decoder gates one row's input onto PA7 in inverted form, so PA7 high means "key at this (col,row) is pressed".
+
+After identifying all pressed keys, MOS returns to free-run by clearing nKBEN. MOS rescans every 10 ms (via the 100 Hz interval timer) while any key remains held, until the matrix is clear.
+
+**For a direct-matrix scan from user code** (`SEI` + drive PA + read PA7), you take over the slow bus — which competes with sound-chip writes and CMOS access. Pattern: own the bus, drive nKBEN low (latch line 3 = 0), iterate through column/row pairs of interest, then restore. ~3 µs per key tested; ~200-300 cycles to scan all interesting keys.
+
+The Model B / B+ keyboard hardware is functionally identical at the slow-bus interface, so this section applies to all BBC machines — just the silicon implementing the matrix scanner differs.
 
 ## See also
 

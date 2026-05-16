@@ -384,3 +384,7 @@ grep "^## \[" wiki/log.md | tail -10
 - Refined: wiki/hardware/cmos-rtc.md — sideways-ROM alarm-driver pattern via service calls &04 (Offer Command for *SETALARM) + &05 (Unknown Interrupt for AF response). Strobe-ordering reminder. master-arm to sources.
 - Refined: wiki/hardware/system-via.md — master-arm added to sources (SDB control port table cross-checked).
 - Updated wiki/sources/master-arm.md filed-into log.
+
+## [2026-05-16] ingest | Master ARM Ch 5 (Keyboard Controller)
+- Refined: wiki/os/keyboard.md — added KBDENC hardware section (free-run / column detection / row detection scan modes, nKBEN signalling, 10 ms rescan loop, direct-matrix scan note). master-arm to sources.
+- Updated wiki/sources/master-arm.md filed-into log.
