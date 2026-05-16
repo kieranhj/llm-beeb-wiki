@@ -48,10 +48,11 @@ For Master-era content, prefer [[sources/master-arm]]. For Master-era OSBYTE/OSW
 | 43 | Assembly language | 444-468 | *out of scope — already covered by NAUG Ch2 ingest* |
 | 44 | Analogue input | 469-472 | *cross-checked vs [[hardware/upd7002-adc]] — no new content* |
 | 45 | Expanding the system | 473-475 | *pending — original 1MHz / Tube / disc expansion overview* |
-| 46 | Error messages | 476-484 | *pending — error number ↔ message table* |
+| 46 | Error messages | 476-484 | Created [[os/errors]] (BASIC 0-44 + CFS 216-223 + MOS 250+ + filing-system error tables) |
 | 48 | Appendix | 487-514 | *pending — ASCII / INKEY / character codes* |
 
 ## Filed into
 
 - **Ch 34 (VDU drivers)** → created [[os/vdu]] (full VDU control code reference table, per-code semantics, byte-count for each).
 - **Ch 29 (Advanced Graphics) + Ch 33 (PLOT BASIC keyword)** → created [[video/plot-codes]] covering PLOT k=0-95 (line variants, fills, triangles, single points) from User Guide and k=96-255 (rectangle, parallelogram, circle, ellipse, flood fill) from Master ARM Ch 6.
+- **Ch 46 (Error messages)** → created [[os/errors]] (BASIC 0-44 alphabetical, CFS 216-223, MOS 250+, DFS/ADFS/NFS conventions, BRK-raising-from-user-code pattern).

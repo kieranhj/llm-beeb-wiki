@@ -110,6 +110,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[os/break-intercept]] — BREAK / reset handling: `OSBYTE &F7-&F9` JMP intercept, reset types (`&FD`), startup options (`&FF`), game-launcher patterns.
 - [[os/printer]] — Printer driver: `*FX 5` destinations, UPTV (`&222`), ignore character, custom printer hooks.
 - [[os/vdu]] — Full VDU control code reference (VDU 0-31 + 127). Byte counts, semantics, VDU 23 sub-functions, VDU 18 GCOL modes.
+- [[os/errors]] — Error number ↔ message reference. BASIC errors 0-44, CFS 216-223, MOS 250+, filing-system errors. BRK-raising pattern.
 
 ## Techniques
 

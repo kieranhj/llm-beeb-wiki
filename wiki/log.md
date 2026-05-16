@@ -461,3 +461,8 @@ Lint findings deferred / left for human:
 - Updated wiki/index.md (1 new video page).
 - Updated wiki/os/vdu.md to point at the live plot-codes page (was "forthcoming").
 - Updated wiki/sources/bbc-user-guide.md filed-into log.
+
+## [2026-05-16] ingest | User Guide Ch 46 (Error messages)
+- Created: wiki/os/errors.md — full BASIC error table (0-44 alphabetical, numerical, with cause), CFS errors 216-223, MOS errors 250+, common DFS/ADFS/NFS error conventions. Pattern for raising errors from user code via BRK + structure. Compatibility notes across BBC BASIC I-IV.
+- Updated wiki/index.md (1 new OS page).
+- Updated wiki/sources/bbc-user-guide.md filed-into log.
