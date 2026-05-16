@@ -481,3 +481,8 @@ Lint findings deferred / left for human:
 - Refined: wiki/os/break-intercept.md — added "How MOS distinguishes cold-start from BREAK at the hardware level" subsection (555 timer general reset vs separate RC network for Reset A signal into System VIA on power-up only). bbc-service-manual added to sources.
 - Refined: wiki/hardware/address-translation.md — bbc-service-manual added to sources (cross-confirmed IC numbers).
 - Updated wiki/index.md (1 new source).
+
+## [2026-05-16] ingest | Service Manual §5 + §7 (Links + Hardware Hints)
+- Reviewed: SM §5 (selection links) — out of scope, historical PCB configuration only.
+- Reviewed: SM §7.3 (Hardware Hints) — entries are end-user PCB mods (110 baud RS423 trick via S28 link, BREAK key disable via keyboard PCB link). No demoscene-relevant tricks worth filing as techniques.
+- Updated wiki/sources/bbc-service-manual.md chapter index with cross-check status.

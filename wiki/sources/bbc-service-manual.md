@@ -40,9 +40,9 @@ For chip-level documentation, prefer the per-chip pages ([[hardware/6502]], [[ha
 | 2 | General Description of Hardware | 9-12 | *out of scope (overview)* |
 | 3 | Detailed Circuit Description | 13-27 | Cross-checks against per-chip pages; Reset-A note filed in [[os/break-intercept]] |
 | 4 | Upgrading the PCB | 28-40 | *out of scope (repair procedures)* |
-| 5 | Selection links and circuit changes | 41-50 | *low priority — historical PCB config* |
-| 6 | Servicing and Fault-finding | 51-60 | *out of scope* |
-| 7 | Interfacing Survey | 61-67 | Section 7.3 "Hardware hints" filed into [[techniques/]] if anything genuinely new |
+| 5 | Selection links and circuit changes | 41-50 | *out of scope (historical PCB link config, factory-set)* |
+| 6 | Servicing and Fault-finding | 51-60 | *out of scope (also contains the canonical "test ROM" routine for finding dead machines — historical interest only)* |
+| 7 | Interfacing Survey | 54-60 | §7.3 reviewed — hints are end-user PCB mods (110 baud trick, BREAK-key disable). No demoscene-relevant tricks. |
 | 8 | Component location tables | 68-75 | *out of scope (parts list)* |
 | 9 | Appendices (schematics, parts list) | 76-90 | *out of scope* |
 
