@@ -105,3 +105,8 @@ For per-frame tick counting, prefer hooking the 100 Hz handler directly (or usin
 - [[timing/via-timers]] — System VIA T1 details + "don't steal T1" warning.
 - [[memory/os-workspace]] — Clock storage around `&292-&29F`.
 - [[hardware/cmos-rtc]] — Master's real-time clock (separate; battery-backed).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

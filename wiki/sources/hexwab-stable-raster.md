@@ -72,3 +72,8 @@ Higher delay = more robustness (more slack window) at the cost of consuming more
 - Identify the "random unexplained IRQs" that defeat naive stable-raster setups. Candidate sources: ACIA (RS423/cassette idle), light pen, network, sound-buffer-empty events. Worth a Stardot follow-up if anyone has scoped this.
 - CMOS-6502 cycle-correct version of the timer-load constant. Currently the demo code is NMOS-tuned.
 - Cross-platform comparison with Electron (DavidB in the thread asks about per-frame timing on Electron, which has different VIA-less timing fundamentals).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

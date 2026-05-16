@@ -129,3 +129,8 @@ Service ROMs generating their own errors: copy a BRK + message into RAM (commonl
 - NMI handler protocol — referenced (§8.1 + §17.4.1) but Ch17 ingest needed for full picture.
 - Event numbering (event 3 ADC, event 4 vsync, event 5 timer, event 7 RS423 error) — Ch7 ingest needed for the event system.
 - OS workspace at `&FC` is part of a larger zero-page IRQ-save area (`&FC`-`&FF` and beyond) — pin down on Ch6 ingest.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

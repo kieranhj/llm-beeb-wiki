@@ -89,3 +89,8 @@ See [[video/modes]]. Range is always inside `&3000-&7FFF`; the base depends on s
 - **Electron**: Model-B-equivalent map; no shadow RAM, no Tube, video ULA combined with CPU clock generation. ADC moves to `&FE18-&FE1A`. Electron ULA functions at `&FE00-&FE0F`.
 
 See [[memory/paged-rom]] and [[memory/shadow-ram]] for the details.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

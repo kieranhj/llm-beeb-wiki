@@ -97,3 +97,8 @@ The standard advice: **prefer User VIA timers** for general-purpose timing. Touc
 - A timer write while IRQs are enabled, with the timer already at a small count, may produce an IRQ between the C-L write and C-H write. Disable IRQs around the load to be safe.
 
 See [[hardware/via-6522]] for register layout. See [[sources/naug-ch08-interrupts]] (pending) for the IRQ dispatch chain.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

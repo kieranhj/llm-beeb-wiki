@@ -96,3 +96,8 @@ The OS keeps the screen-start copy at `&350/&351` (page 3 — see [[memory/os-wo
 - Or only do hardware scrolling in code that doesn't rely on OSWRCH afterwards (i.e., the game owns the screen).
 
 OSBYTE `&A0` with X=&50 will read these back if you need to recover the current value (R12/R13 are write-only on the chip).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

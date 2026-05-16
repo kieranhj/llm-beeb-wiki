@@ -99,3 +99,8 @@ Known: experimented with in the BBC scene; no shipped demo currently relies on i
 - BBC-side worked example: any implementer who has shipped a clean RVI demo on BBC should drop a source listing into `raw/code/`.
 - R.V.L.L. and (CPC) R.V.I. side-by-side comparison if anyone wants to port CRTC-1 RVI techniques to BBC equivalents.
 - The "freeze of C9" / "freeze of additional adjustment line" mechanisms (ACCC §13.2.3, §13.2.4) provide alternative routes to similar per-line C9 control — would be interesting to compare.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

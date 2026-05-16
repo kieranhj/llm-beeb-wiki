@@ -105,3 +105,8 @@ For MODE 7 (R4=30, R5=2, R9=18): one field = 31 × 20 + 2 = 622 half-rasters ≈
 - [[timing/cycle-stretching]] — CRTC writes pay 1-2c extra; Video ULA writes do not.
 - [[techniques/raster-splits]] — applying these primitives to produce split-screen effects.
 - [[sources/hd6845sp-hitachi-datasheet]] — primary source for everything on this page.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

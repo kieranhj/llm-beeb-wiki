@@ -136,3 +136,8 @@ This whole workaround is moot if you can get TTX VDU mapping working in graphics
 - [[hardware/video-ula]] — the consumer of the fetched bytes; its mode setting determines pixel layout per byte.
 - [[techniques/custom-modes]] — the broader "reprogram the CRTC to taste" pattern.
 - [[techniques/vertical-rupture]] — cleaner solution to the CRTC wrap problem in the software workaround.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

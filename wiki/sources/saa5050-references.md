@@ -135,3 +135,8 @@ When the primary Mullard datasheet PDF is OCR'd, revisit this and verify:
 - Set-after vs set-at table for all control codes (BeebFpga gives some; the datasheet has the full table).
 - Conceal/reveal behaviour formally.
 - "End box / start box" semantics (mdfs.net lists them but doesn't define).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

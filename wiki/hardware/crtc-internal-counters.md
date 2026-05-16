@@ -92,3 +92,8 @@ Compiled from compendium §11-§20:
 - [[hardware/crtc-6845-advanced]] — anomalous-rewrite verdicts reframed using this model.
 - [[sources/accc-compendium]] — the primary source for everything above. Read it directly when investigating an unusual chip behaviour.
 - [[techniques/single-rasterline-rupture]], [[techniques/kefrens-bars]], [[techniques/rvi]] — techniques that depend on understanding this model.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

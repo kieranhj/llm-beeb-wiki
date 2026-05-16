@@ -44,3 +44,8 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.172-224. The chapter has thr
 - §13.1.6 character-explosion (`*FX 20`) detail captured only at the headline level — write a dedicated [[techniques/exploding-font]] page if it comes up.
 - VDU 23,n function table (Master, n=2..16) summarised — full ECF pattern detail not extracted.
 - PLOT number table (§13.1.4) → filed into [[video/plot-codes]] (created from User Guide Ch 29 ingest 2026-05-16, with Master extensions from Master ARM Ch 6).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

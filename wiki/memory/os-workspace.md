@@ -188,3 +188,8 @@ Vector-number indexing (per ARM Ch 11 vector table): `vector_number = (vector_ad
 - [[os/calls]] — OS entry-point reference.
 - [[os/interrupts]] — IRQ handler conventions and `&FC` usage.
 - [[os/paged-roms]] — extended vectors install pattern (the high-level companion to the &0D9F-&0DEF detail above).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

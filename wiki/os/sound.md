@@ -116,3 +116,8 @@ The 100 Hz envelope step is the speed ceiling for MOS-driven sound. Anything fas
 - [[os/buffers]] — Channel buffers 4-7.
 - [[os/interrupts]] — 100 Hz T1 IRQ that services the buffers.
 - [[timing/via-timers]] — Timer-driven direct sound writes.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

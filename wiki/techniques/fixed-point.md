@@ -164,3 +164,8 @@ So `r * cos(θ)` becomes `LDY angle : LDX radius : JSR S8_x_Cosine`. About **65 
 
 - [[techniques/multiplication]] — the half-square identity that makes base-127 affordable.
 - Unused but available: any code that needs `[-1, +1]` math without the precision loss of base-64.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

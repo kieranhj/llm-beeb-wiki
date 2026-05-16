@@ -166,3 +166,8 @@ The user-level palette workflow (VDU 19, OSWORD `&0C`, expansion rules) is fully
 - Second source: VLSI Technologies VIDPROC VC 2023, later VC 2069 (Acorn part 201,647).
 - Some Model A units shipped with Video ULAs that failed the high-resolution-mode acceptance test (Model A's 16 KiB RAM cannot drive MODES 0-2, so the bad parts were "good enough"). Owners who upgraded to 32 KiB sometimes saw bad MODES 0/1/2.
 - **VideoNuLA** (Rob Coleman) is a modern drop-in replacement at IC 6 with 12-bit colour depth (16 from 4096), pixel-by-pixel hardware horizontal scrolling, and attribute modes — samples A1 via flying lead.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

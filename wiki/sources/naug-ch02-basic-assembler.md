@@ -199,3 +199,8 @@ The trick: return `opt%` from the function so `OPT FNsave_regs(opt%)` lands the 
 
 - **BeebAsm dialect** — modern cross-assembler that closely mirrors this syntax. Worth its own page under [[tools/beebasm]] (planned) covering the diffs: directives that don't exist in BBC BASIC (`SAVE`, `INCBIN`, `ORG`, `GUARD`), modern bracket-free syntax, no two-pass FOR-loop boilerplate.
 - **CALL parameter block at `&600`** — documented at the headline level; if BASIC ↔ assembler parameter passing matters, expand from User Guide reference.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

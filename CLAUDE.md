@@ -155,6 +155,19 @@ Append-only. Every entry starts with a consistent prefix so it's greppable:
 - Acorn / community terminology over generic terms: "MOS" not "OS firmware", "sideways ROM" not "bank-switched ROM", "1MHz bus" not "slow bus", etc.
 - BBC hex convention (`&FE00`) in prose; match assembler dialect in code blocks.
 
+## Page footer (every wiki page)
+
+Every `.md` file under `wiki/` ends with an LLM-disclaimer footer. When creating a new page, append exactly:
+
+```
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*
+```
+
+The `<!-- llm-wiki-footer -->` marker is the idempotency check — a footer-application script greps for this and skips files that already have it.
+
 ## Out of scope (for now)
 
 - Embedding-based search / RAG infrastructure — `index.md` is enough at the expected scale.

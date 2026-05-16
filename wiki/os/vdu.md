@@ -196,3 +196,8 @@ For long sequences (e.g. CRTC reprogramming), each VDU byte still costs an OSWRC
 - [[os/calls]] — OSWRCH / OSWORD entry points.
 - [[techniques/custom-modes]] — bypassing VDU for direct CRTC + ULA control.
 - [[sources/bbc-user-guide]] — Ch 34, the canonical primary source.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

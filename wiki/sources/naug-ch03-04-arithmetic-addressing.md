@@ -84,3 +84,8 @@ The assembler computes the offset; `Out of range` error means the label is outsi
 
 - BCD multi-byte arithmetic worked examples — programmer rolls own; could file a technique page if BCD turns out to be in scope for performance work.
 - Cross-reference the NMOS-vs-65C12 BCD flag indeterminacy with WDC 65C02 datasheet at some point.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

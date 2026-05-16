@@ -120,3 +120,8 @@ This is implemented via per-scanline ACCCON `D` bit toggle in the draw loop, alt
 - [[hardware/crtc-6845]] — R1 (chars per line) and R2 (hsync position) are independent of horizontal total R0, so reducing R1 doesn't break horizontal timing.
 - [[memory/shadow-ram]] — ACCCON D bit for per-scanline main↔SHADOW toggle.
 - The "narrow CRTC display via R1" trick is reusable wherever you need to pack more rows into a fixed memory budget.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

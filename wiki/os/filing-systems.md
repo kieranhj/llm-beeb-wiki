@@ -270,3 +270,8 @@ For game / demo loaders: OSGBPB with a custom NMI handler captured from DFS is t
 - [[os/calls]] — All MOS entry points including filing-system vectors.
 - [[os/paged-roms]] — Filing systems implement themselves as service ROMs; service-call dispatch.
 - [[memory/shadow-ram]] — Master HAZEL FS-handler workspace.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

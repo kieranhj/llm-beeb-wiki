@@ -87,3 +87,8 @@ The "right" use case is probably something none of the above. If you find one, t
 - [[sources/accc-compendium]] §13.2.4 (freeze of C9), §13.2.6 (R0=0 case study) — primary documentation.
 - [[techniques/triggered-vsync]] — sibling technique exploiting R7 (rather than R0) for chip-state control.
 - [[techniques/rvi]] — the R0=1 sibling (advance C9 via mini-cycles).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

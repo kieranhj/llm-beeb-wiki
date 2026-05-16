@@ -93,3 +93,8 @@ The **ACCCON `ITU` bit** ([[memory/shadow-ram]]) on Master selects internal vs e
 - [[memory/memory-map]] — Tube range `&FEE0-&FEFF` in the SHEILA map.
 - [[memory/shadow-ram]] — ACCCON ITU bit.
 - [[os/calls]] — OSWRCH / OSRDCH non-vectored variants (`NVWRCH` / `NVRDCH`) that don't pass over Tube.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

@@ -238,3 +238,8 @@ OSBYTE round-trip is **expensive** — JSR + indirect through `&20A` + dispatch 
 For tight raster code: read state via the OSBYTE once, cache the result, then do direct hardware writes inside your loop. E.g. for palette updates, query the OS palette copy once via OSBYTE `&B9`, then `STA &FE21` directly inside the hot loop — the OS shadow goes stale, but you'll restore it before exiting your routine (or accept the desync if MOS won't be called again).
 
 See [[hardware/video-ula]] for the OSBYTE-vs-direct trade-off discussion.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

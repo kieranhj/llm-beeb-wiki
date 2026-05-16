@@ -135,3 +135,8 @@ The narrow window (only 4 valid latch values = 8 cycles of acceptable entry jitt
 - [[os/interrupts]] — IRQ1V hook pattern, MOS IRQ dispatch timing.
 - Referenced by [[techniques/fx-framework]] as the next-precision-level alternative.
 - Referenced by [[techniques/kefrens-bars]], [[techniques/parallax-bars]] as the path to eliminating the residual jitter in those effects.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

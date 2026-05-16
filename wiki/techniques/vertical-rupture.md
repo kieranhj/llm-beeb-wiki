@@ -177,3 +177,8 @@ The technique above splits a frame into 2-3 CRTC cycles for status panels and si
 - [[video/hardware-scrolling]] — the address arithmetic this technique splits across cycles.
 - [[hardware/system-via]] — addressable latch bits for 10K/16K/20K screen wraparound select.
 - [[timing/via-timers]] — System VIA T2 one-shot used for the inter-cycle waits.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

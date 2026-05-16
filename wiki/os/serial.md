@@ -193,3 +193,8 @@ CFS timeout via `OSBYTE &B0` is a vsync-counted (50 Hz) timer for tape block gap
 - [[hardware/serial-ula]] — Baud rate + cassette switch.
 - [[os/interrupts]] — 6850 IRQ in MOS dispatch chain.
 - [[os/buffers]] — RS423 in/out buffers (IDs 1, 2).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

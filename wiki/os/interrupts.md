@@ -119,3 +119,8 @@ If you want "do something every 10 ms (centi-second)" — hook **T1 via IRQ2V** 
 NMI is non-maskable (SEI doesn't block it). Vector `&FFFA` points to MOS code that jumps to **`&0D00`** — a one-page RAM area where the NMI handler lives. Filing systems (DFS, Econet) install their NMI handlers here and chain.
 
 User code generally doesn't touch NMI — it's reserved for disc/network. See [[sources/naug-ch17-paged-roms]] for the NMI claim/release protocol via paged-ROM service calls (`OSBYTE &8F` with reason `&0B`/`&0C`).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

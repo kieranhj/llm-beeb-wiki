@@ -116,3 +116,8 @@ Standard: `VDU 23,0,R,V,0,0,0,0,0,0` (Tube-safe, with `*TV`/VDU 23,1 cursor-cont
 ## Notes
 
 The R0=127-across-the-board appears to be a transcription error in BeebWiki — the rest of the row data is sensible and matches MOS. NAUG §13.3.3 p196 has the correct `R0=63` for LF modes. We keep our entity-page values from NAUG; the source page logs the discrepancy.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

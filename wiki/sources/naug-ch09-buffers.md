@@ -91,3 +91,8 @@ Several caveats from NAUG §9.4 p137-139:
 
 - **Sound buffer mechanics**: how the SOUND OSWORD enqueues into channel 0-3 buffers and how the 100 Hz IRQ services them — covered in Ch21 ingest.
 - Exact per-buffer base addresses and lengths — NAUG p114 has the page-1 sound layout; full table would need to dump zp `&E2-&E6`-ish for CFS state and the OS workspace buffer pointers at `&2C3-&2D4` (Master) / `&2CC-&2DD` (Model B).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

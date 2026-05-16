@@ -119,3 +119,8 @@ Set TAB to `&80+n` to make TAB act as soft key n.
 - Full ASCII / INKEY / IKN table is ~100 rows. Captured in [[os/keyboard]] as a structured table.
 - Master numeric keypad layout — covered briefly; defer detailed per-key table unless needed.
 - Electron firm keys (`OSBYTE &CC`/`&CD`) cross-reference [[os/paged-roms]] Electron language-ROM section.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

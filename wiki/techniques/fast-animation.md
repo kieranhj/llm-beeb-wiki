@@ -101,3 +101,8 @@ See [[techniques/raster-splits]] for techniques that *exploit* mid-frame timing 
 ## Don't bother with MODE 7 for animation
 
 Teletext mode is 1 byte = 1 character, and the SAA5050 turns those bytes into glyphs. There's no per-pixel addressing. Use MODE 7 for HUDs / status displays / text-heavy screens where you want 25×40 character text in 1 KB of screen RAM — but not for sprite movement.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

@@ -131,3 +131,8 @@ addr    = screen_base + char_y * bytes_per_row + char_x * 8 + scan
 Where `bytes_per_row` is the screen width in bytes (640 for 80-col modes, 320 for 40-col modes 4-6).
 
 This 2D-into-1D layout is unusual — the screen is **column-major within a row of cells, row-major over rows**. Per-pixel plotting touches 8 bytes for the cell. See [[techniques/pixel-plot]] (planned).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

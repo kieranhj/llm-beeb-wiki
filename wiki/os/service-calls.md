@@ -118,3 +118,8 @@ The 100 Hz polling call (`&15`) is OK for periodic background work (CMOS RTC upd
 - [[os/paged-roms]] — ROM header format and dispatch mechanism.
 - [[memory/paged-rom]] — Hardware paging register `&FE30`.
 - [[os/calls]] — OS vector table.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

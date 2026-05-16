@@ -89,3 +89,8 @@ Updated: [[techniques/vertical-rupture]] (link to single-rasterline extension), 
 - The R4-rewrite-on-final-scanline behaviour: now understood as a consequence of overlapping register-sample windows in 1-scanline cycles (see [[techniques/kefrens-bars]] for the explanation). Still no chip-internal phase-by-phase diagram; would be nice if anyone has scoped which clock edge each register's compare actually happens on.
 - Twister "stable rotation parameters" (Spin / Twist / Knot) are a black-art parameter search; could be derived analytically.
 - BeebEm modernisation — Kevin Edwards is in the thread asking if BeebEm could fix its cycle timings to be like b-em. Worth tracking if it ever lands.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

@@ -108,3 +108,8 @@ Without the framework, every effect would have to re-solve the boot-sync + per-f
 - [[timing/cycle-stretching]] — the 8-cycle jitter on `&FE4D` polls.
 - [[os/interrupts]] — why this framework needs interrupts off (variable IRQ entry cost would destroy the cycle counting).
 - Every per-effect page in [[sources/twisted-brain]] builds on this framework.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

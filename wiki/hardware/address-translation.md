@@ -136,3 +136,8 @@ This is also the mechanism behind R12/R13's "XOR `&54`" rule documented on [[har
 - [[video/hardware-scrolling]] — how to use the wraparound for scrolling.
 - [[memory/memory-map]] — DRAM layout.
 - [[sources/beebwiki-address-translation]] — primary reference for this page.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

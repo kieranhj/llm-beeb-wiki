@@ -127,3 +127,8 @@ The drift accumulates to zero across the effect transition.
 - [[hardware/crtc-6845-advanced]] — R4 mid-cycle rewrite semantics (the C0<2 evaluation window).
 - [[hardware/crtc-internal-counters]] — the C0/C4/C9 counter model that explains why this happens.
 - [[sources/accc-compendium]] §12.2.1 / §13.2.1 — primary documentation of the R4 rewrite mechanism and the R.L.A.L. exit recipe.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

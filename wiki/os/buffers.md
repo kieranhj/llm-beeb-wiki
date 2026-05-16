@@ -125,3 +125,8 @@ The buffer system feeds events ([[os/events]]):
 - [[hardware/system-via]] — Keyboard CA2, ADC CB1 (consumers).
 - [[hardware/user-via]] — Printer CA1 (printer-buffer consumer).
 - [[hardware/sn76489]] — Sound chip (sound-buffer consumer).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

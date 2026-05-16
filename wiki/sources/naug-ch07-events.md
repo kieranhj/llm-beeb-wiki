@@ -55,3 +55,8 @@ Event 4 is the lazy/safe option; IRQ hooking is the performance option. The hand
 ## Open follow-ups
 
 - Exact `&2BD-`onwards layout for event enable flags (Master differs from Model B) — [[memory/os-workspace]] has the rough range; precise addresses would need MOS disassembly confirmation.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

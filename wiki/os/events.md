@@ -98,3 +98,8 @@ The enable mask is stored in OS workspace around `&2BD-&2BE` on Model B ([[memor
 - [[os/interrupts]] — IRQ chain (events ride on top).
 - [[os/buffers]] — buffer events (0, 1, 2) require buffer activity.
 - [[hardware/system-via]] — CA1 vsync, CB1 ADC, the source of events 3 and 4.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

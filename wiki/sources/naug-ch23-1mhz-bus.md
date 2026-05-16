@@ -149,3 +149,8 @@ STA &8000        ; any address inside the EPROM works
 - **Master Compact's joystick/mouse + cartridge slot variant** — different connector, partial signal set. Captured in source; rarely relevant unless targeting Compact specifically.
 - **CRTC reset signal via cartridge** (`ROMSTB/CRTCRST` pin) — Master uses this for genlock; potentially useful for synchronisation tricks but out of scope here.
 - **27513 EPROM availability** — these are obsolete; for new 128 KB cartridges, use a 27512 (64 KB) per slot with external glue logic, or modern flash.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

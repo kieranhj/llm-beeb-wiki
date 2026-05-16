@@ -95,3 +95,8 @@ No speech on the Master — those signals are reclaimed for the 146818. Sound an
 - Screen display + CRTC multiplexer specifics: [[hardware/crtc-6845]], [[video/hardware-scrolling]].
 - Internal Tube vs external Tube: [[os/tube]].
 - B/B+/Master cross-model differences: [[synthesis/model-differences]].
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

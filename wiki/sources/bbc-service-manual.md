@@ -49,3 +49,8 @@ For chip-level documentation, prefer the per-chip pages ([[hardware/6502]], [[ha
 ## Filed into
 
 - **§3 (Detailed Circuit Description)** → cross-checked against existing per-chip pages. Added cold-start vs warm-start "Reset A" mechanism note to [[os/break-intercept]]. Confirmed IC numbers for [[hardware/address-translation]] (IC32 addressable latch, IC39 74LS283 adder).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

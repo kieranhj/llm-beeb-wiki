@@ -210,3 +210,8 @@ For Tube-transparent code, **don't** use NVWRCH/NVRDCH.
 - [[hardware/6502]] — 6502 2P at 3 MHz, Master Turbo at 4 MHz.
 - [[os/calls]] — OS entry points (all Tube-aware except NVWRCH/NVRDCH).
 - [[os/paged-roms]] — service ROMs as the right place for Tube transfer code.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

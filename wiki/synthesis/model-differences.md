@@ -217,3 +217,8 @@ For finer-grained processor detection (NMOS vs CMOS vs Rockwell), use `OSBYTE &A
 - [[memory/os-workspace]] — Master second-32K workspace map.
 - [[hardware/6502]] — CPU variants and clock rates.
 - [[sources/master-arm]] App 1, 2, 3 — source detail.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

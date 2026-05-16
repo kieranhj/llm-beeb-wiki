@@ -64,3 +64,8 @@ The chapter-page references in this index mean that **every chapter** of NAUG is
 - Ch20 ADC — `&10`, `&11`, `&80`, `&BC`-`&BE`
 - Ch21 Sound — `&D1`-`&D6`, `&74`, `&E8`, OSWORDs `&07`, `&08`
 - Ch24 Misc — `&00`, `&01`, `&05`, `&06`, `&88`, `&7B`, `&F1`, `&F0`, `&F5`-`&F9`, `&FD`, `&FF`
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

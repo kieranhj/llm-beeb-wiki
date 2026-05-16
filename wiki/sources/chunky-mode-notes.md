@@ -81,3 +81,8 @@ Caveats noted by Seddon himself:
 - Working chunky-mode demo source — Tom Seddon's page promises one but the modelb.bbcmicro.com site is gone (web archive may have a copy).
 - Master high-speed chunky: derive the exact `(MA6, MA7)` toggle table as a function of RA0, so the screen-buffer-pre-interleave can be implemented portably across Model B and Master.
 - Cross-check Bitshifters / Stardot demos that have *actually shipped* a chunky-mode effect on real hardware to confirm whether the Model B sync issue has a known workaround (e.g. specific Video ULA control register dance, or a particular order of CRTC writes).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

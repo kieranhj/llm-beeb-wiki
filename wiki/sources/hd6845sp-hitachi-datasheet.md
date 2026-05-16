@@ -226,3 +226,8 @@ The internal logic of the datasheet is self-consistent: B = blink enable; with B
 
 - Updated: [[hardware/crtc-6845]] (R10 BLK encoding fix, R9 -2 in interlace-sync-&-video, programming restrictions, anomalous-rewrite summary, HD6845S features list, reset behaviour).
 - The advanced register-rewrite table is the natural body for the long-planned [[hardware/crtc-6845-advanced]] stub.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

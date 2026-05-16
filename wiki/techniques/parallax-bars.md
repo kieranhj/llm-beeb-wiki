@@ -111,3 +111,8 @@ Each of the 64 rows is one "camera offset" with all 7 bar layers drawn. Generate
 - [[memory/shadow-ram]] — ACCCON bit layout, D vs E vs X bits.
 - [[hardware/crtc-6845]] — R12/R13 latch timing relative to ACCCON immediate effect.
 - [[techniques/fx-framework]] — Timer 1 stable raster (the parallax effect would be impossible without it).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

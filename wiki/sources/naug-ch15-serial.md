@@ -159,3 +159,8 @@ CFS timeout (`OSBYTE &B0`) decremented every vsync (50 Hz) — times inter-block
 - **CFS programming details** — tape format covered briefly in Ch16 ([[sources/naug-ch16-filing]] §16.3.1). Not file-system-level interesting.
 - **Software UART** — there's no NAUG coverage of bit-banging your own serial via User VIA, but it's a reasonable performance project (would give finer baud-rate control and arbitrary protocols).
 - **6850 IRQ handling** — captured in [[os/interrupts]] already; cross-link confirmed.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

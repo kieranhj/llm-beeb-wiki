@@ -171,3 +171,8 @@ The 8 µs hold time is a chip requirement, not a 6502 timing constraint. At 2 MH
 - **OSWORD `&07` channel encoding** — high byte of the 2-byte channel field controls sync-channel and "queue or flush" behaviour. Acorn docs the encoding (`&00xx`-`&FFxx` semantics). Worth filing if writing music engines.
 - **Speech chip** (TMS5220-family) — Ch21 §21.4 mentions OSBYTE `&9E`/`&9F` + the SOUND `&FFxx` channel encoding triggers speech. Detailed protocol is in the Speech System User Guide, not this book.
 - **Master vs Model B sound timing** — Master's 65C12 BCD penalty ([[hardware/6502]]) may affect tight MOS sound-IRQ loops by a few cycles; investigate if envelope timing differs perceptibly.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

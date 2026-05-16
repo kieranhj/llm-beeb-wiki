@@ -104,3 +104,8 @@ Anything that looks like "256 lines of full-screen animation from a CPU that can
 - [[techniques/fx-framework]] — provides the stable-raster + module structure that makes per-frame cycle-counting tractable.
 - [[hardware/crtc-6845]] / [[hardware/crtc-6845-advanced]] — register latching behaviour is the whole substrate.
 - Effect pages: [[techniques/copper-bars]], [[techniques/parallax-bars]], [[techniques/vertical-blinds]], [[techniques/kefrens-bars]], [[techniques/checkerboard-zoom]], [[techniques/twister]].
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

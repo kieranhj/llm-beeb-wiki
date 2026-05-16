@@ -205,3 +205,8 @@ ARM also gives an alternative slow-bus sequence (BBC BASIC `EQUB`/`EQUD` style) 
 - [[memory/shadow-ram]] — Master ACCCON for related architecture.
 - [[os/interrupts]] — IRQ dispatch (RTC IRQs come in via System VIA when LK4 is closed).
 - [[sources/naug-ch19-clocks-cmos]] — Full worked alarm-IRQ example.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

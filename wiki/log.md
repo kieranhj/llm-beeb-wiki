@@ -503,3 +503,13 @@ Lint findings deferred / left for human:
 - os/errors.md MOS errors 250+ table only has 251/253/254 — incomplete. Acknowledged.
 - 0 orphan pages (no genuinely orphan content; new pages have cross-links from index plus the just-added See-also links).
 - 0 contradictions remaining; 0 code-block dialect issues in new files.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*
+
+## [2026-05-16] meta | Add LLM-disclaimer footer to all wiki pages
+- Applied a uniform footer to all 119 wiki/*.md files. Footer states the wiki is LLM-generated under the LLM-Wiki methodology, may contain errors, and points readers to the bbc-documents GitHub archive for authoritative content.
+- Footer is marked with `<!-- llm-wiki-footer -->` HTML comment for idempotent re-application.
+- Updated CLAUDE.md schema to document the requirement for new pages.

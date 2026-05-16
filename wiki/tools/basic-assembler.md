@@ -171,3 +171,8 @@ A dedicated [[tools/beebasm]] page is planned.
 - [[os/brk]] — BRK error message convention.
 - [[hardware/6502-isa]] — Mnemonic / cycle reference.
 - [[hardware/6502-addressing-modes]] — Mode mechanics.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

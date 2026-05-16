@@ -144,3 +144,8 @@ The bpp-from-ratio derivation isn't called out explicitly in NAUG — it's infer
 - [[hardware/video-ula]] — Video ULA control register + palette mechanics.
 - [[video/modes]] — MODE 2 pixel layout (which "MODE 8" inherits).
 - [[techniques/fast-animation]] — MODE-2-byte-aligned sprite techniques.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

@@ -205,3 +205,8 @@ One byte of OS workspace reserved for user code's own use. Default 0.
 
 - **Disc drive timings** in `OSBYTE &FF` bits 4-5 — covered briefly per-FDC; if writing copy-protection or non-standard formats, the per-1770/8271/1772 settling/step times matter.
 - **Master Compact joystick byte 18** — referenced but not enumerated; pull from Master Compact reference manual if anyone targets that platform.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

@@ -98,3 +98,8 @@ When `&E6` flag ≠ 0, only the condition itself is cleared — none of the abov
 ## Open follow-ups
 
 - None — this is a thin chapter; everything captured.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

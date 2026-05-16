@@ -104,3 +104,8 @@ See [[hardware/1mhz-bus]] for the cartridge / FRED / JIM specifics, including th
 - [[hardware/tube-ula]] — un-stretched, useful for bulk Tube transfers.
 - [[memory/memory-map]] — full address-space layout.
 - [[sources/beebwiki-cycle-stretching]] — primary reference.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

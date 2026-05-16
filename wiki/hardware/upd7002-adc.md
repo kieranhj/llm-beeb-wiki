@@ -117,3 +117,8 @@ See [[os/adc]] for the OSBYTE-level simulator config (`&BE` bits).
 - [[os/adc]] — MOS-level ADC interface + joystick reading.
 - [[hardware/system-via]] — CB1 = ADC end-of-conversion IRQ source.
 - [[memory/memory-map]] — `&FEC0-&FEDF` (B/B+) and `&FE18-&FE1A` (Master/Electron) in SHEILA.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

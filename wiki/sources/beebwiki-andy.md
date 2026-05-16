@@ -62,3 +62,8 @@ Original B+ documentation warned ANDY "may not be available in 'other Acorn prod
 ## Filed into
 
 - Updated: [[memory/paged-rom]] (OSWORD `&05`/`&06` access; B+ `&A000-&AFFF` shadow trick; MOS scan rule).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

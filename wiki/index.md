@@ -145,3 +145,8 @@ Content catalog. Routing table for queries — start here, then drill into pages
 
 - [[synthesis/mode-8-16colour-lf]] — Community "MODE 8" (80×256, 16 colours, 10 KB) recipe. MODE 5 CRTC + Video ULA control = `&E0`. Derivation of bpp from R1 ÷ ULA-chars ratio.
 - [[synthesis/model-differences]] — Cross-model comparison (B / B+ / Master 128 / Master Compact). Memory, CPU, FDC, video, IO. What's portable, what's not.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

@@ -72,3 +72,8 @@ Two related articles by Talbot-Watkins on overcoming the 6502's lack of a hardwa
 - Article 2 has an "Extending the algorithm to multiply bigger values by a fixed-point number" section the author left as TODO ("Will write this up sometime"). Worth deriving / sourcing the S15×S8 → S31 path if anyone needs higher dynamic range.
 - Division routines (`a/b`, reciprocal LUT for `1/b`) aren't covered in these articles but are essential for perspective. Open page request: [[techniques/division]].
 - See also Toby Lobster's comprehensive 6502-multiplication benchmark suite at https://github.com/TobyLobster/multiply_test for a much wider comparison (dozens of routines, full timing matrices), and the companion sqrt benchmarks at https://github.com/TobyLobster/sqrt_test.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

@@ -86,3 +86,8 @@ Most BBC raster effects don't need this — the standard "leave R7 alone after i
 - [[sources/accc-compendium]] §16.3, §16.4.1.1 — primary documentation.
 - [[techniques/crtc-counter-freeze]] — sibling technique exploiting R0 (rather than R7) for chip-state control.
 - [[techniques/fx-framework]] — the standard "leave R7 alone" pattern that avoids both pathologies.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

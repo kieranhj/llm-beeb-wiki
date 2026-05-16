@@ -120,3 +120,8 @@ MOS hooks IRQ1V (`&204/&205`) and reads `IFR` at `&FE4D` to dispatch:
 - **Vsync IRQ hook**: hook IRQ1V, in your handler check `&FE4D` bit 1, if set then run frame-start work and clear the flag by *reading* ORA (`&FE41`). Use **`BIT &FE41`** rather than `LDA &FE41` — same 4 cycles, same bus read (so the chip still clears the IFR bit), but `BIT` doesn't clobber the accumulator. That matters in an IRQ handler, where A is already stashed at `&FC` by MOS and reloading it costs cycles. See [[techniques/fast-animation]].
 - **Free-running T1**: if MOS isn't using T1 for sound (test by reading IER bit 6), repurpose T1 to fire raster splits at a specific scan line within a frame. Set ACR for free-run + PB7 toggle, load latches with `lines_per_split × 64`.
 - **Manual sound-chip writes** are tricky — between writing the sound data byte to PA and pulsing line 0 of the latch you need to ensure MOS doesn't preempt and overwrite. Many demos disable IRQs across the whole sequence.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

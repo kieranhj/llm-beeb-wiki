@@ -124,3 +124,8 @@ The double-buffering matters because the FX draw budget (256 raster lines) overr
 - [[techniques/fx-framework]] — the update/draw function split that makes the double-buffer arrangement work.
 - [[hardware/crtc-6845]] — R12/R13 latch (changed once per frame, in update, not in draw).
 - Memory cost: 160 bytes (two 80-byte buffers) + 256 bytes (line buffer) + tables.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

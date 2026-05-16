@@ -118,3 +118,8 @@ Already supported via `*FX 5,4`. NETV reason codes 0/1/2/3/5 mirror UPTV.
 - [[hardware/user-via]] — Parallel printer port (Port A + CA1/CA2).
 - [[os/osbyte]] — `&05`, `&06`, `&7B`, `&F5`, `&F6` printer entries.
 - [[sources/naug-ch24-misc]] — Full source page.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

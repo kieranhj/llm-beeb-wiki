@@ -132,3 +132,8 @@ OSHWM is the MSB of a 16-bit address always on a page boundary. On Model B with 
 - DFS 0.90 OSWORD interception bug detail — only Model B with that specific DFS revision. Sidelined.
 - Master-specific OSHWM 100Hz semaphore use → covered when Ch17 ingested.
 - Filing-system OS calls (OSFILE..OSFIND) — details in Ch16 (pending).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

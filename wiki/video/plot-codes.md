@@ -127,3 +127,8 @@ PLOT 70, 500, 500     : REM same point in inverse colour (toggle)
 - [[techniques/custom-modes]] — when to leave the VDU driver entirely.
 - [[sources/bbc-user-guide]] Ch 33 (BASIC PLOT keyword) + Ch 29 (Advanced Graphics).
 - [[sources/master-arm]] Ch 6 + App 2 — Master-era PLOT extensions.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

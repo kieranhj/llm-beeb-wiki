@@ -202,3 +202,8 @@ A full worked example for 288×192 at 4 colours lives at [[synthesis/custom-mode
 - [[video/hardware-scrolling]] — R12/R13 lever.
 - [[memory/os-workspace]] — Page-3 VDU workspace.
 - [[memory/shadow-ram]] — Shadow RAM and ACCCON on B+/Master.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

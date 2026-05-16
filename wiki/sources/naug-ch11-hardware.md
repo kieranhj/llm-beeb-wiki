@@ -45,3 +45,8 @@ Note: on **Master / Compact**, the ADC moves from `&FEC0-&FEDF` (B/B+) to `&FEC0
 ## Open follow-ups
 
 None — this chapter is summary material whose detail lives in the dedicated per-chip chapters (Ch12 memory, Ch13 video, Ch15 serial, Ch20 ADC, Ch22 VIAs, Ch23 1 MHz bus, etc.).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

@@ -165,3 +165,8 @@ Given an address in X+Y, this OSBYTE verifies the data is a valid paged-ROM imag
 - `*ROM` data block format (CRC, file headers) — captured in source page but not filed into a dedicated wiki page; only useful if writing a ROM-resident filing system.
 - Service call `&21-&26` (Master HAZEL workspace claims) — only relevant to filing-system development.
 - Worked printer-buffer ROM example (§17.4.2) and RFS example (§17.5.7) — pattern is captured; full code in `raw/manuals/...` PDF for reference.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

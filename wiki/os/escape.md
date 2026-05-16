@@ -108,3 +108,8 @@ LDA #&E6 : LDX #0 : LDY #0 : JSR &FFF4     ; restore default for next time
 - [[os/brk]] — BREAK is a different thing (direct reset line).
 - [[os/keyboard]] — TAB / ESCAPE character defaults.
 - [[os/errors]] — error 17 (`Escape`) is what BRKV sees when the MOS auto-converts an ESCAPE flag to a BRK.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

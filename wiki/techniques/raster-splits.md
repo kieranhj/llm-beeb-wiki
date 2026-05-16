@@ -90,3 +90,8 @@ Other 8-bit machines have some of these (the C64's VIC-II is generally more rast
 - [[timing/cycle-stretching]] — why VIA reads quantise to 1 MHz boundaries.
 - [[techniques/fx-framework]] — the standard "8c jitter is fine" sync chassis.
 - [[techniques/hexwab-stable-raster]] — the "2c jitter, full beam race" chassis.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

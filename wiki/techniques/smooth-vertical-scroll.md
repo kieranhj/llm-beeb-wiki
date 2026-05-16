@@ -235,3 +235,8 @@ The blank/unblank lever in that implementation is **CRTC R8 (`&00` non-interlace
 - [[hardware/crtc-6845-advanced]] — register-rewrite phase verdicts.
 - [[hardware/video-ula]] — screen-enable bit used for the rock-steady top edge.
 - [[timing/via-timers]] — T2 one-shot, ISR-entry cost.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

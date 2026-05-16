@@ -65,3 +65,8 @@ Variables (zp): `addr` (R12/R13 word), `line` (sub-row 0-7), `iline` (latched co
 ## Open follow-ups
 
 - "Vertical rupture" terminology originates in the **Amstrad CPC scene** per the article — would be worth a brief etymology note if we ever add a cross-platform-techniques page.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

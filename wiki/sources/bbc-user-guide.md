@@ -56,3 +56,8 @@ For Master-era content, prefer [[sources/master-arm]]. For Master-era OSBYTE/OSW
 - **Ch 34 (VDU drivers)** → created [[os/vdu]] (full VDU control code reference table, per-code semantics, byte-count for each).
 - **Ch 29 (Advanced Graphics) + Ch 33 (PLOT BASIC keyword)** → created [[video/plot-codes]] covering PLOT k=0-95 (line variants, fills, triangles, single points) from User Guide and k=96-255 (rectangle, parallelogram, circle, ellipse, flood fill) from Master ARM Ch 6.
 - **Ch 46 (Error messages)** → created [[os/errors]] (BASIC 0-44 alphabetical, CFS 216-223, MOS 250+, DFS/ADFS/NFS conventions, BRK-raising-from-user-code pattern).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

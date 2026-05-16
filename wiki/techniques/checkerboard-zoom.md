@@ -142,3 +142,8 @@ So: move the buffer redraw out of `update` and into `draw`, splitting it across 
 - [[hardware/video-ula]] — the flash bit at `&FE20` bit 0.
 - [[techniques/fx-framework]] — the update budget constraint and the draw raster timing.
 - Pattern is reusable wherever per-raster colour inversion is wanted at near-zero cycle cost.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

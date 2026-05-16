@@ -145,3 +145,8 @@ LDA #&10 : LDX #4 : JSR &FFF4    ; auto-cycle 4 channels
 - [[hardware/system-via]] — CB1 = EOC IRQ; PB4/PB5 = fire buttons.
 - [[os/events]] — Event 3 = ADC conversion complete.
 - [[os/buffers]] — OSBYTE `&80` X-range collision with buffer status.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

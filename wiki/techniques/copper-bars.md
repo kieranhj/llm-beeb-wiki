@@ -89,3 +89,8 @@ Each of the 64 cycles must consume **exactly 4 raster lines = 512 cycles**. The 
 - [[techniques/vertical-rupture]] — the general technique.
 - [[hardware/video-ula]] — palette register layout, MODE 0 colour encoding.
 - [[hardware/crtc-6845]] — R12/R13 latch timing.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

@@ -174,3 +174,8 @@ Useful for keyboard-driven games to support a joystick without bespoke handling.
 
 - **Analogue port pinout** — captured at hint level (15-pin D, standard Acorn pinout). Full pin-by-pin reference if anyone builds custom hardware.
 - **Tracker/light-pen modes** beyond joystick — ADC + LPSTB combinations for tracker balls. Niche; documented at headline level only.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

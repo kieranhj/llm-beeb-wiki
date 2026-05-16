@@ -69,3 +69,8 @@ All conditional branches: **2 cycles base, +1 if branch taken, +2 if branch dest
 
 - Page-crossing on stores: NAUG lists stores at the unconditional worst-case count (no `+1p` annotation). [[sources/naug-ch03-04-arithmetic-addressing]] and [[hardware/6502-addressing-modes]] document this consistently; closed.
 - WDC W65C02S datasheet cross-check for 65C12 RMW abs,X exact timing remains a nice-to-have but not blocking.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

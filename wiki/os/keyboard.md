@@ -217,3 +217,8 @@ The Model B / B+ keyboard hardware is functionally identical at the slow-bus int
 - [[os/buffers]] — keyboard buffer (ID 0).
 - [[os/events]] — events 2 (char entering input) and 6 (ESCAPE).
 - [[memory/os-workspace]] — soft-key string storage at `&B00-&BFF`.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

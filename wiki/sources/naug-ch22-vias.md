@@ -60,3 +60,8 @@ So `STA &FE4E` with `&xx` where bit 7 is the set/clear selector, bits 0-6 are th
 
 - Joystick read protocol via System VIA — referenced as `OSBYTE &80` (§22.3.1 p385) but full call form not in this chapter. Capture when Ch20 ADC is ingested.
 - Shift register modes 0-7 (§22.4.10 p397-400) summarised — full timing diagrams need re-reading if anyone needs serial-style use.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

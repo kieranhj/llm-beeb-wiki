@@ -72,3 +72,8 @@ So a single instruction that accesses a 1 MHz peripheral pays a variable extra c
 ## Notes
 
 The "2 or 3 cycles" wording is important. The Advanced User Guide (cited by BeebWiki, p443) gives the timing in detail; we should also revisit AUG when ingested. NAUG §11.1 lists peripheral addresses but does not call out which ones cost a stretch.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

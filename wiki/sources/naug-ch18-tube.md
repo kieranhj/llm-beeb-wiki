@@ -212,3 +212,8 @@ Zero page is usable up to `&EE` (the OS uses `&EE-&FF`). Page 2 indirection vect
 - **Z80 2P OS jump table** at `&FFCE-&FFFE` — captured in source page; if Z80 work matters, file as [[os/z80-2p]].
 - **32016 2P PANOS** — UNIX-like OS, separate documentation; out of scope.
 - **80186 2P (Master 512)** — IBM PC emulation; out of scope.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

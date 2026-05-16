@@ -134,3 +134,8 @@ The IRQ-mask + reset combo causes MOS to detect a power-on reset (return `OSBYTE
 - [[os/calls]] — BRKV (`&202`) vs the `&F7-&F9` intercept (different mechanisms).
 - [[os/paged-roms]] — Service ROMs use their own service-call &27 reset notification (Master) in addition to the BREAK intercept.
 - [[sources/naug-ch24-misc]] — Full source page with worked examples.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

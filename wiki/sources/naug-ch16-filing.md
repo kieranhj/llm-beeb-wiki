@@ -318,3 +318,8 @@ top byte bits 1-0: total sectors high 2 bits
 - **Acorn CP/M disc format** (Z80 2P, NAUG §18.10.4) — covered in [[sources/naug-ch18-tube]] already.
 - **NFS protocol detail** — Acorn defers to Econet Advanced User Guide; out of scope here.
 - **Per-FS detailed OSBYTE/OSWORD additions** — captured at headline level; specifics belong in per-FS pages if needed.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

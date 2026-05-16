@@ -89,3 +89,8 @@ Updated incrementally as chapters are ingested. Each entry: chapter → wiki pag
 - **Ch 12 (Tube / dual processor)** → refined [[os/tube]] with the full filing-system claimer-ID table (0-9 + `&F` independent) and the 32-bit LOAD/EXEC file-address encoding (`&FFFF` = host main, `&FFFE` = host shadow, `&FFFFFFFF` = *EXEC, `&JKLM` = parasite). Worked pattern for Tube-aware utility ROM addressing.
 - **App 8 (65C12 instruction set)** → cross-checked [[hardware/6502-isa]] / [[hardware/6502]] against ARM App 8 — already comprehensive (new opcodes, addressing modes, 65C12 vs R65C02 split correctly attributed). master-arm added to sources. No new pages required.
 - **App 1 + 2 + 3 (model differences)** → synthesised into [[synthesis/model-differences]] — single cross-model comparison page (B / B+ / Master 128 / Master Compact). Covers memory map, CPU, FDC, video, IO, ACCCON/ROMSEL bit-by-bit, OSBYTE additions, detection patterns, what's portable vs what's not. The page is the canonical lookup for "does X work on Y?"
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

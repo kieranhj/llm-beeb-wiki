@@ -140,3 +140,8 @@ Costs more cycles per increment (5c vs INY's 2c) but frees Y entirely — a huge
 - [[hardware/6502-addressing-modes]] — Why zp is cheaper than abs.
 - [[memory/memory-map]] — Where zp sits in the wider map.
 - [[memory/os-workspace]] — Page 1 / 2 / 3 follow-on.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

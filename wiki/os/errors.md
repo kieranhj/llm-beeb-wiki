@@ -153,3 +153,8 @@ Restore `&202/&203` to the old values before returning. The standard pattern is 
 - [[os/calls]] — OSCLI / OSFILE / OSBYTE error-return conventions.
 - [[sources/bbc-user-guide]] — Ch 46 (canonical BASIC error list).
 - [[memory/zero-page]] — `&FD`/`&FE` (error pointer), `&F0` (saved SP).
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

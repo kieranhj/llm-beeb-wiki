@@ -55,3 +55,8 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.162-171. Compact (10pp) but 
 
 - HAZEL precise use cases — chapter says "filing systems"; full picture needs Ch16 ingest.
 - ROM service call protocol (`&FE30` write side-effects) — Ch17 ingest.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*

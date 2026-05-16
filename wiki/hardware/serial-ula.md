@@ -106,3 +106,8 @@ Going direct (`STA &FE10`) is faster (~5 cycles vs OSBYTE's hundreds) but you mu
 - [[hardware/6850-acia]] — 6850 chip (data path).
 - [[os/serial]] — Higher-level serial OS reference.
 - [[memory/memory-map]] — `&FE10-&FE17` in SHEILA.
+
+---
+
+<!-- llm-wiki-footer -->
+*This wiki is curated by an LLM following the **LLM-Wiki methodology** — a human curates source documents, the LLM compiles structured cross-linked markdown. Content may contain errors, omissions, or stale claims. For authoritative information refer to the original source documents in the [bbc-documents](https://github.com/bitshifters/bbc-documents) GitHub archive.*
