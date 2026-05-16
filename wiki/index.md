@@ -139,3 +139,4 @@ Content catalog. Routing table for queries — start here, then drill into pages
 ## Synthesis
 
 - [[synthesis/mode-8-16colour-lf]] — Community "MODE 8" (80×256, 16 colours, 10 KB) recipe. MODE 5 CRTC + Video ULA control = `&E0`. Derivation of bpp from R1 ÷ ULA-chars ratio.
+- [[synthesis/model-differences]] — Cross-model comparison (B / B+ / Master 128 / Master Compact). Memory, CPU, FDC, video, IO. What's portable, what's not.

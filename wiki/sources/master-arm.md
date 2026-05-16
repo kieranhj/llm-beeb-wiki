@@ -65,9 +65,9 @@ For performance and demo work, the Master matters because:
 | 15 | Disc Filing Systems | 147-149 | *pending — low priority* |
 | 16 | Advanced Network Filing System | 150-161 | *low priority* |
 | 17-19 | Terminal, Editor, View | 162-166 | *out of scope (productivity apps)* |
-| App 1 | B and B+ differences | 167-172 | *pending* |
-| App 2 | B/B+ and M128 differences | 173-191 | *pending* |
-| App 3 | M128 and Compact differences | 192-201 | *pending* |
+| App 1 | B and B+ differences | 167-172 | Filed into [[synthesis/model-differences]] |
+| App 2 | B/B+ and M128 differences | 173-191 | Filed into [[synthesis/model-differences]] |
+| App 3 | M128 and Compact differences | 192-201 | Filed into [[synthesis/model-differences]] |
 | App 4 | NFS / ANFS differences | 202-204 | *low priority* |
 | App 5 | Changes in BASIC 4 | 205-206 | *out of scope* |
 | App 6 | PCB Links and Test Points | 207-211 | *out of scope* |
@@ -88,3 +88,4 @@ Updated incrementally as chapters are ingested. Each entry: chapter → wiki pag
 - **Ch 11 (MOS)** → refined [[memory/os-workspace]] with the Master "second 32 KB" workspace map (soft-key buffer at `&8000-&83FF`, soft chars moved to `&8900-&8FFF`, MOS CLI buffer at `&DC00-&DCFF`, transient-utility at `&DD00-&DEFF`) and the extended-vector triple-table install procedure (`OSBYTE &A8`, `&FF00+(vector-&200)*3/2` dispatch). Refined [[hardware/master-overview]] with the relocation notes.
 - **Ch 12 (Tube / dual processor)** → refined [[os/tube]] with the full filing-system claimer-ID table (0-9 + `&F` independent) and the 32-bit LOAD/EXEC file-address encoding (`&FFFF` = host main, `&FFFE` = host shadow, `&FFFFFFFF` = *EXEC, `&JKLM` = parasite). Worked pattern for Tube-aware utility ROM addressing.
 - **App 8 (65C12 instruction set)** → cross-checked [[hardware/6502-isa]] / [[hardware/6502]] against ARM App 8 — already comprehensive (new opcodes, addressing modes, 65C12 vs R65C02 split correctly attributed). master-arm added to sources. No new pages required.
+- **App 1 + 2 + 3 (model differences)** → synthesised into [[synthesis/model-differences]] — single cross-model comparison page (B / B+ / Master 128 / Master Compact). Covers memory map, CPU, FDC, video, IO, ACCCON/ROMSEL bit-by-bit, OSBYTE additions, detection patterns, what's portable vs what's not. The page is the canonical lookup for "does X work on Y?"

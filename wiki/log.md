@@ -419,3 +419,8 @@ grep "^## \[" wiki/log.md | tail -10
 - Cross-checked: wiki/hardware/6502-isa.md + wiki/hardware/6502.md + wiki/hardware/6502-addressing-modes.md against ARM App 8 — already accurate. Crucial split correctly captured: BBR/BBS/RMB/SMB are R65C02-only (6502 2P + Master Turbo 65C102), NOT in the Master's main 65C12. Cycle counts in units of 0.5/0.33/0.25 µs for 2/3/4 MHz variants confirmed.
 - master-arm added to sources of 6502-isa.md + 6502.md.
 - No new pages required.
+
+## [2026-05-16] ingest | Master ARM Appendices 1+2+3 (model differences)
+- Created: wiki/synthesis/model-differences.md — comprehensive cross-model comparison (B / B+ / Master 128 / Master Compact). At-a-glance table; ACCCON + ROMSEL bit-by-bit; soft-char + soft-key relocation; new Master OSBYTEs/commands; machine detection patterns; pitfalls when targeting all models.
+- Updated wiki/index.md (synthesis section).
+- Updated wiki/sources/master-arm.md filed-into log.
