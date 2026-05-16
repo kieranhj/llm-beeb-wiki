@@ -610,3 +610,10 @@ Lint findings deferred:
 - Page-0 names (STATE/ZMASK/ZMEMG etc) in vdu-internals.md not inline-cited but page-level master-rm covers.
 - "81-column mode" community jargon in vdu.md VDU 23,16 section — not marked (unverified) but is widely used in BBC scene.
 - Second-32K map appears in 3 places (os-workspace, shadow-ram, vdu-internals) with different granularity. Acceptable normalization opportunity — left for next pass.
+
+## [2026-05-16] ingest | SN76489 sampled sound — scarybeasts blog (2020) + Stardot threads (2025)
+- Created: wiki/sources/scarybeast-sn76489-sampled.md — 2020 scarybeastsecurity blog post analysing SN76489 PCM playback physics (volume-DAC carrier modulation, asymmetric DC centring, downstream LM324N+LM386N-1 analog chain). Flagged author's 2-MHz-clock claim as wrong (Master ARM authoritatively says 4 MHz / div-16).
+- Created: wiki/sources/stardot-sn76489-sampled.md — 2025 Stardot threads (t=30838 + t=31654) documenting the persistent-/WE 62.5 kHz write trick + scarybeasts' 12.5 kHz × 4-channel and 15 kHz × 3-channel software-mixed sampled-song demos (Lotus, Chaos Engine, Robot Monsters). YouTube links + github.com/scarybeasts/misc/tree/master/beebmod/ noted.
+- Created: wiki/techniques/sampled-sound.md — full technique reference synthesising both sources. Carrier-modulation physics; 1980s single-channel ≤8 kHz technique with worked setup + polled inner loop + T1 sample-rate-clock recipe; 2025 persistent-/WE 62.5 kHz technique with multi-channel software mixing budget (32-cycle inner loop, decimation-4 or -5 for 12.5-15 kHz mixed output); sample pre-processing (per-instrument gain, zero-drift, magnitude flip, 8-bit→4-bit LUT); storage trade-offs; quality assessment; when to (not) use.
+- Extended: wiki/hardware/sn76489.md — added "Clock + internal reference" (4 MHz / div-16) section flagging the scarybeast 2-MHz claim as wrong; added "Downstream analog chain (BBC)" section with the LM324N + LM386N-1 + speaker normaliser path and the ~8 kHz LM324N low-pass evidence; added "Persistent-/WE pattern" subsection covering the 62.5 kHz write trick.
+- Updated wiki/index.md (2 new sources + 1 new technique).
