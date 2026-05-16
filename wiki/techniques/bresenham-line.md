@@ -10,7 +10,7 @@ updated: 2026-05-17
 
 Comparative reference for five hand-tuned 6502 line implementations on the BBC Micro: **Elite**, **RTW**, **NJ**, **Tricky** (all MODE 4/4S), and **Raster** (MODE 2). All numbers from [[sources/line-drawing-implementations]] — the comparative-analysis PDF that ships alongside the source repo `kieranhj/line-test`.
 
-The wiki's [[user_wiki_mission|envelope-pushing bias]] points at NJ and Raster: both pull tricks (cumulative-mask batching, carry-chain invariants, deferred counting) that the textbook 6502 Bresenham doesn't.
+The envelope-pushing options are NJ and Raster: both pull tricks (cumulative-mask batching, carry-chain invariants, deferred counting) that the textbook 6502 Bresenham doesn't.
 
 ## TL;DR — pick one
 
