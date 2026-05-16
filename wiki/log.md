@@ -540,3 +540,9 @@ Lint findings deferred / left for human:
   - Worked example re-implementing PLOT 64-71 single-point from VDUV
   - Sideways-ROM intercept caveats (filing-system RAM overlay + sideways ROM overlay breaks both the C000 entry points and the &8400-&8FFF data areas)
 - Updated wiki/index.md (1 new OS page).
+
+## [2026-05-16] ingest | MRM Part 1 Ch E.5 (Teletext modes)
+- Refined wiki/hardware/saa5050.md:
+  - Added VDU driver substitution table (#/£/_ swap) explaining why direct-pokes to &7C00+ see different glyphs than what PRINT produces
+  - Added "VDU commands that work in MODE 7" reference table (~22 commands documented; all others ignored except VDU 25/23-unknown routing to VDUV)
+- master-rm added to saa5050.md sources.
