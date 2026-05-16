@@ -12,6 +12,8 @@ The extreme version of [[techniques/vertical-rupture]]: instead of splitting a P
 
 Pioneered on the BBC by [[sources/twisted-brain|Twisted Brain]] (Bitshifters Collective, 2018). Most of the demo's effects rely on this pattern.
 
+**Terminology note**: the Amstrad CPC demo scene calls this technique **R.L.A.L.** ("rupture ligne à ligne" — line-to-line rupture). The BBC scene doesn't use the acronym, but the Amstrad CPC CRTC Compendium ([[sources/accc-compendium]] §12.2.1) is the most thorough cycle-by-cycle reference for it. Their "CRTC 0" chip family is the same chip family as the BBC's HD6845S/SP, so the chip behaviour transfers directly.
+
 ## The core CRTC config
 
 The smallest meaningful CRTC cycle:
@@ -88,8 +90,8 @@ R12/R13 are latched at the start of each CRTC cycle (see [[hardware/crtc-6845]])
 
 ## Real-hardware quirks
 
-- **Vertical Total R4 rewrites in 1-scanline cycles have ambiguous timing on real HD6845SP**. The chip samples R12/R13 on the "last raster period" and compares R4/R7 each cycle — operations whose relative ordering within a single scanline isn't specified by the datasheet. Normal-cycle usage never exposes the ambiguity (there are 7 non-last rasters where the sequence is unambiguous), but in a 1-scanline cycle every raster IS the last raster. Symptom: R4 written for the rebalance cycle takes effect one cycle late, frame becomes 313 lines. Fix via 311-line rebalance frame — see [[techniques/kefrens-bars]].
-- **BeebEm cycle inaccuracy** — single-rasterline effects don't behave the same on BeebEm as on real hardware or b-em / jsbeeb. Always test on the cycle-accurate emulators (b-em, jsbeeb) and ideally on hardware.
+- **Vertical Total R4 rewrites must land before C0=0 of the rebalance scanline**. The chip evaluates the "Last Line" condition (`C9=R9 AND C4=R4`) only when C0<2 ([[sources/accc-compendium]] §12.2.1, §13.2.1). R4 writes that land later are stored but cannot change the Last-Line state for that scanline. Symptom: R4 written during the would-be rebalance cycle's loop body takes effect one cycle late, frame becomes 313 lines. Fix via 311-line rebalance frame in next module's kill function — see [[techniques/kefrens-bars]] and [[hardware/crtc-internal-counters]].
+- **BeebEm and MAME are not cycle-accurate enough** for single-rasterline effects. Test on the currently-accurate emulators (**jsbeeb**, **b2**, **beebjit**) and ideally on real hardware. b-em was the historical gold standard (and is referenced as such in pre-2024 write-ups like [[sources/twisted-brain]]) but has not kept up with the latest findings as of 2026.
 - **Master vs Model B vs B+** — generally consistent for these effects (all use HD6845SP) but the address-translator differences ([[hardware/address-translation]]) can bite if you combine single-rasterline rupture with TTX VDU routing (see [[techniques/chunky-mode]]).
 
 ## What it enables

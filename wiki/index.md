@@ -41,6 +41,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/chunky-mode-notes]] — Tom Seddon's "mythical chunky mode" page + Julian Brown's 2015 Stardot post on real-hardware behaviour. Combined notes on driving the CRTC from MODE 7 RAM while in graphics modes.
 - [[sources/twisted-brain]] — kieran's 15-part write-up of the Bitshifters Twisted Brain demo (Stardot, 2018). First BBC demo to use extensive single-rasterline CRTC vertical rupture. Foundation reference for modern Beeb demo techniques.
 - [[sources/hexwab-stable-raster]] — hexwab's "Cycle-exact display diddling" post (Retrosoftware, 2016). The canonical 2-cycle-precision stable-raster technique: narrowing-loop sync + T1 free-run + per-IRQ latch-read jitter compensation.
+- [[sources/accc-compendium]] — Serge Querné's *Amstrad CPC CRTC Compendium* (Logon System, v1.7 2023). 284-page chip-internal cycle-by-cycle reference for the 6845. CPC "CRTC 0" = BBC's HD6845S/SP — canonical reference for chip-internal CRTC behaviour.
 
 ## Hardware
 
@@ -62,6 +63,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[hardware/cmos-rtc]] — Master-only 146818 RTC: register layout, alarm/periodic/UE IRQ sources, slow-bus access, LK4 enable.
 - [[hardware/upd7002-adc]] — NEC µPD7002 4-channel 12-bit ADC: status/start register, 8-bit vs 12-bit modes, EOC IRQ on System VIA CB1.
 - [[hardware/address-translation]] — Discrete-logic CPU/CRTC → DRAM mapper. CPU/TTX/HI-RES modes, IC 32 + IC 39 hardware-scroll wraparound, MODE 7 formula, per-mode DRAM refresh intervals.
+- [[hardware/crtc-internal-counters]] — The C0/C4/C9/C5/VMA internal state model that underpins all 6845 behaviour. Last Line + Additional Management states. Per-register write-window summary. Foundation page for everything CRTC.
 - [[hardware/saa5050]] — Mullard teletext character generator (MODE 7 pixel source). 12×20 cells, full control-code table, set-after vs set-at semantics, hold-graphics quirks, BBC integration.
 
 ## Memory
@@ -123,6 +125,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[techniques/twister]] — Narrow CRTC display via R1=20 + R2 centring + 128 prerendered ribbon rotations + alternate-scanline stipple for 4th colour (Part 13).
 - [[techniques/hexwab-stable-raster]] — 2-cycle-precision sync via narrowing-loop + T1 free-run + per-IRQ latch-read jitter compensation. The next-precision-level alternative to fx-framework's ~8c jitter approach.
 - [[techniques/raster-splits]] — Overview / index of raster-split families. Routes readers from "I want to do a raster split" to the right specific technique page.
+- [[techniques/rvi]] — Per-line C9 selection via R0=1 micro-cycles + Last Line semantics. BBC's "RVI" naming aliased to the CPC R.V.L.L. taxonomy. Used for full 16 KB per-line address access.
 
 ## Tools
 

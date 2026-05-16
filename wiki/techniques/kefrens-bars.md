@@ -89,11 +89,15 @@ The four pixels in the bar are pre-coloured to a gradient: white/yellow → cyan
 
 **Symptom**: setting `R4 = 56` for the final (rebalance) cycle doesn't take effect immediately on real HD6845SP. The frame ends up **313 raster lines long instead of 312**, putting Timer 1 64 µs out of phase with raster line 0 for the rest of the demo.
 
-**Why it happens** (now understood): the 6845 samples R12/R13 on the **last raster period of the CRTC cycle** (see [[hardware/crtc-6845-advanced]]). In a normal 8-scanline cycle there are 7 "non-last" scanlines and 1 "last" scanline, and the chip's register-sample / compare / counter-reset operations sequence cleanly within that window. In a **1-scanline cycle, every scanline is the "last scanline"** — and so the sample / compare / reset operations all want to happen in the same chip-internal phase as the displayed raster.
+**Why it happens** (precise mechanism, per [[sources/accc-compendium]] §13.2.1): the 6845 evaluates the "Last Line" condition (`C9=R9 AND C4=R4`) **only when C0<2** — the first 2 µs of every scanline. After C0=2, the verdict is locked for that scanline; R4 writes that land after C0≥2 are stored but cannot change the Last-Line state.
 
-Because the Hitachi datasheet doesn't fully specify *when within that single scanline* each register is read (R4 vertical-total compare, R12/R13 start-address sample, R7 vsync compare, etc.), writes to those registers during the cycle they're meant to affect have ambiguous timing. The observed behaviour on HD6845SP is that **R4 writes during a 1-scanline final cycle apply to the cycle *after* the one we wanted to truncate** — adding one extra scanline to the frame.
+In a 1-scanline cycle (R9=0) every scanline has `C9=R9=0` always, so the Last-Line state is purely determined by whether `C4=R4` at C0<2. Kieran's rebalance cycle is supposed to be the scanline where `R4 = 56`: he wants the chip to *not* treat this as a Last Line, so it counts up through 57 rasters before wrapping. But his R4 write happens during the loop body, *after* C0=2 of the line that should have been the rebalance. The chip's Last-Line test at C0<2 saw the old R4 (=0) — `C4=R4=0` is still true — Last-Line is still armed — the chip resets C4/C9 at end of scanline as before.
 
-So it's not a fault; it's the consequence of asking the chip to do everything in a window the datasheet's internal-timing assumptions don't address.
+So that scanline runs as another 1-scanline cycle (display only 1 raster), then the *next* scanline finally sees the new R4=56 at C0<2, no Last-Line arming, the chip counts up through 57 rasters as the rebalance. Net effect: **one extra single-scanline cycle (1 raster) inserted before the rebalance**, so the frame is 1 raster too long.
+
+This is precisely documented in the ACCC compendium as the R.L.A.L. ("rupture ligne à ligne" — line-to-line rupture) recipe (§12.2.1): on CRTC 0, exiting from a single-scanline-rupture-mode requires that R4 (or R9) be set to its new value **before C0=0 of the rebalance scanline**, not during it. The BBC scene's rebalance frame works around this without requiring the cycle-exact precision of the R.L.A.L. recipe.
+
+See [[hardware/crtc-internal-counters]] for the full counter model, and [[hardware/crtc-6845-advanced]] for the per-register write-window summary.
 
 **Knock-on effect**: subsequent effects (especially [[techniques/parallax-bars]]) see the wrong ACCCON-switch timing and exhibit single-pixel glitch rows. The drift pollutes the next effect's timing too.
 
@@ -120,4 +124,6 @@ The drift accumulates to zero across the effect transition.
 - [[techniques/single-rasterline-rupture]] — the 1-scanline-cycle chassis (this is the most-extreme form).
 - [[techniques/fx-framework]] — Timer 1 phase management, including the 311-line rebalance pattern.
 - [[techniques/parallax-bars]] — receives the Kefrens timing bug if rebalance is skipped.
-- [[hardware/crtc-6845-advanced]] — R4 mid-cycle rewrite semantics (datasheet says it's safe but real silicon shows a phase-window where the write is one cycle late).
+- [[hardware/crtc-6845-advanced]] — R4 mid-cycle rewrite semantics (the C0<2 evaluation window).
+- [[hardware/crtc-internal-counters]] — the C0/C4/C9 counter model that explains why this happens.
+- [[sources/accc-compendium]] §12.2.1 / §13.2.1 — primary documentation of the R4 rewrite mechanism and the R.L.A.L. exit recipe.

@@ -340,3 +340,23 @@ grep "^## \[" wiki/log.md | tail -10
   - Updated fx-framework.md and twisted-brain.md to cross-link to hexwab page.
   - Updated index.md (1 new source + 2 new techniques).
 - Remaining open: techniques/division, tools/beebasm, video/teletext-mode, synthesis/custom-mode-288x192, techniques/exploding-font, os/z80-2p — all referenced sparingly and not urgent.
+
+## [2026-05-16] ingest | ACCC Compendium v1.7 (Querné / Logon System, 2023) — Phase A
+- Source: raw/notes/ACCC1.7-EN.pdf (284 pages, chip-internal-cycle-by-cycle reference for the 6845 across 5 CRTC types). BBC's HD6845S/SP is in the CPC "CRTC 0" family covered extensively.
+- Created: wiki/sources/accc-compendium.md (source page with CPC↔BBC terminology key + CRTC-0-filtered chapter index).
+- Created: wiki/hardware/crtc-internal-counters.md (NEW foundation page: C0/C4/C9/C5/VMA counter model + Last Line / Additional Management states + per-register write-window summary).
+- Created: wiki/techniques/rvi.md (NEW: BBC's "RVI" technique documented per ACCC §13.2.7 R.V.L.L. — per-line C9 selection via R0=1 micro-cycles + Last Line semantics).
+- Refined: wiki/hardware/crtc-6845-advanced.md (added ACCC as source; reframed R0/R4/R7/R9 anomalous-rewrite verdicts using the C0<2 evaluation window; rewrote "mid-frame rewrites" section to reflect what the BBC scene actually does; reframed R12/R13 sample condition as C4=C9=C0=0).
+- Refined: wiki/techniques/kefrens-bars.md (replaced "register-sample-window overlap" hypothesis with the precise C0<2 Last-Line evaluation mechanism per ACCC §13.2.1; cross-linked to R.L.A.L. exit recipe in §12.2.1).
+- Refined: wiki/techniques/single-rasterline-rupture.md (added CPC R.L.A.L. terminology note; updated real-hardware-quirks section with precise C0<2 explanation).
+- Updated memory: feedback_6845_single_scanline_register_overlap.md now references ACCC as primary source rather than describing as "mystery".
+- Key new content captured:
+  - The CRTC internal counter model (C0/C4/C9/C5/VMA/VMA') — not previously on the wiki.
+  - The C0<2 evaluation window for Last Line — precisely resolves the R4-on-final-scanline behaviour.
+  - BBC↔CPC terminology mapping: R.L.A.L. = our single-scanline-rupture; R.V.L.L. = our "RVI" (mistranslated); R.V.I. = CPC's CRTC-1 technique we don't use.
+  - Per-register cycle-window write semantics for CRTC 0.
+- Open follow-ups deferred to Phase B:
+  - wiki/techniques/crtc-counter-freeze.md (NEW: R0=0 chip freeze — experimental on BBC, no shipped use).
+  - wiki/techniques/triggered-vsync.md (NEW: R7 mid-line trigger + blocked-VSync gotcha).
+  - wiki/techniques/vertical-rupture.md (add Last-Line section + register-write windows).
+- ACCC's chip-agnostic chapters (§23 tips, §24 fixed-time) also worth referencing from existing pages where relevant.

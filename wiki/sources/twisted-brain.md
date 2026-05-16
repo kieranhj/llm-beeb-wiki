@@ -73,7 +73,7 @@ Every effect in the demo shares the same underlying idea: a tiny pre-rendered or
 
 - **Kefrens bars** — Vertical Total R4 rewrites on the final scanline of a 1-scanline CRTC cycle don't take effect until the *next* scanline on real HD6845SP. Causes the frame to be 313 lines long for one frame after the effect starts. Now understood (see [[techniques/kefrens-bars]]): in a 1-scanline cycle, *every* scanline is the "last raster" window the chip uses for register sampling, so R12/R13 sample, R4 compare and R7 compare operations overlap ambiguously — the datasheet doesn't specify their relative timing within a single scanline because normal-cycle usage never exposes the question. Fix: a 311-line "rebalance" frame in the kill function.
 - **Parallax bars + 64 µs T1 drift** — sensitive to the Kefrens timing bug above. If T1 is one raster line off, the main/SHADOW RAM switch in mid-frame happens at the wrong line and you get single-pixel-row "glitch" lines at the boundary.
-- **BeebEm cycle inaccuracy** — Twisted Brain only runs cleanly on b-em (and later jsbeeb). BeebEm gets the cycle stretching wrong. Documented in follow-up posts.
+- **BeebEm cycle inaccuracy** — Twisted Brain only runs cleanly on b-em (in 2018, when b-em was the gold standard) and was later validated on jsbeeb. BeebEm gets the cycle stretching wrong. Documented in follow-up posts. (As of 2026 the canonical-accurate emulators are jsbeeb, b2 and beebjit — b-em was the historical leader but has not kept up.)
 
 ## Filed into
 
