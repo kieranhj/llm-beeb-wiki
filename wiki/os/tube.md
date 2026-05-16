@@ -2,7 +2,7 @@
 title: Tube — Software Protocol
 type: os
 tags: [tube, 2nd-processor, parasite, transfer, claim]
-sources: [naug-ch18-tube]
+sources: [naug-ch18-tube, master-arm]
 updated: 2026-05-13
 ---
 
@@ -67,12 +67,24 @@ Host → parasite (events / errors / data transfer setup) uses R1 / R2 / R4 in d
     ; success — Tube is yours
 ```
 
-Reserved caller IDs:
-- `&0` = CFS
-- `&1` = DFS
-- `&2` = NFS low
-- `&3` = NFS high
-- `&4-&3F` = user-assignable
+Reserved caller IDs (6-bit, OR'd with `&C0` to claim or `&80` to release). Full list per [[sources/master-arm]] Ch 12:
+
+| ID | Filing system |
+|---|---|
+| `&0` | CFS (cassette) |
+| `&1` | DFS |
+| `&2` | NFS — low-level network |
+| `&3` | NFS — filing system layer |
+| `&4` | ADFS |
+| `&5` | TFS (Telesoft) |
+| `&6` | Reserved for Acorn |
+| `&7` | VFS (video filing system) |
+| `&8` | SRM (SRAM utilities) |
+| `&9` | Z80 (for CP/M) |
+| `&F` | (Used by an independent manufacturer per ARM Ch 12) |
+| `&A-&E`, `&10-&3F` | User-assignable |
+
+Claim with `LDA #&C0|id`, release with `LDA #&80|id`.
 
 ### Release
 
@@ -133,6 +145,28 @@ LDA #&80+id : JSR &406
 ```
 
 The exact NOP padding depends on the rest of the loop body — measure on real hardware or in emulator.
+
+## File-address encoding for Tube-aware filing systems
+
+When a parasite program calls OSFILE/OSGBPB, the LOAD/EXEC addresses in the control block are **32-bit** and the upper 16 bits select where in the host/parasite address space the file lands. Per [[sources/master-arm]] Ch 12:
+
+| Upper 16 bits | Lower 16 bits | Interpretation |
+|---|---|---|
+| `&FFFF` | `&0000-&FFFE` | **Host main memory** at the lower-16-bit address. **`&FFFF0400-&FFFF07FF` is reserved for Tube comms code when the Tube is active — do not overwrite.** |
+| `&FFFE` | `&3000-&7FFF` | **Host shadow memory** (LYNNE) — same address window as the main screen. Not supported by CFS / TFS / RFS. |
+| `&FFFFFFFF` | (full word) | Indicates the named program is to be `*EXEC`ed (script-style ingestion). |
+| `&JKLM` (anything else) | `&0000-&FFFF` | **Parasite memory** — up to a 4 GB parasite address space (`&00000000-&BFFFFFFF`). |
+
+Filing systems must inspect these bits and dispatch the actual data transfer either locally (host case) or via the `&406` claim/transfer/release dance (parasite case). The Master ADFS and ANFS handle all four cases correctly; older filing systems may not — CFS in particular only knows host addresses.
+
+When writing a Tube-aware utility ROM, set the LOAD/EXEC addresses with the appropriate prefix to control where the file lands. A common pattern for "load a helper into host memory but execute it on the parasite" is:
+
+```asm
+; LOAD addr = &FFFF1F00  (host memory, page 1F)
+; EXEC addr = &00001F00  (parasite call address)
+```
+
+The filing system loads the bytes into host page 1F, then the parasite jumps to its own 1F00 — which only works if you've also stashed a parasite-side copy. The usual approach is two separate `*LOAD` calls, one per side.
 
 ## OSWORD `&05`/`&06` — single-byte host memory access from parasite
 
