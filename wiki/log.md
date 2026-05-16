@@ -617,3 +617,14 @@ Lint findings deferred:
 - Created: wiki/techniques/sampled-sound.md — full technique reference synthesising both sources. Carrier-modulation physics; 1980s single-channel ≤8 kHz technique with worked setup + polled inner loop + T1 sample-rate-clock recipe; 2025 persistent-/WE 62.5 kHz technique with multi-channel software mixing budget (32-cycle inner loop, decimation-4 or -5 for 12.5-15 kHz mixed output); sample pre-processing (per-instrument gain, zero-drift, magnitude flip, 8-bit→4-bit LUT); storage trade-offs; quality assessment; when to (not) use.
 - Extended: wiki/hardware/sn76489.md — added "Clock + internal reference" (4 MHz / div-16) section flagging the scarybeast 2-MHz claim as wrong; added "Downstream analog chain (BBC)" section with the LM324N + LM386N-1 + speaker normaliser path and the ~8 kHz LM324N low-pass evidence; added "Persistent-/WE pattern" subsection covering the 62.5 kHz write trick.
 - Updated wiki/index.md (2 new sources + 1 new technique).
+
+## [2026-05-16] ingest | SMSPower SN76489 reference
+- Created: wiki/sources/smspower-sn76489.md — full source page for the SMSPower community SN76489 reference (Maxim et al., 2002-05). Documents bit-level LFSR behaviour, BBC-specific noise taps ($0003), volume dB table with calibrated linear values, register write protocol quirks, sample-playback methods used in Sega games, and the "voltage decay + volume refresh" mechanism that physically explains how sample playback works.
+- Significantly extended wiki/hardware/sn76489.md:
+  - Noise channel section completely rewritten: 15-bit LFSR description, BBC tap mask $0003, periodic-noise = 1/15 duty cycle clarification (NOT actual noise), counter reset values per NF, modulated noise via tone 2, worked C code for step_lfsr_white / step_lfsr_periodic, white-noise spectrum description
+  - Volume table extended to full 16-entry dB + linear-amplitude reference (per SMSPower SMS1 calibration)
+  - Tone period 0/1 disputed-behaviour section (smspower says DC; scarybeasts measured 125 kHz on BBC; both reconcile to same audible result)
+  - Tone-registers-update-immediately + sticky-latch quirk documented
+  - "Voltage decay + volume refresh" mechanism added under analog-chain section — the physical reason sample playback works
+- smspower-sn76489 added to wiki/sources/scarybeast-sn76489-sampled.md and stardot-sn76489-sampled.md (next commit will catch those — left as a deliberate cross-link).
+- Updated wiki/index.md (1 new source).

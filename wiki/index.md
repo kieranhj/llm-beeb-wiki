@@ -45,6 +45,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/master-arm]] — Acorn *Advanced Reference Manual for the BBC Master Series* (~1986, 292 pages). Canonical reference for Master 128 / Compact / ET / Turbo. Ingested chapter-by-chapter.
 - [[sources/master-rm]] — Acorn *Master Series Reference Manual Parts 1 + 2* (~1986, 400+324 pages). User-and-programmer-level documentation: MOS, VDU driver (60 pages), filing systems, BASIC. Ingested chapter-by-chapter.
 - [[sources/scarybeast-sn76489-sampled]] — Chris Evans (scarybeasts) 2020 blog post analysing SN76489 PCM playback physics: carrier-modulation via volume DAC, downstream analog chain (LM324N + LM386N-1).
+- [[sources/smspower-sn76489]] — SMSPower's canonical SN76489 reference (Maxim et al., 2002-05). Bit-level LFSR / noise generator detail. The BBC's noise tap mask `$0003` documented here courtesy of John Kortink.
 - [[sources/stardot-sn76489-sampled]] — scarybeasts' 2025 Stardot threads: persistent-`/WE` 62.5 kHz writes + multi-channel software-mixed sample playback (Lotus, Chaos Engine, Robot Monsters at 12.5-15 kHz).
 - [[sources/bbc-user-guide]] — Acorn *BBC Microcomputer System User Guide* (Coll, 1982, 522 pages). Original Model B end-user manual. Mostly BASIC tutorial (out of scope); canonical for VDU control codes / PLOT codes / error messages.
 - [[sources/bbc-service-manual]] — Acorn *BBC Microcomputer Service Manual* (1982-85, 90 pages). Electrical-level circuit description + repair / link options for Model A/B PCB issues 1-7. Cross-checks for chip pages.
