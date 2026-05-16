@@ -360,3 +360,11 @@ grep "^## \[" wiki/log.md | tail -10
   - wiki/techniques/triggered-vsync.md (NEW: R7 mid-line trigger + blocked-VSync gotcha).
   - wiki/techniques/vertical-rupture.md (add Last-Line section + register-write windows).
 - ACCC's chip-agnostic chapters (§23 tips, §24 fixed-time) also worth referencing from existing pages where relevant.
+
+## [2026-05-16] ingest | ACCC Compendium v1.7 — Phase B (R0=0 freeze, triggered VSync, vertical-rupture annotations)
+- Created: wiki/techniques/crtc-counter-freeze.md (NEW: R0=0 chip freeze; documented as experimental on BBC, no shipped use. Covers C9 freeze, C4 "last hiccup", additional-management arming, VSync interaction, what's still running during freeze, candidate use cases).
+- Created: wiki/techniques/triggered-vsync.md (NEW: R7=C4 mid-line trigger vs C0vs<2 block. Both VSync protection mechanisms documented. "Limitless VSync" as warning.).
+- Refined: wiki/techniques/vertical-rupture.md — added register-write-windows table, Last-Line state section, R7-rewrite-caveat now uses precise C0vs<2 vs C0vs>=2 framing. Added accc-compendium to sources. Builds-on section expanded with new technique cross-refs.
+- Updated wiki/index.md (2 new techniques).
+- Phase A+B together: 5 new pages + 5 refined pages from ACCC ingest. The Compendium is now woven through the wiki's CRTC coverage as the canonical chip-internal reference.
+- No new memory entries this phase — the ones from Phase A cover the relevant patterns.

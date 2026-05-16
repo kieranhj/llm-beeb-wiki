@@ -125,7 +125,9 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[techniques/twister]] — Narrow CRTC display via R1=20 + R2 centring + 128 prerendered ribbon rotations + alternate-scanline stipple for 4th colour (Part 13).
 - [[techniques/hexwab-stable-raster]] — 2-cycle-precision sync via narrowing-loop + T1 free-run + per-IRQ latch-read jitter compensation. The next-precision-level alternative to fx-framework's ~8c jitter approach.
 - [[techniques/raster-splits]] — Overview / index of raster-split families. Routes readers from "I want to do a raster split" to the right specific technique page.
-- [[techniques/rvi]] — Per-line C9 selection via R0=1 micro-cycles + Last Line semantics. BBC's "RVI" naming aliased to the CPC R.V.L.L. taxonomy. Used for full 16 KB per-line address access.
+- [[techniques/rvi]] — Per-line C9 selection via R0=1 micro-cycles + Last Line semantics. BBC's "RVI" naming aliased to the CPC R.V.L.L. taxonomy. Full 32 KB CRTC-addressable RAM per visible line (64 KB on Master via shadow).
+- [[techniques/crtc-counter-freeze]] — R0=0 chip freeze. Experimental on BBC, no shipped use. Freezes C9 and most counters; sibling lever to triggered-vsync.
+- [[techniques/triggered-vsync]] — R7=C4 mid-line trigger (immediate VSync) vs C0vs<2 block (VSync silently inhibited). Per-field sub-scanline VSync edge nudging.
 
 ## Tools
 
