@@ -414,3 +414,8 @@ grep "^## \[" wiki/log.md | tail -10
 ## [2026-05-16] ingest | Master ARM Ch 12 (Tube / dual processor)
 - Refined: wiki/os/tube.md — added full filing-system claimer-ID table (0=CFS, 1=DFS, 2=NFS-low, 3=NFS-FS, 4=ADFS, 5=TFS, 6=Reserved, 7=VFS, 8=SRM, 9=Z80, F=independent). Added 32-bit LOAD/EXEC file-address encoding section (&FFFF=host main, &FFFE=host shadow, &FFFFFFFF=*EXEC, &JKLM=parasite) with worked pattern for Tube-aware utility ROM addressing. master-arm added to sources.
 - Updated wiki/sources/master-arm.md filed-into log.
+
+## [2026-05-16] ingest | Master ARM App 8 (65C12 instruction set)
+- Cross-checked: wiki/hardware/6502-isa.md + wiki/hardware/6502.md + wiki/hardware/6502-addressing-modes.md against ARM App 8 — already accurate. Crucial split correctly captured: BBR/BBS/RMB/SMB are R65C02-only (6502 2P + Master Turbo 65C102), NOT in the Master's main 65C12. Cycle counts in units of 0.5/0.33/0.25 µs for 2/3/4 MHz variants confirmed.
+- master-arm added to sources of 6502-isa.md + 6502.md.
+- No new pages required.

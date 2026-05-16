@@ -72,7 +72,7 @@ For performance and demo work, the Master matters because:
 | App 5 | Changes in BASIC 4 | 205-206 | *out of scope* |
 | App 6 | PCB Links and Test Points | 207-211 | *out of scope* |
 | App 7 | Cartridge Interface | 212-216 | *pending — Master-specific* |
-| App 8 | 65C12 Instruction Set | 217-284 | *pending — high priority* |
+| App 8 | 65C12 Instruction Set | 217-284 | Cross-checked [[hardware/6502-isa]] / [[hardware/6502]] — already accurate including the 65C12-vs-R65C02 split (BBR/BBS/RMB/SMB are R65C02-only, *not* in the Master's main 65C12 — only in the 6502 2P and Master Turbo 65C102). master-arm added to sources. |
 
 ## Filed into (per-page audit trail)
 
@@ -87,3 +87,4 @@ Updated incrementally as chapters are ingested. Each entry: chapter → wiki pag
 - **Ch 10 (1MHz bus)** → refined [[hardware/1mhz-bus]] with the `&00EE` zero-page RAM shadow of the JIM `&FCFF` paging register and the IRQ-safe write sequence (update `&EE` *before* `&FCFF` to prevent IRQ handlers from restoring stale values).
 - **Ch 11 (MOS)** → refined [[memory/os-workspace]] with the Master "second 32 KB" workspace map (soft-key buffer at `&8000-&83FF`, soft chars moved to `&8900-&8FFF`, MOS CLI buffer at `&DC00-&DCFF`, transient-utility at `&DD00-&DEFF`) and the extended-vector triple-table install procedure (`OSBYTE &A8`, `&FF00+(vector-&200)*3/2` dispatch). Refined [[hardware/master-overview]] with the relocation notes.
 - **Ch 12 (Tube / dual processor)** → refined [[os/tube]] with the full filing-system claimer-ID table (0-9 + `&F` independent) and the 32-bit LOAD/EXEC file-address encoding (`&FFFF` = host main, `&FFFE` = host shadow, `&FFFFFFFF` = *EXEC, `&JKLM` = parasite). Worked pattern for Tube-aware utility ROM addressing.
+- **App 8 (65C12 instruction set)** → cross-checked [[hardware/6502-isa]] / [[hardware/6502]] against ARM App 8 — already comprehensive (new opcodes, addressing modes, 65C12 vs R65C02 split correctly attributed). master-arm added to sources. No new pages required.
