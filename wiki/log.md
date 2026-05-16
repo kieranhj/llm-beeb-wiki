@@ -486,3 +486,20 @@ Lint findings deferred / left for human:
 - Reviewed: SM §5 (selection links) — out of scope, historical PCB configuration only.
 - Reviewed: SM §7.3 (Hardware Hints) — entries are end-user PCB mods (110 baud RS423 trick via S28 link, BREAK key disable via keyboard PCB link). No demoscene-relevant tricks worth filing as techniques.
 - Updated wiki/sources/bbc-service-manual.md chapter index with cross-check status.
+
+## [2026-05-16] lint | post-User-Guide / Service-Manual lint pass + fixes
+Subagent lint pass against the 7-commit User Guide + Service Manual ingest. Fixes applied:
+
+- wiki/os/vdu.md — fixed "OSWORD &FFF1" wording (was conflating the entry vector with a reason code); section now correctly distinguishes OSWRCH overhead vs custom-mode bypass. Added inline source citations for char-data address ranges (Model B vs Master) and Master VDU 23 extensions.
+- wiki/os/break-intercept.md — removed invented "Master Memory Controller IC" claim that wasn't in any cited source. Bumped updated date to 2026-05-16.
+- wiki/video/plot-codes.md — hedged uncited "200 µs per PLOT" timing claim. Now reads "hundreds of microseconds … measure on your target machine".
+- wiki/os/errors.md — hedged BASIC II vs IV trappability claim.
+- Replaced broken `[[reference_bbc_documents_repo]]` Obsidian-link with plain markdown URL across 3 source pages (bbc-user-guide, bbc-service-manual, master-arm).
+- wiki/sources/naug-ch13-video.md — updated stale "PLOT not filed back" note to "filed into video/plot-codes".
+- Added cross-links: os/calls → os/vdu + os/errors; os/brk → os/errors (new See also section); os/escape → os/errors.
+
+Lint findings deferred / left for human:
+- os/errors.md DFS/ADFS/NFS error table is hedged but specific rows (e.g. 198, 212) may be inaccurate. Marked clearly as non-authoritative.
+- os/errors.md MOS errors 250+ table only has 251/253/254 — incomplete. Acknowledged.
+- 0 orphan pages (no genuinely orphan content; new pages have cross-links from index plus the just-added See-also links).
+- 0 contradictions remaining; 0 code-block dialect issues in new files.

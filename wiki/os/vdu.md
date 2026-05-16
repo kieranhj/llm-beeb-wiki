@@ -109,11 +109,11 @@ Physical colour codes:
 |---|---|
 | 0 | **Write CRTC register**: `VDU 23,0, R, X, 0,0,0,0,0,0` → register R ← X. See [[hardware/crtc-6845]]. |
 | 1 | **Cursor on/off**: `VDU 23,1, n, 0,0,0,0,0,0,0` — n=0 off, n=1 default. Master adds n=2 (steady) and n=3 (flash) |
-| 2-5 | **ECF pattern set** (Master only). Patterns 1-4 = VDU 23,2 to 5 |
+| 2-5 | **ECF pattern set** (Master only — per [[sources/master-arm]] App 2). Patterns 1-4 = VDU 23,2 to 5 |
 | 6 | **Dotted-line pattern** (Master only) |
 | 7 | **Direct window scroll** (Master only) |
 | 8 | **Clear block of text** (Master only) |
-| 9 | First flash period (Master adds — `*FX 9` on Model B) |
+| 9 | First flash period (Master adds VDU form — `*FX 9` on Model B) |
 | 10 | Second flash period (Master — `*FX 10` on Model B) |
 | 11 | Set default ECF patterns (Master) |
 | 12-15 | Set simple ECF pattern (Master) |
@@ -123,7 +123,7 @@ Physical colour codes:
 | 28-31 | Application-reserved — routed through `VDUV` (`&226/&227`) |
 | 32-255 | **Define user character**: `VDU 23, char, b0,b1,b2,b3,b4,b5,b6,b7` — 8 bytes of 8 pixels each. Top row first, MSB = leftmost pixel. |
 
-User-definable character range: **224-255** on Model B (32 chars). Master can also define 128-159. The character data lives at `&0C00-&0CFF` (Model B Page C) or `&8900-&8FFF` (Master second 32 KB — see [[memory/os-workspace]]).
+User-definable character range: **224-255** on Model B (32 chars; per [[sources/bbc-user-guide]] Ch 34). Master can also define 128-159 (per [[sources/master-arm]]). The character data lives at `&0C00-&0CFF` on Model B (Page C) and at `&8900-&8FFF` on Master (second 32 KB — see [[memory/os-workspace]]).
 
 ## VDU 25 — PLOT (graphics primitive)
 
@@ -178,7 +178,7 @@ Each byte of the VDU sequence goes through `OSWRCH` (`&FFEE`). The VDU queue at 
 
 ### Bulk VDU sequences
 
-For long sequences (e.g. CRTC reprogramming), it's faster to use **OSWORD `&FFF1`** with reason code 1 (write block to VDU queue) — saves OSWRCH dispatch overhead per byte. See [[os/calls]].
+For long sequences (e.g. CRTC reprogramming), each VDU byte still costs an OSWRCH (`&FFEE`) dispatch unless you're willing to bypass the driver. For tight inner loops the BBC convention is either: (a) accept the OSWRCH cost (still much faster than BASIC `VDU`), or (b) write directly to the chip you're targeting (CRTC at `&FE00/&FE01`, ULA at `&FE20/&FE21`) and skip the VDU driver altogether — the [[techniques/custom-modes]] pattern.
 
 ## What changes between models
 

@@ -113,7 +113,7 @@ PLOT 70, 500, 500     : REM same point in inverse colour (toggle)
 
 ## Performance notes
 
-- PLOT primitives go through the MOS VDU driver and the BASIC dispatch overhead. On a 2 MHz Model B, a single `PLOT 69` takes ~200 µs (best case, mode 4) — too slow for real-time animation of more than a few hundred points per frame.
+- PLOT primitives go through the MOS VDU driver and (from BASIC) the interpreter dispatch overhead. From BASIC, `PLOT 69` takes hundreds of microseconds per point on a 2 MHz Model B — too slow for real-time animation of more than a few hundred points per frame (measure on your target machine if precise figures matter; the cost varies by mode, pixel position, and clipping window).
 - For per-frame sprite work, **bypass the VDU driver** and write screen RAM directly. See [[techniques/fast-animation]] for the byte-move sprite pattern, [[techniques/custom-modes]] for direct-CRTC bypass.
 - The "horizontal line fill until colour" primitives (PLOT 72-79, 88-95) are surprisingly cheap — useful for filling complex polygon scanlines without writing your own fill routine. Worth measuring against a hand-coded scanline filler if you're doing 2D polygon work.
 - Flood-fill (PLOT 128-143, Master only) is **slow** — recursive in classic implementations. Avoid in tight loops; pre-render fills into an off-screen buffer if needed.

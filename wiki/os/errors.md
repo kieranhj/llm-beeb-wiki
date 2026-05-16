@@ -142,7 +142,7 @@ Restore `&202/&203` to the old values before returning. The standard pattern is 
 ## Compatibility notes
 
 - Error numbers 1-44 are **stable across BBC BASIC I, II, III, IV** (Model B → Master Compact).
-- Error number 0 (`No room`) is untrappable on Model B's BASIC II but somewhat trappable on Master's BASIC IV.
+- Error number 0 (`No room`) is documented as untrappable on Model B per [[sources/bbc-user-guide]] Ch 46 ("untrappable error"); behaviour on newer BASIC versions is undocumented in primary sources I've ingested — assume untrappable unless you can verify otherwise on the target machine.
 - Cassette errors 216-223 only fire on machines that have CFS available (Master 128 has CFS as a ROM image; Master Compact has no CFS at all).
 - DFS / ADFS / NFS errors are **per-ROM** — what error 200 means depends on which filing system is active.
 - The `Silly` and `Failed at N` errors (from `RENUMBER`, `AUTO`) have no numbers and are never `ERR`-readable.

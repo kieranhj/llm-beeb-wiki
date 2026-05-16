@@ -107,3 +107,4 @@ LDA #&E6 : LDX #0 : LDY #0 : JSR &FFF4     ; restore default for next time
 - [[os/events]] — Event 6 = ESCAPE detected.
 - [[os/brk]] — BREAK is a different thing (direct reset line).
 - [[os/keyboard]] — TAB / ESCAPE character defaults.
+- [[os/errors]] — error 17 (`Escape`) is what BRKV sees when the MOS auto-converts an ESCAPE flag to a BRK.

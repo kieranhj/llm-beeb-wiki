@@ -43,4 +43,4 @@ Holmes & Dickens, *The New Advanced User Guide*, pp.172-224. The chapter has thr
 - §13.2 page-3 VDU workspace fully filed into [[memory/os-workspace]] after Ch6 ingest.
 - §13.1.6 character-explosion (`*FX 20`) detail captured only at the headline level — write a dedicated [[techniques/exploding-font]] page if it comes up.
 - VDU 23,n function table (Master, n=2..16) summarised — full ECF pattern detail not extracted.
-- PLOT number table (§13.1.4) summarised but not filed back as a dedicated page — most PLOT details belong with VDU 25 docs, not performance work.
+- PLOT number table (§13.1.4) → filed into [[video/plot-codes]] (created from User Guide Ch 29 ingest 2026-05-16, with Master extensions from Master ARM Ch 6).

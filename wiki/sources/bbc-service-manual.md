@@ -29,7 +29,7 @@ For chip-level documentation, prefer the per-chip pages ([[hardware/6502]], [[ha
 - **Title**: BBC Microcomputer Service Manual
 - **Publisher**: Acorn Computers Ltd.
 - **Year**: 1982 first edition; updated through ~1985 to cover PCB issues 1 through 7.
-- **PDF source**: bitshifters/bbc-documents archive ([[reference_bbc_documents_repo]])
+- **PDF source**: [bitshifters/bbc-documents](https://github.com/bitshifters/bbc-documents) archive
 - **Format**: 90 pages including schematics and parts lists.
 
 ## Section index

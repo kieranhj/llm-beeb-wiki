@@ -97,3 +97,8 @@ The 65C12 (Master) clears D on BRK entry. The NMOS 6502 (Model B / B+ / Electron
     LDX #&FF : TXS
     ; ...
 ```
+
+## See also
+
+- [[os/errors]] — canonical error number ↔ message reference for the values raised via this protocol.
+- [[os/calls]] — entry points and vectors.

@@ -3,7 +3,7 @@ title: BREAK Intercept & Reset Handling
 type: os
 tags: [break, reset, intercept, osbyte, startup]
 sources: [naug-ch24-misc, bbc-service-manual]
-updated: 2026-05-13
+updated: 2026-05-16
 ---
 
 # BREAK Intercept & Reset Handling
@@ -29,7 +29,7 @@ Per [[sources/bbc-service-manual]] §3.1, the BBC's reset circuitry has two path
 - A **555 timer** (IC16 on a Model B) drives the general `RESET` line, asserted both at power-on and on BREAK.
 - A separate **RC network** (C10 + R20 + D1) feeds the System VIA's `RESET A` input on power-up *only* — the time constant is long enough that the BREAK key's reset pulse doesn't trigger it.
 
-Power-on therefore latches an extra interrupt source in the System VIA IFR that BREAK does not. MOS's startup code polls the IFR to set the cold-start / warm-start flag that `OSBYTE &FD` later surfaces. On a **Master 128 + Compact**, the equivalent latching is done by the Memory Controller IC rather than discrete RC components, but the IFR-polling pattern is the same. This is why `OSBYTE &FD` reliably differentiates cold-start across all BBC models.
+Power-on therefore latches an extra interrupt source in the System VIA IFR that BREAK does not. MOS's startup code polls the IFR to set the cold-start / warm-start flag that `OSBYTE &FD` later surfaces. Master 128 / Compact use different reset circuitry (not covered by this manual) but the `OSBYTE &FD` API is preserved across all BBC machines.
 
 You cannot easily "fake" a cold-start from software — the only reliable software path to value `1` is via the documented "mask all System VIA IRQs then jump to `&FFFC` indirect" sequence, which is a brittle hack. Just use `OSBYTE &FD` to read the type and branch.
 

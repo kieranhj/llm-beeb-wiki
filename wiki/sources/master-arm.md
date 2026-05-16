@@ -21,7 +21,7 @@ This is a substantial document (292 pages). Key chapters are filed individually 
 - **Title**: Advanced Reference Manual for the BBC Master Series
 - **Publisher**: Acorn Computers Ltd.
 - **Year**: ~1986 (first published with the Master 128 release)
-- **PDF source**: bitshifters/bbc-documents archive ([[reference_bbc_documents_repo]])
+- **PDF source**: [bitshifters/bbc-documents](https://github.com/bitshifters/bbc-documents) archive
 - **Format**: 292-page PDF, mixed text + circuit diagrams + tables
 
 ## Why this matters

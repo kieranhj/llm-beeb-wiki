@@ -30,7 +30,7 @@ For Master-era content, prefer [[sources/master-arm]]. For Master-era OSBYTE/OSW
 - **Author**: John Coll (with Acorn editorial input)
 - **Publisher**: Acorn Computers Ltd. / British Broadcasting Corporation
 - **Year**: 1982 (first ed.); reprinted with minor updates through 1984.
-- **PDF source**: bitshifters/bbc-documents archive ([[reference_bbc_documents_repo]])
+- **PDF source**: [bitshifters/bbc-documents](https://github.com/bitshifters/bbc-documents) archive
 - **Format**: 522-page PDF.
 
 ## Chapter index (performance/hardware-relevant only)

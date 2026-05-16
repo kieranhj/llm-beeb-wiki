@@ -120,4 +120,6 @@ In hot game loops, #1 (precompose) is almost always the right answer.
 - [[os/osbyte]] and [[os/osword]] — directory tables.
 - [[os/interrupts]] — IRQ vector chain.
 - [[os/brk]] — BRK protocol.
+- [[os/vdu]] — VDU control codes consumed by OSWRCH / OSASCI.
+- [[os/errors]] — error number ↔ message reference.
 - [[memory/os-workspace]] — Page 2 vector table + OS variables.
