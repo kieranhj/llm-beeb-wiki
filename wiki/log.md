@@ -653,3 +653,17 @@ Two related fixes:
 - `&14` (20): added Model-B-vs-Master parameter-handling difference (B uses X for count; Master ignores params and resets standard exploded font).
 
 Generalised root cause: when ingesting the Master Reference Manual's functional-grouping OSBYTE summary (Ch D.2.1) on top of an existing wiki page sourced from NAUG App A's per-call detail, I retained the MRM summary's terse / sometimes-imprecise wording instead of preserving NAUG's more accurate per-call descriptions. Same class of error as the &A4 case.
+
+## [2026-05-17] ingest | BBC Micro Line Drawing Implementations (PDF) + kieranhj/line-test repo + raster.s
+Comparative analysis PDF (`raw/notes/BBC Line drawing implementations.pdf`) covering 5 Bresenham implementations: Elite, RTW, NJ, Tricky (all MODE 4/4S), and Raster (MODE 2). User supplied source repos: `kieranhj/line-test` (the four MODE 4 routines + test harness) mirrored to `raw/notes/line-test/`, and `ebenupton/virus/raster.s` (the MODE 2 implementation) mirrored to `raw/notes/line-test/raster.s`.
+
+- Created: `wiki/sources/line-drawing-implementations.md` — analysis citation + claim summary + internal-inconsistency flags
+- Created: `wiki/sources/raster-source.md` — annotated citation for `raster.s`. The 200-line header comment in the source is itself a pedagogical document.
+- Created: `wiki/techniques/bresenham-line.md` — main comparison page. Steep cycle breakdown, shallow strategies table, setup-cost / break-even analysis, code-size table, hybrid-ideal discussion.
+- Created: `wiki/techniques/cumulative-mask-batching.md` — NJ's standout innovation. Threading X across pixel-column entries to batch up to 8 EORs into a single RMW. ~5c/pixel pass-through; ~8.75c/pixel amortised horizontal.
+- Created: `wiki/techniques/carry-chain-invariant.md` — Raster's systematic C=1 maintenance. Per-instruction carry proof; DEY/BMI carry-neutrality on Y-up worth 2c/pixel; Y-down 4c penalty.
+- Created: `wiki/techniques/open-endpoint-chaining.md` — Raster's "draw start but not end" convention. Polygon vertices write exactly once (XOR-safe). Two-call API trade-off.
+- Updated: `wiki/index.md` (2 source entries + 4 technique entries)
+- Flagged contradiction: comparative-analysis PDF says all 5 implementations "Works on 65C02: Yes" in §6 Feature Comparison. raster.s uses `BRA` extensively (65C12-only) — it is Master-only / not NMOS-compatible. Recorded in `sources/raster-source.md` Contradictions and in `techniques/bresenham-line.md` Implementation Notes.
+- Flagged internal inconsistency: PDF §3 prose ("~50 cycles" Elite division-loop setup) vs §10 setup-cost table (Elite 80-100). Used higher figure; flagged in source page.
+- Did NOT write: `techniques/deferred-counting.md` (referenced as wikilink TODO from cumulative-mask-batching). The technique is well-covered inline in `bresenham-line.md`; can promote to its own page later if useful.

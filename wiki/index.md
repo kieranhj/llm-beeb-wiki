@@ -49,6 +49,8 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/stardot-sn76489-sampled]] — scarybeasts' 2025 Stardot threads: persistent-`/WE` 62.5 kHz writes + multi-channel software-mixed sample playback (Lotus, Chaos Engine, Robot Monsters at 12.5-15 kHz).
 - [[sources/bbc-user-guide]] — Acorn *BBC Microcomputer System User Guide* (Coll, 1982, 522 pages). Original Model B end-user manual. Mostly BASIC tutorial (out of scope); canonical for VDU control codes / PLOT codes / error messages.
 - [[sources/bbc-service-manual]] — Acorn *BBC Microcomputer Service Manual* (1982-85, 90 pages). Electrical-level circuit description + repair / link options for Model A/B PCB issues 1-7. Cross-checks for chip pages.
+- [[sources/line-drawing-implementations]] — Comparative analysis of 5 Bresenham line implementations (Elite, RTW, NJ, Tricky, Raster). Per-pixel cycle tables, setup costs, named innovations. Source repo: `kieranhj/line-test`.
+- [[sources/raster-source]] — `raster.s` from `ebenupton/virus`. Annotated MODE 2 line rasterizer with the canonical carry-chain + branch-outlining + chained-polygon implementation. **65C12-only**.
 
 ## Hardware
 
@@ -144,6 +146,10 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[techniques/triggered-vsync]] — R7=C4 mid-line trigger (immediate VSync) vs C0vs<2 block (VSync silently inhibited). Per-field sub-scanline VSync edge nudging.
 - [[techniques/interlaced-640x512]] — Master-only 640×512 two-colour interlaced mode. CRTC interlace-sync-and-video + per-vsync ACCCON D toggle between main and LYNNE half-frames. ARM Ch 6 recipe.
 - [[techniques/sampled-sound]] — PCM playback on the SN76489 via volume-DAC carrier modulation. 1980s single-channel ≤8 kHz vs scarybeasts (2025) persistent-`/WE` 62.5 kHz multi-channel mixed playback (Lotus / Chaos Engine quality).
+- [[techniques/bresenham-line]] — 5-way comparison of Bresenham implementations (Elite, RTW, NJ, Tricky, Raster). Steep/shallow cycle tables, setup costs, decision matrix.
+- [[techniques/cumulative-mask-batching]] — NJ's threading of X across pixel-column entries to batch 8 EORs into one RMW. Drops shallow horizontal cost to ~8.75c/pixel.
+- [[techniques/carry-chain-invariant]] — Raster's systematic C=1 maintenance. Eliminates per-iteration `SEC`; exploits `DEY/BMI` carry-neutrality on Y-up.
+- [[techniques/open-endpoint-chaining]] — Raster's "draw start but not end" convention. Polygon vertices write exactly once; no XOR double-plot artifacts at shared corners.
 
 ## Tools
 
