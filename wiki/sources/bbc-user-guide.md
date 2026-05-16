@@ -44,12 +44,12 @@ For Master-era content, prefer [[sources/master-arm]]. For Master-era OSBYTE/OSW
 | 31-33 | File handling, BASIC keywords | 190-378 | *out of scope* |
 | 34 | VDU drivers | 379-391 | Created [[os/vdu]] (full VDU 0-31 + 127 control code reference) |
 | 35-41 | Cassette / printers / misc | 392-417 | *out of scope or already in NAUG* |
-| 42 | FX Calls and OSBYTE calls | 420-443 | *pending — cross-check vs [[os/osbyte]]* |
+| 42 | FX Calls and OSBYTE calls | 420-443 | Cross-checked against [[os/osbyte]] — User Guide's original OSBYTE list is a strict subset of NAUG App A/B and Master ARM additions. bbc-user-guide added to osbyte sources. |
 | 43 | Assembly language | 444-468 | *out of scope — already covered by NAUG Ch2 ingest* |
 | 44 | Analogue input | 469-472 | *cross-checked vs [[hardware/upd7002-adc]] — no new content* |
 | 45 | Expanding the system | 473-475 | *pending — original 1MHz / Tube / disc expansion overview* |
 | 46 | Error messages | 476-484 | Created [[os/errors]] (BASIC 0-44 + CFS 216-223 + MOS 250+ + filing-system error tables) |
-| 48 | Appendix | 487-514 | *pending — ASCII / INKEY / character codes* |
+| 48 | Appendix | 487-514 | Cross-checked: ASCII / INKEY tables already covered in [[os/keyboard]] (via NAUG Ch14 + Master ARM Ch 5 ingest); BASIC keyword token table covered in [[tools/basic-assembler]]. bbc-user-guide added to keyboard.md sources. |
 
 ## Filed into
 

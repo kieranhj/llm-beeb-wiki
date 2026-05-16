@@ -2,7 +2,7 @@
 title: OSBYTE Calls
 type: os
 tags: [osbyte, mos, reference]
-sources: [naug-appendix-ab]
+sources: [naug-appendix-ab, bbc-user-guide]
 updated: 2026-05-13
 ---
 

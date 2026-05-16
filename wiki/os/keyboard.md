@@ -2,7 +2,7 @@
 title: Keyboard
 type: os
 tags: [keyboard, ascii, inkey, ikn, soft-keys, scan]
-sources: [naug-ch14-keyboard, master-arm]
+sources: [naug-ch14-keyboard, master-arm, bbc-user-guide]
 updated: 2026-05-16
 ---
 

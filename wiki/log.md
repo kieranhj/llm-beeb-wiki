@@ -466,3 +466,8 @@ Lint findings deferred / left for human:
 - Created: wiki/os/errors.md — full BASIC error table (0-44 alphabetical, numerical, with cause), CFS errors 216-223, MOS errors 250+, common DFS/ADFS/NFS error conventions. Pattern for raising errors from user code via BRK + structure. Compatibility notes across BBC BASIC I-IV.
 - Updated wiki/index.md (1 new OS page).
 - Updated wiki/sources/bbc-user-guide.md filed-into log.
+
+## [2026-05-16] ingest | User Guide Ch 42 + Ch 48 (FX/OSBYTE + Appendix cross-check)
+- Cross-checked: wiki/os/osbyte.md against UG Ch 42 — UG's OSBYTE list is a subset of NAUG App A/B (already ingested) plus Master ARM additions. No new content.
+- Cross-checked: wiki/os/keyboard.md against UG Ch 48 — ASCII/INKEY tables already in via NAUG Ch14 + Master ARM Ch 5.
+- bbc-user-guide added to sources of: os/osbyte.md, os/keyboard.md.
