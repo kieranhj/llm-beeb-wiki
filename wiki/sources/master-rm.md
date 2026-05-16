@@ -44,7 +44,7 @@ For Master-internal electrical and chip-level detail, prefer [[sources/master-ar
 | G | Filing Systems (common) | 265-296 | Cross-checked vs [[os/filing-systems]] (already comprehensive). G.7 sideways-RAM pseudo-addressing detail filed into [[memory/paged-rom]]. master-rm added to filing-systems.md sources. |
 | H | The Cassette Filing System | 297-308 | Cross-checked vs [[os/filing-systems]] — CFS API already covered via NAUG. |
 | I | The ROM Filing System | 309-320 | Cross-checked vs [[os/filing-systems]] — RFS API already covered. |
-| J | The Disc Filing Systems (DFS + ADFS) | 321-383 | *pending — catalogue formats, commands, technical info* |
+| J | The Disc Filing Systems (DFS + ADFS) | 321-383 | Created [[os/disc-formats]] (DFS catalogue layout sector 0+1, ADFS Free Space Map + Root Directory sector layout, file/dir attribute encoding, DFS-vs-ADFS comparison table). Commands cross-checked vs existing [[os/star-commands]] + [[os/filing-systems]]. |
 
 ### Part 2
 
@@ -69,6 +69,7 @@ Populated as chapters are ingested. Each entry: chapter → wiki pages created/e
 - **Ch D.3-D.10 (OSWORD + OSCLI/OSRDCH/OSWRCH/OSNEWL/OSASCI/OSWRSC/OSEVEN/GSINIT/GSREAD)** → cross-checked vs [[os/osword]] / [[os/calls]] — Master-new OSWORD calls (`&0E` Read CMOS clock, `&0F` Write CMOS clock) already covered via NAUG Ch19. master-rm added to osword.md sources.
 - **Ch F (Hardware and memory usage)** → cross-checked vs [[hardware/master-overview]] / [[memory/memory-map]] / [[memory/shadow-ram]] / [[memory/paged-rom]] / [[hardware/1mhz-bus]] / [[hardware/system-via]] / [[hardware/user-via]]. Master ARM ingest already covered the same ground at greater electrical-level detail. master-rm added to sources of 7 hardware/memory pages.
 - **Ch G + H + I (Filing systems common, CFS, RFS)** → cross-checked vs [[os/filing-systems]] — already comprehensive. G.7 (sideways-RAM addressing modes — absolute vs pseudo with W/X/Y/Z bank IDs at `&00000-&0FFBF`) filed into [[memory/paged-rom]] as a new "Master sideways-RAM addressing modes" section. master-rm added to filing-systems.md sources.
+- **Ch J (DFS + ADFS)** → created [[os/disc-formats]] — DFS catalogue layout (sector 0 = title + names; sector 1 = title-tail + MSN + free-pointer + 31 file headers with 18-bit addresses split across nibbles). ADFS Free Space Map (sectors 0+1, lock-stepped 82-entry start/length arrays + checksum); ADFS Root Directory (sectors 2-6, 47-entry format with Hugo identifier, 32-bit addresses, 5-byte name+access-attribute encoding); attribute encoding in top bits of name bytes (R/W/L/E); DFS-vs-ADFS comparison table.
 
 ---
 

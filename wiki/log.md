@@ -576,3 +576,13 @@ Lint findings deferred / left for human:
 - Cross-checked Ch G/H/I against existing os/filing-systems.md — already comprehensive via NAUG Ch16 ingest.
 - Refined: wiki/memory/paged-rom.md — added "Master sideways-RAM addressing modes" section documenting *SRDATA vs *SRROM (absolute / pseudo-addressing) and the W/X/Y/Z bank ID pseudo-address ranges (banks 4/5/6/7 = &00000-&03FEF / &03FF0-&07FDF / &07FE0-&0BFCF / &0BFD0-&0FFBF, with 16-byte ROM-header gaps).
 - master-rm added to filing-systems.md sources; date bumped.
+
+## [2026-05-16] ingest | MRM Part 1 Ch J (DFS + ADFS)
+- Created: wiki/os/disc-formats.md — sector-level format reference:
+  - DFS catalogue layout (sector 0 = title + filenames + dir/lock byte; sector 1 = title-tail + master-seq + next-free pointer + boot opt + 31 file headers with 18-bit addresses split across nibbles)
+  - ADFS Free Space Map (sectors 0+1, lock-stepped 82-entry start/length arrays + per-sector checksums)
+  - ADFS Root Directory (sectors 2-6, 47-entry format with Hugo identifier, 32-bit load/exec/length, 24-bit start sector)
+  - File/dir attribute encoding (top bits of name bytes 1-4 = R/W/L/E)
+  - DFS vs ADFS comparison table
+- master-rm added to os/disc-formats.md sources via creation.
+- Updated wiki/index.md (1 new OS page).
