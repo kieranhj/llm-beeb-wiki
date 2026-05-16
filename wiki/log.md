@@ -396,3 +396,8 @@ grep "^## \[" wiki/log.md | tail -10
 - Created: wiki/techniques/interlaced-640x512.md — Master 640×512 two-colour interlaced mode via CRTC interlace-sync-and-video + per-vsync ACCCON D toggle between main and LYNNE half-frames. ARM Ch 6 recipe.
 - Updated wiki/index.md (1 new technique).
 - Updated wiki/sources/master-arm.md filed-into log.
+
+## [2026-05-16] ingest | Master ARM Ch 7 (User Port)
+- Cross-checked: existing user-via.md / via-6522.md / via-timers.md against ARM Ch 7 — already comprehensive (all timer modes, shift register modes, ACR/PCR/IFR/IER, PB7 freq formula, T2 pulse count, CB1/CB2 handshake).
+- Updated: wiki/hardware/user-via.md sources (master-arm added).
+- ARM motor-control worked example noted in source-page table; not filed (outside performance/demo scope).
