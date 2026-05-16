@@ -2,8 +2,8 @@
 title: OSWORD Calls
 type: os
 tags: [osword, mos, reference]
-sources: [naug-appendix-ab]
-updated: 2026-05-13
+sources: [naug-appendix-ab, master-rm]
+updated: 2026-05-16
 ---
 
 # OSWORD Calls

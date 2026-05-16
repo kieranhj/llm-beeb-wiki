@@ -562,3 +562,8 @@ Lint findings deferred / left for human:
   - Functional-grouping index (ADC / BREAK / CMOS RAM / Econet / ESCAPE / FS / IO / character interpretation / interrupts / keyboard / mode / printer / RS423 / shadow / sound / system / time / Tube) - the "what do I want to do?" navigation aid
   - Detailed list of OSBYTEs marked £ "new on Master" or repurposed (108-114, 161-162, 164, 165, 179, 182, 238, 250-251, 254) with caveat that some old Model B uses break on Master
 - master-rm added to sources; updated date bumped to 2026-05-16.
+
+## [2026-05-16] ingest | MRM Part 1 Ch D.3-D.10 (OSWORD + OS entry points)
+- Cross-checked: wiki/os/osword.md against MRM Ch D.3 — only 16 OSWORD calls (0-F); Master-new &0E/&0F (RTC read/write) already covered via NAUG Ch19 ingest.
+- Cross-checked: wiki/os/calls.md against MRM Ch D.4-D.10 (OSCLI / OSRDCH / OSRDSC / OSWRCH / OSNEWL / OSASCI / OSWRSC / OSEVEN / GSINIT / GSREAD) — already comprehensive.
+- master-rm added to osword.md sources; updated date bumped.
