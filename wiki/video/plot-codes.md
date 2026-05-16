@@ -115,7 +115,7 @@ These are 3-point primitives — they use **old cursor + current cursor + (x,y)*
 
 Useful pattern: set graphics cursor to centre, MOVE to first arc point, PLOT to define second arc direction.
 
-### Ellipses (184-191 outline, 192-199 filled)
+### Ellipses (192-199 outline, 200-207 filled)
 
 Axis-aligned only (natively). Per Ch E.3 definition:
 

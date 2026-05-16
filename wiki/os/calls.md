@@ -3,7 +3,7 @@ title: OS Calls (entry points + vectors)
 type: os
 tags: [mos, vectors, oswrch, osrdch, oscli, osword, osbyte]
 sources: [naug-ch06-os-introduction]
-updated: 2026-05-13
+updated: 2026-05-16
 ---
 
 # OS Calls — Entry Points & Vectors
@@ -122,6 +122,7 @@ In hot game loops, #1 (precompose) is almost always the right answer.
 - [[os/brk]] — BRK protocol.
 - [[os/vdu]] — VDU control codes consumed by OSWRCH / OSASCI.
 - [[os/errors]] — error number ↔ message reference.
+- [[os/star-commands]] — `*command` dispatch (OSCLI is the entry point).
 - [[memory/os-workspace]] — Page 2 vector table + OS variables.
 
 ---

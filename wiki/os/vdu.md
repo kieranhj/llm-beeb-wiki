@@ -2,7 +2,7 @@
 title: VDU Control Codes
 type: os
 tags: [vdu, control-codes, ascii, mos, screen]
-sources: [bbc-user-guide, master-rm]
+sources: [bbc-user-guide, master-rm, master-arm]
 updated: 2026-05-16
 ---
 
@@ -330,6 +330,7 @@ For long sequences (e.g. CRTC reprogramming), each VDU byte still costs an OSWRC
 ## See also
 
 - [[video/plot-codes]] — full PLOT k=0-255 reference.
+- [[os/vdu-internals]] — VDU driver state + the 8 `&C000-&C015` primitive entry points for code intercepting the unknown-PLOT-codes vector.
 - [[hardware/video-ula]] — palette mechanics behind VDU 19.
 - [[hardware/crtc-6845]] — CRTC register reference behind VDU 23,0.
 - [[memory/os-workspace]] — Page 3 VDU workspace layout.

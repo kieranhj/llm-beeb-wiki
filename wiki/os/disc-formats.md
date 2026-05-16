@@ -8,7 +8,7 @@ updated: 2026-05-16
 
 # DFS and ADFS disc formats — sector-level layout
 
-Sector-level format of BBC discs as seen from low-level filing-system code or direct WD1770/1772 access. See [[hardware/wd1770]] for the controller chip itself, [[os/filing-systems]] for the user-level filing-system API, and [[hardware/wd1770]] for the disc-controller programming sequence.
+Sector-level format of BBC discs as seen from low-level filing-system code or direct WD1770/1772 access. See [[hardware/wd1770]] for the controller chip itself (register map + NMI-per-byte programming sequence) and [[os/filing-systems]] for the user-level filing-system API.
 
 ## DFS — 40/80-track, single-sided, 10×256-byte sectors
 

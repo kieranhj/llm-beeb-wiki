@@ -2,8 +2,8 @@
 title: OS Workspace (Pages 1, 2, 3)
 type: memory
 tags: [workspace, mos, vectors, page-two, page-three]
-sources: [naug-ch06-os-introduction, naug-ch13-video, allmem-ripley-harston, master-arm]
-updated: 2026-05-14
+sources: [naug-ch06-os-introduction, naug-ch13-video, allmem-ripley-harston, master-arm, master-rm]
+updated: 2026-05-16
 ---
 
 # OS Workspace — Pages 1, 2, 3

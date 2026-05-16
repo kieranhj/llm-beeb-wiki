@@ -3,7 +3,7 @@ title: Paged ROM / Sideways RAM
 type: memory
 tags: [paged-rom, sideways-rom, sideways-ram, andy]
 sources: [naug-ch12-memory, beebwiki-andy, master-arm, master-rm]
-updated: 2026-05-14
+updated: 2026-05-16
 ---
 
 # Paged ROM / Sideways RAM

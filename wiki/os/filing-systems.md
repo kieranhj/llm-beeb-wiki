@@ -269,6 +269,7 @@ For game / demo loaders: OSGBPB with a custom NMI handler captured from DFS is t
 - [[sources/naug-ch16-filing]] — Detailed catalogue formats (DFS, ADFS), per-FS specifics.
 - [[os/calls]] — All MOS entry points including filing-system vectors.
 - [[os/paged-roms]] — Filing systems implement themselves as service ROMs; service-call dispatch.
+- [[os/disc-formats]] — DFS / ADFS sector-level layout (catalogue, FSM, root directory).
 - [[memory/shadow-ram]] — Master HAZEL FS-handler workspace.
 
 ---

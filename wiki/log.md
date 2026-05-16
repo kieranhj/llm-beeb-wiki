@@ -590,3 +590,23 @@ Lint findings deferred / left for human:
 ## [2026-05-16] ingest | MRM Part 2 Ch O + P + Q (BASIC assembler + 65C12 ISA + errors)
 - Cross-checked: tools/basic-assembler, hardware/6502-isa, hardware/6502-addressing-modes, hardware/6502 against MRM Part 2 — already comprehensive (NAUG Ch2 + Ch5 + Master ARM App 8 ingests covered same ground).
 - master-rm added to sources of 4 hardware/tool pages.
+
+## [2026-05-16] lint | post-MRM lint pass + fixes
+Subagent lint pass against the 11-commit MRM ingest. Fixes applied:
+
+- wiki/video/plot-codes.md — fixed section-heading contradiction: "Ellipses (184-191 outline, 192-199 filled)" → "Ellipses (192-199 outline, 200-207 filled)". The k DIV 8 master table earlier in the same page correctly assigned 184-191 to Move/copy rectangle.
+- wiki/os/vdu.md — added master-arm to sources (page body cited master-arm twice; was missing from frontmatter).
+- wiki/os/disc-formats.md — fixed duplicate [[hardware/wd1770]] reference in intro paragraph.
+- Cross-links added to fix orphans surfaced by lint:
+  - os/vdu.md "See also" → os/vdu-internals
+  - os/calls.md "See also" → os/star-commands
+  - os/filing-systems.md "See also" → os/disc-formats
+  - hardware/wd1770.md "See also" → os/disc-formats
+- Bumped updated dates on 12 pages touched by MRM ingest (saa5050, os-workspace, paged-rom, memory-map, master-overview, 1mhz-bus, system-via, user-via, 6502-isa, 6502, 6502-addressing-modes, wd1770, basic-assembler, calls).
+- master-rm added to memory/os-workspace.md sources (overlaps heavily with new vdu-internals.md content).
+
+Lint findings deferred:
+- "Hugo" identifier in ADFS dir hedged ("Hugo" / "Nick" some variants) — actually only "Hugo" is correct; Nick was NFS, not ADFS. Soft hedge retained as page-footer disclaimer covers it.
+- Page-0 names (STATE/ZMASK/ZMEMG etc) in vdu-internals.md not inline-cited but page-level master-rm covers.
+- "81-column mode" community jargon in vdu.md VDU 23,16 section — not marked (unverified) but is widely used in BBC scene.
+- Second-32K map appears in 3 places (os-workspace, shadow-ram, vdu-internals) with different granularity. Acceptable normalization opportunity — left for next pass.
