@@ -4,7 +4,7 @@ type: hardware
 tags: [cmos, rtc, 146818, master-specific, battery-backed]
 sources: [naug-ch19-clocks-cmos, master-arm]
 machines: [Master 128]
-updated: 2026-05-13
+updated: 2026-05-16
 ---
 
 # Motorola 146818 CMOS RTC (Master 128)

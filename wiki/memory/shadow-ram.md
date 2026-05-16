@@ -4,7 +4,7 @@ type: memory
 tags: [shadow-ram, acccon, hazel, double-buffer]
 sources: [naug-ch12-memory, master-arm]
 machines: [BBC B+, Master 128, Master Compact]
-updated: 2026-05-13
+updated: 2026-05-16
 ---
 
 # Shadow RAM & ACCCON
@@ -37,7 +37,7 @@ bit:   7    6    5    4    3    2    1    0
 | Bit | Name | Effect when set | Effect when clear |
 |---|---|---|---|
 | 0 | **D** | 6845 displays from LYNNE (shadow) | 6845 displays from main RAM |
-| 1 | **E** | Auto-shadow: CPU access to `&3000-&7FFF` routes to LYNNE *iff* last opcode fetch was from `&C000-&DFFF* and this cycle is **not** an opcode fetch | CPU sees main always |
+| 1 | **E** | Auto-shadow: CPU access to `&3000-&7FFF` routes to LYNNE *iff* last opcode fetch was from `&C000-&DFFF` and this cycle is **not** an opcode fetch | CPU sees main always |
 | 2 | **X** | Unconditional: CPU sees LYNNE at `&3000-&7FFF` for every access (including opcode fetch) | CPU sees main always |
 | 3 | **Y** | HAZEL: 8 KB filing-system RAM at `&C000-&DFFF` overlays MOS VDU driver | MOS VDU driver code at `&C000-&DFFF` |
 | 4 | **ITU** | Internal Tube enabled | External Tube |

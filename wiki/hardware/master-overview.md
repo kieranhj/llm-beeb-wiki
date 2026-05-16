@@ -16,7 +16,7 @@ Primary source: [[sources/master-arm]] Ch 1.
 
 | Component | Master 128 | Reference |
 |---|---|---|
-| CPU | **65C12** (CMOS, sometimes labelled "65SC12") @ 2 MHz / 1 MHz | [[hardware/6502]], future [[hardware/65c12]] |
+| CPU | **65C12** (CMOS, sometimes labelled "65SC12") @ 2 MHz (drops to 1 MHz only for slow-bus access) | [[hardware/6502]], [[hardware/6502-isa]] |
 | RAM | 128 KB DRAM (4 × 4464) | [[memory/memory-map]] |
 | ROM | 128 KB on-board + sideways slots | [[memory/paged-rom]] |
 | Display RAM | 32 KB CRTC-addressable (same as Model B) + shadow via ACCCON | [[memory/shadow-ram]] |
@@ -39,11 +39,12 @@ Primary source: [[sources/master-arm]] Ch 1.
 
 The Master uses the **CMOS 65C12** (sometimes badged "65SC12" — the silicon Acorn shipped is the GTE/CMD 65SC12). This is not the NMOS 6502 of the Model B:
 
-- Added opcodes: `PHX`/`PHY`/`PLX`/`PLY`, `STZ`, `TRB`/`TSB`, `BRA`, `BIT abs,X`, `BIT #imm`, `JMP (abs,X)`, plus Rockwell `BBR`/`BBS`/`RMB`/`SMB` (the WDC 65C02 ones).
-- Several NMOS bugs fixed (e.g. indirect-JMP page wrap).
+- Added opcodes: `PHX`/`PHY`/`PLX`/`PLY`, `STZ`, `TRB`/`TSB`, `BRA`, `DEA`/`INA`, `BIT abs,X`, `BIT #imm`, `JMP (abs,X)`.
+- Added addressing mode: `(zp)` — zero-page indirect without needing X or Y to be zero.
+- Several NMOS bugs fixed (e.g. indirect-JMP page wrap; BRK now clears D).
 - Slightly different cycle behaviour on a few instructions; the dummy-read patterns differ in places.
 
-See [[hardware/65c12]] (forthcoming) for the full instruction-set diff and cycle table. Any timing-critical code lifted from a Model B source needs to be re-checked against the 65C12 cycle table before being trusted on the Master.
+The Master's **main CPU does NOT have the Rockwell `BBR`/`BBS`/`RMB`/`SMB` opcodes** — those are R65C02-only, present in the 6502 second processor (3 MHz) and the Master Turbo 65C102 (4 MHz) co-processor, but **not** in the 65C12 fitted to the Master 128's main board (per [[sources/master-arm]] App 8). See [[hardware/6502-isa]] for the full per-instruction table including which opcodes are 65C12 vs R65C02 only. Any timing-critical code lifted from a Model B source needs to be re-checked against the 65C12 cycle table before being trusted on the Master.
 
 ## Bus speed and timing
 
@@ -80,14 +81,17 @@ No speech on the Master — those signals are reclaimed for the 146818. Sound an
 - **ACCCON** at `&FE34` controls shadow RAM, Hazel ROM, Lynne mapping, and tube selection. Replaces the B+'s simpler shadow-control scheme.
 - **Cartridge slots** (2) on the back — same bus as sideways ROM but with extra select signals.
 - **Internal 65C102 second processor option** (Turbo).
-- **Lynne and Hazel** — internal MOS-managed RAM regions (`&8000-&8FFF` Lynne, `&C000-&DFFF` Hazel) that overlay ROM space.
-- **Soft character definitions relocated** from `&0E00+` (Model B) to `&8900-&8FFF` in the second 32 KB (Master). Custom characters no longer steal user RAM. See [[memory/os-workspace]] "second 32 KB workspace map" for the full breakdown.
+- **LYNNE, HAZEL, ANDY** — three MOS-managed RAM regions:
+  - **LYNNE** — 20 KB shadow display RAM, overlays `&3000-&7FFF` via ACCCON D/E/X (lives in DRAM at `&9000-&DFFF` of the second 64 KB). See [[memory/shadow-ram]].
+  - **HAZEL** — 8 KB filing-system workspace, overlays MOS VDU driver at `&C000-&DFFF` via ACCCON Y.
+  - **ANDY** — 4 KB private RAM, overlays sideways window at `&8000-&8FFF` via ROMSEL bit 7. See [[memory/paged-rom]].
+- **Soft character definitions relocated** from `&0C00-&0CFF` (Model B Page C, costs OSHWM if exploded) to `&8900-&8FFF` in the second 32 KB (Master, free). See [[memory/os-workspace]] "second 32 KB workspace map" for the full breakdown.
 - **Soft-key buffer relocated** from `&0B00-&0BFF` (Model B, ~256 bytes) to `&8000-&83FF` (Master, 1 KB). Old code that wrote function-key definitions directly into `&0B00` no longer works — use `OSCLI` `*KEY` instead.
 
 ## Where to go next
 
 - Memory map detail (where ACCCON puts what): [[memory/memory-map]], [[memory/shadow-ram]].
-- CPU instruction-set diff: [[hardware/65c12]] (forthcoming).
+- CPU instruction-set diff: [[hardware/6502-isa]] (65C12 / R65C02 split documented per-mnemonic).
 - Screen display + CRTC multiplexer specifics: [[hardware/crtc-6845]], [[video/hardware-scrolling]].
 - Internal Tube vs external Tube: [[os/tube]].
-- B/B+/Master cross-model differences: planned synthesis page from App 1-3.
+- B/B+/Master cross-model differences: [[synthesis/model-differences]].

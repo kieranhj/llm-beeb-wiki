@@ -424,3 +424,29 @@ grep "^## \[" wiki/log.md | tail -10
 - Created: wiki/synthesis/model-differences.md — comprehensive cross-model comparison (B / B+ / Master 128 / Master Compact). At-a-glance table; ACCCON + ROMSEL bit-by-bit; soft-char + soft-key relocation; new Master OSBYTEs/commands; machine detection patterns; pitfalls when targeting all models.
 - Updated wiki/index.md (synthesis section).
 - Updated wiki/sources/master-arm.md filed-into log.
+
+## [2026-05-16] lint | post-Master-ARM lint pass + fixes
+Subagent lint pass against the 8-chapter Master ARM ingest. Fixed in this commit:
+
+- wiki/hardware/master-overview.md — three substantive errors corrected:
+  1. LYNNE incorrectly placed at &8000-&8FFF (that's ANDY). LYNNE is the 20 KB shadow at &3000-&7FFF. Now lists LYNNE / HAZEL / ANDY as three distinct regions with their correct addresses.
+  2. Falsely listed Rockwell BBR/BBS/RMB/SMB as 65C12 opcodes. Master's main CPU is plain 65C12 — those are R65C02-only (6502 2P + Master Turbo 65C102).
+  3. CPU clock row "@ 2 MHz / 1 MHz" garbled. Now "@ 2 MHz (drops to 1 MHz only for slow-bus access)".
+  4. Soft-char relocation said "from &0E00+" — actually from &0C00-&0CFF (Page C). Corrected.
+  5. Stale link to "[[hardware/65c12]] (forthcoming)" — repointed to existing [[hardware/6502-isa]].
+  6. Stale link to "planned synthesis page from App 1-3" — repointed to live [[synthesis/model-differences]].
+
+- wiki/memory/shadow-ram.md — typo in E-bit description (`&C000-&DFFF*` had stray asterisk instead of closing backtick); markdown was rendering as italics. Fixed. Bumped updated to 2026-05-16.
+
+- wiki/os/keyboard.md — f1-f9 INKEY table was misleadingly listed as "-114 to -120" contiguous range. Actually f4 = -21 (`&EB`) and f7 = -23 (`&E9`) are out-of-sequence (matrix wiring). Now lists each fn key explicitly. Bumped updated to 2026-05-16.
+
+- wiki/memory/paged-rom.md — bare ``` fence on OSBYTE &44 example tagged as `asm` and fixed `A = &44` to proper `LDA #&44`.
+
+- Bumped `updated:` dates on cmos-rtc.md, os/tube.md, hardware/6502.md to 2026-05-16 (all touched during Master ARM ingest but date wasn't bumped).
+
+Lint findings deferred / left for human:
+- 0 orphan pages (clean).
+- Top broken-link targets: tools/beebasm, techniques/division, hardware/65c12, techniques/exploding-font, video/teletext-mode. None critical; left as TODO markers.
+- cmos-rtc.md Register A rate table has a suspect non-monotonic entry (122.07 µs nested between 3.9ms and 7.8ms). Likely a copy-paste from datasheet where order is non-obvious — left for cross-check against NAUG p361.
+- synthesis/model-differences.md "Sideways slots" Master row says "16 (4 + 12 internal)" — phrasing ambiguous re cartridge-paired chips; left as cosmetic.
+- Master ARM ingest complete: 8 commits + 1 lint commit. 1 new source page, 2 new technique pages, 1 new hardware page, 1 new synthesis page, refinements to ~12 existing pages.

@@ -3,7 +3,7 @@ title: Keyboard
 type: os
 tags: [keyboard, ascii, inkey, ikn, soft-keys, scan]
 sources: [naug-ch14-keyboard, master-arm]
-updated: 2026-05-13
+updated: 2026-05-16
 ---
 
 # Keyboard
@@ -45,8 +45,16 @@ So `INKEY(-1)` (= `&FF`) tests **IKN 0** (SHIFT). `INKEY(-2)` (= `&FE`) tests **
 | 0 | 48 | -40 | 39 |
 | 1-9 | 49-57 | varies | varies |
 | A-Z | 65-90 | varies | varies |
-| f0 | — | -33 | 32 |
-| f1-f9 | — | -114 to -120 | 113-119 |
+| f0 | — | -33 (`&DF`) | 32 |
+| f1 | — | -114 (`&8E`) | 113 |
+| f2 | — | -115 (`&8D`) | 114 |
+| f3 | — | -116 (`&8C`) | 115 |
+| f4 | — | **-21 (`&EB`)** | **234** — out of sequence (matrix wiring) |
+| f5 | — | -117 (`&8B`) | 116 |
+| f6 | — | -118 (`&8A`) | 117 |
+| f7 | — | **-23 (`&E9`)** | **232** — out of sequence (matrix wiring) |
+| f8 | — | -119 (`&89`) | 118 |
+| f9 | — | -120 (`&88`) | 119 |
 
 Full table in NAUG §14.1 p219-220. The IKN ordering doesn't follow ASCII — it's matrix-determined.
 

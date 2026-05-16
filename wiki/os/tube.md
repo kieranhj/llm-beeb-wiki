@@ -3,7 +3,7 @@ title: Tube — Software Protocol
 type: os
 tags: [tube, 2nd-processor, parasite, transfer, claim]
 sources: [naug-ch18-tube, master-arm]
-updated: 2026-05-13
+updated: 2026-05-16
 ---
 
 # Tube — Software Protocol

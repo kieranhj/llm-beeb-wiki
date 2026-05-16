@@ -63,8 +63,8 @@ Slot numbers reflect **priority order** — higher number = higher priority for 
 
 B+ and Master can have some sideways slots populated with RAM instead of ROM. **`OSBYTE &44`** tests which banks contain writable memory:
 
-```
-A = &44 ; JSR &FFF4
+```asm
+LDA #&44 : JSR &FFF4
 ; on exit: X bits 0-3 set for banks 4-7 that are RAM
 ```
 
