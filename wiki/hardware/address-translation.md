@@ -2,7 +2,7 @@
 title: Address Translation
 type: hardware
 tags: [memory, dram, address-translation, video, scrolling]
-sources: [beebwiki-address-translation, naug-ch12-memory, naug-ch13-video]
+sources: [beebwiki-address-translation, naug-ch12-memory, naug-ch13-video, bbc-service-manual]
 machines: [BBC Model A, BBC Model B, BBC B+]
 updated: 2026-05-14
 ---

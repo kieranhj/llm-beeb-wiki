@@ -475,3 +475,9 @@ Lint findings deferred / left for human:
 ## [2026-05-16] ingest | User Guide Ch 28 (Teletext) cross-check
 - Cross-checked: wiki/hardware/saa5050.md against UG Ch 28 — UG is beginner intro level; technical detail already in saa5050.md (Mullard datasheet + BeebWiki + technical sources).
 - bbc-user-guide added to saa5050.md sources.
+
+## [2026-05-16] ingest | Service Manual source page + §3 (Detailed Circuit Description)
+- Created: wiki/sources/bbc-service-manual.md (source page for the 90-page Service Manual covering Model B PCB issues 1-7).
+- Refined: wiki/os/break-intercept.md — added "How MOS distinguishes cold-start from BREAK at the hardware level" subsection (555 timer general reset vs separate RC network for Reset A signal into System VIA on power-up only). bbc-service-manual added to sources.
+- Refined: wiki/hardware/address-translation.md — bbc-service-manual added to sources (cross-confirmed IC numbers).
+- Updated wiki/index.md (1 new source).
