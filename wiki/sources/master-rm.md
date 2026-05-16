@@ -41,9 +41,9 @@ For Master-internal electrical and chip-level detail, prefer [[sources/master-ar
 | D | Using MOS routines | 45-164 | D.2 (OSBYTE) filed into [[os/osbyte]]. D.3 (OSWORD) cross-checked vs [[os/osword]] — Master-new calls (`&0E` Read CMOS clock, `&0F` Write CMOS clock) already documented; master-rm added to sources. D.4-D.10 (OSCLI/OSRDCH/OSRDSC/OSWRCH/OSNEWL/OSASCI/OSWRSC/OSEVEN/GSINIT/GSREAD) cross-checked vs [[os/calls]] — already comprehensive. |
 | **E** | **The VDU driver (~60 pages)** | **165-224** | E.1-E.3 filed: extended [[os/vdu]] + [[video/plot-codes]]. E.4 filed: created [[os/vdu-internals]] (variable table, page-0 workspace, second-32K layout, 8 C000 primitive entry points). E.5 pending. |
 | F | Hardware and memory usage | 225-264 | Cross-checked vs [[hardware/master-overview]] / [[memory/memory-map]] / [[memory/shadow-ram]] / [[memory/paged-rom]] / [[hardware/1mhz-bus]] / [[hardware/system-via]] / [[hardware/user-via]] — already comprehensive (Master ARM ingest covered the same ground at greater electrical detail). master-rm added to sources of all 7 pages. |
-| G | Filing Systems (common) | 265-296 | *pending — filing-system API* |
-| H | The Cassette Filing System | 297-308 | *pending* |
-| I | The ROM Filing System | 309-320 | *pending* |
+| G | Filing Systems (common) | 265-296 | Cross-checked vs [[os/filing-systems]] (already comprehensive). G.7 sideways-RAM pseudo-addressing detail filed into [[memory/paged-rom]]. master-rm added to filing-systems.md sources. |
+| H | The Cassette Filing System | 297-308 | Cross-checked vs [[os/filing-systems]] — CFS API already covered via NAUG. |
+| I | The ROM Filing System | 309-320 | Cross-checked vs [[os/filing-systems]] — RFS API already covered. |
 | J | The Disc Filing Systems (DFS + ADFS) | 321-383 | *pending — catalogue formats, commands, technical info* |
 
 ### Part 2
@@ -68,6 +68,7 @@ Populated as chapters are ingested. Each entry: chapter → wiki pages created/e
 - **Ch D.2 (OSBYTE)** → extended [[os/osbyte]] with MRM functional-grouping index (ADC/BREAK/CMOS/Econet/ESCAPE/FS/IO/keyboard/mode/printer/RS423/shadow/sound/system/time/Tube) and detailed list of all OSBYTEs marked £ "new on Master" or repurposed from Model B (108-114, 161-162, 164, 179, 182, 238, 250-251, 254 etc). master-rm added to sources.
 - **Ch D.3-D.10 (OSWORD + OSCLI/OSRDCH/OSWRCH/OSNEWL/OSASCI/OSWRSC/OSEVEN/GSINIT/GSREAD)** → cross-checked vs [[os/osword]] / [[os/calls]] — Master-new OSWORD calls (`&0E` Read CMOS clock, `&0F` Write CMOS clock) already covered via NAUG Ch19. master-rm added to osword.md sources.
 - **Ch F (Hardware and memory usage)** → cross-checked vs [[hardware/master-overview]] / [[memory/memory-map]] / [[memory/shadow-ram]] / [[memory/paged-rom]] / [[hardware/1mhz-bus]] / [[hardware/system-via]] / [[hardware/user-via]]. Master ARM ingest already covered the same ground at greater electrical-level detail. master-rm added to sources of 7 hardware/memory pages.
+- **Ch G + H + I (Filing systems common, CFS, RFS)** → cross-checked vs [[os/filing-systems]] — already comprehensive. G.7 (sideways-RAM addressing modes — absolute vs pseudo with W/X/Y/Z bank IDs at `&00000-&0FFBF`) filed into [[memory/paged-rom]] as a new "Master sideways-RAM addressing modes" section. master-rm added to filing-systems.md sources.
 
 ---
 

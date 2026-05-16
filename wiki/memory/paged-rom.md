@@ -76,6 +76,24 @@ SWR is commonly used to:
 - Load a ROM image from disk into RAM and use it like a real ROM (no need to physically program an EPROM during development).
 - Provide extra workspace to filing systems / utilities via pseudo-addresses.
 
+### Master sideways-RAM addressing modes (`*SRDATA` / `*SRROM`)
+
+Per [[sources/master-rm]] Ch G.7, the Master's 4 × 16 KB SWR banks can be addressed in two ways, **set per-bank** via `*SRDATA <bank>` (data-style) or `*SRROM <bank>` (ROM-style, default):
+
+- **Absolute addressing** (ROM-style): bank n appears at `&8000-&BFFF` when ROMSEL = n. Read/write via direct CPU access. Used when the bank holds an executable ROM image.
+- **Pseudo addressing** (data-style): the 4 banks are aliased as one **contiguous 64 KB block** addressed by special pseudo-addresses, accessible only via `*SRREAD` / `*SRWRITE` (and their OSWORD `&05`/`&06` equivalents). Bank ID = W/X/Y/Z corresponds to ROMs 4/5/6/7:
+
+| Pseudo address range | bank ID | ROM slot |
+|---|---|---|
+| `&00000` - `&03FEF` | W | 4 |
+| `&03FF0` - `&07FDF` | X | 5 |
+| `&07FE0` - `&0BFCF` | Y | 6 |
+| `&0BFD0` - `&0FFBF` | Z | 7 |
+
+(The 16-byte gaps reserve ROM-header space; you can't pseudo-address bytes that would land on a ROM type/copyright/entry-point header.)
+
+This lets you treat a contiguous 64 KB of SWR as a flat data store from BASIC or assembly without managing ROMSEL by hand — useful for large lookup tables, sprite banks, sample data, etc. The trade-off is that pseudo-addressed banks can't simultaneously be executed as ROM images.
+
 ## Why this matters for performance
 
 - The 16 KB at `&8000-&BFFF` is **prime real estate** — fast (no Tube indirection), addressable directly, and you have 16 banks of it. Performance-critical code that doesn't fit in main RAM can live in a sideways ROM/RAM.

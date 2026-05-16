@@ -2,8 +2,8 @@
 title: Filing Systems
 type: os
 tags: [filing-system, osfile, osargs, osbget, osbput, osgbpb, osfind, fscv, dfs, adfs, cfs, rfs]
-sources: [naug-ch16-filing]
-updated: 2026-05-13
+sources: [naug-ch16-filing, master-rm]
+updated: 2026-05-16
 ---
 
 # Filing Systems — MOS API

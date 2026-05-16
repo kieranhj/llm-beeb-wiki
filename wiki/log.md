@@ -571,3 +571,8 @@ Lint findings deferred / left for human:
 ## [2026-05-16] ingest | MRM Part 1 Ch F (Hardware and memory usage)
 - Cross-checked: Ch F against existing hardware/master-overview, memory/memory-map, memory/shadow-ram, memory/paged-rom, hardware/1mhz-bus, hardware/system-via, hardware/user-via pages — already comprehensive (Master ARM Ch 1/3/4/6/7/10/11 ingest covered same ground at greater electrical detail).
 - master-rm added to sources of all 7 of those pages.
+
+## [2026-05-16] ingest | MRM Part 1 Ch G+H+I (Filing systems common + CFS + RFS)
+- Cross-checked Ch G/H/I against existing os/filing-systems.md — already comprehensive via NAUG Ch16 ingest.
+- Refined: wiki/memory/paged-rom.md — added "Master sideways-RAM addressing modes" section documenting *SRDATA vs *SRROM (absolute / pseudo-addressing) and the W/X/Y/Z bank ID pseudo-address ranges (banks 4/5/6/7 = &00000-&03FEF / &03FF0-&07FDF / &07FE0-&0BFCF / &0BFD0-&0FFBF, with 16-byte ROM-header gaps).
+- master-rm added to filing-systems.md sources; date bumped.
