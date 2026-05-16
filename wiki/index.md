@@ -130,6 +130,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[techniques/rvi]] — Per-line C9 selection via R0=1 micro-cycles + Last Line semantics. BBC's "RVI" naming aliased to the CPC R.V.L.L. taxonomy. Full 32 KB CRTC-addressable RAM per visible line (64 KB on Master via shadow).
 - [[techniques/crtc-counter-freeze]] — R0=0 chip freeze. Experimental on BBC, no shipped use. Freezes C9 and most counters; sibling lever to triggered-vsync.
 - [[techniques/triggered-vsync]] — R7=C4 mid-line trigger (immediate VSync) vs C0vs<2 block (VSync silently inhibited). Per-field sub-scanline VSync edge nudging.
+- [[techniques/interlaced-640x512]] — Master-only 640×512 two-colour interlaced mode. CRTC interlace-sync-and-video + per-vsync ACCCON D toggle between main and LYNNE half-frames. ARM Ch 6 recipe.
 
 ## Tools
 

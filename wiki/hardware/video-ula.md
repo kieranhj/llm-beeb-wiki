@@ -2,7 +2,7 @@
 title: Acorn Video ULA
 type: hardware
 tags: [video, ula, palette, sheila]
-sources: [naug-ch13-video, beebwiki-video-ula]
+sources: [naug-ch13-video, beebwiki-video-ula, master-arm]
 sheila: ["&FE20", "&FE21"]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact]
 updated: 2026-05-14

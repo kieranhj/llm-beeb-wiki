@@ -2,7 +2,7 @@
 title: Screen Modes
 type: video
 tags: [modes, screen-memory, pixel-format]
-sources: [naug-ch13-video]
+sources: [naug-ch13-video, master-arm]
 updated: 2026-05-13
 ---
 
@@ -23,7 +23,24 @@ Eight MODEs (0-7) on BBC Model B / B+ / Master. Each is a particular combination
 | 6 | (text)   | 40×25 | 2  | 1 | `&6000` | 8 KB  | 320  | 8000  |
 | 7 | (text)   | 40×25 | teletext | — | `&7C00` | 1 KB | 40 | 1000 |
 
-Screen always ends at `&7FFF` on a non-shadow Model B. On B+/Master in shadow mode the screen lives at `&3000-&7FFF` in the shadow bank regardless of MODE (see [[memory/shadow-ram]], pending Ch12 ingest).
+Screen always ends at `&7FFF` on a non-shadow Model B. On B+/Master in shadow mode the screen lives at `&3000-&7FFF` in the shadow bank regardless of MODE (see [[memory/shadow-ram]]).
+
+## Shadow modes (128-135) on B+/Master
+
+Per [[sources/master-arm]] Ch 6, modes 128-135 are MOS-managed shadow variants of modes 0-7. They use the same VIDPROC and CRTC programming as their 0-7 counterparts, but the screen RAM lives in LYNNE rather than main memory — so user code retains `&3000-&7FFF` in the main map for code/data.
+
+| Mode | Equivalent of | Notes |
+|---|---|---|
+| 128 | MODE 0 | 20 KB in LYNNE |
+| 129 | MODE 1 | 20 KB in LYNNE |
+| 130 | MODE 2 | 20 KB in LYNNE |
+| 131 | MODE 3 | 20 KB reserved in LYNNE (16 KB used) |
+| 132 | MODE 4 | 20 KB reserved in LYNNE (10 KB used) |
+| 133 | MODE 5 | 20 KB in LYNNE (10 KB used) |
+| 134 | MODE 6 | 20 KB reserved (8 KB used) |
+| 135 | MODE 7 | 20 KB reserved (1 KB used; MOS may reuse the spare 19 KB for inter-FS transfers) |
+
+The "20 KB reserved" rows show LYNNE's fixed allocation — even modes 3/4/5/6/7 that "use" less still occupy a 20 KB slot in shadow. This matters when calculating how much shadow you have available for double-buffering (see [[memory/shadow-ram]]).
 
 Source: NAUG §13.4 p210-217 (per-mode diagrams), §13.2 page-3 `&356` "Size of screen memory: 20K=0,16K=1,10K=2,8K=3,1K=4".
 

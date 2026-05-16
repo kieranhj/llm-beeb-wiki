@@ -388,3 +388,11 @@ grep "^## \[" wiki/log.md | tail -10
 ## [2026-05-16] ingest | Master ARM Ch 5 (Keyboard Controller)
 - Refined: wiki/os/keyboard.md — added KBDENC hardware section (free-run / column detection / row detection scan modes, nKBEN signalling, 10 ms rescan loop, direct-matrix scan note). master-arm to sources.
 - Updated wiki/sources/master-arm.md filed-into log.
+
+## [2026-05-16] ingest | Master ARM Ch 6 (Screen Display)
+- Cross-checked: wiki/hardware/crtc-6845.md per-mode register table against ARM Ch 6 — no contradictions. master-arm added to sources.
+- Updated: wiki/hardware/video-ula.md sources (cross-checked palette + control register).
+- Refined: wiki/video/modes.md — added shadow modes 128-135 allocation table (20 KB fixed slot in LYNNE regardless of mode). master-arm to sources.
+- Created: wiki/techniques/interlaced-640x512.md — Master 640×512 two-colour interlaced mode via CRTC interlace-sync-and-video + per-vsync ACCCON D toggle between main and LYNNE half-frames. ARM Ch 6 recipe.
+- Updated wiki/index.md (1 new technique).
+- Updated wiki/sources/master-arm.md filed-into log.
