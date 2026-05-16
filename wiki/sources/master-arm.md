@@ -57,7 +57,7 @@ For performance and demo work, the Master matters because:
 | 7 | The User Port | 54-62 | Cross-checked [[hardware/user-via]] / [[hardware/via-6522]] / [[timing/via-timers]] — already comprehensive. master-arm added to user-via.md sources. ARM Ch 7 has a nice multi-axis stepper-motor worked example using CB1 (alarm) + PB7 (T1 freq gen) + PB6 (T2 pulse count) — outside performance/demo scope, just noting it exists. |
 | 8 | The Serial Processor | 63-64 | *pending — low priority* |
 | 9 | Peripheral Bus Controller | 65-71 | *pending — low priority* |
-| 10 | The 1MHz Bus | 72-78 | *pending* |
+| 10 | The 1MHz Bus | 72-78 | Refined [[hardware/1mhz-bus]] with the `&00EE` zero-page RAM shadow convention and IRQ-safe paging-register write sequence |
 | 11 | The Machine Operating System | 79-99 | *pending* |
 | 12 | Dual Processor Systems / Tube | 100-121 | *pending* |
 | 13 | Z80 Second Processor | 122-132 | *pending — low priority* |
@@ -84,3 +84,4 @@ Updated incrementally as chapters are ingested. Each entry: chapter → wiki pag
 - **Ch 5 (keyboard controller)** → refined [[os/keyboard]] with KBDENC three-mode scan section (free-run / column detection / row detection) and the 10 ms rescan loop.
 - **Ch 6 (screen display)** → cross-checked [[hardware/crtc-6845]] per-mode register table (no contradictions); added master-arm to [[hardware/video-ula]] sources; refined [[video/modes]] with shadow modes 128-135 allocation table; created [[techniques/interlaced-640x512]] (Master-specific 640×512 interlaced 2-colour recipe using main+LYNNE half-frame alternation).
 - **Ch 7 (user port)** → cross-checked [[hardware/user-via]] / [[hardware/via-6522]] / [[timing/via-timers]] — already comprehensive. master-arm added to user-via.md sources.
+- **Ch 10 (1MHz bus)** → refined [[hardware/1mhz-bus]] with the `&00EE` zero-page RAM shadow of the JIM `&FCFF` paging register and the IRQ-safe write sequence (update `&EE` *before* `&FCFF` to prevent IRQ handlers from restoring stale values).

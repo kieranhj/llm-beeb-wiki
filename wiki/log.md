@@ -401,3 +401,7 @@ grep "^## \[" wiki/log.md | tail -10
 - Cross-checked: existing user-via.md / via-6522.md / via-timers.md against ARM Ch 7 — already comprehensive (all timer modes, shift register modes, ACR/PCR/IFR/IER, PB7 freq formula, T2 pulse count, CB1/CB2 handshake).
 - Updated: wiki/hardware/user-via.md sources (master-arm added).
 - ARM motor-control worked example noted in source-page table; not filed (outside performance/demo scope).
+
+## [2026-05-16] ingest | Master ARM Ch 10 (1MHz Bus)
+- Refined: wiki/hardware/1mhz-bus.md — added the `&00EE` zero-page RAM shadow of the JIM `&FCFF` paging register; IRQ-safe write sequence (update `&EE` BEFORE `&FCFF`) with worked save/restore pattern. master-arm added to sources.
+- Updated wiki/sources/master-arm.md filed-into log.

@@ -2,7 +2,7 @@
 title: 1MHz Bus & Cartridge Interface
 type: hardware
 tags: [1mhz-bus, fred, jim, cartridge, expansion]
-sources: [naug-ch23-1mhz-bus, beebwiki-cycle-stretching]
+sources: [naug-ch23-1mhz-bus, beebwiki-cycle-stretching, master-arm]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact, Electron]
 updated: 2026-05-14
 ---
@@ -84,6 +84,35 @@ Page allocation:
 - `&80-&FF`: user.
 
 For larger expansions you'd cascade JIM with a second paging register inside FRED (e.g. a 16-bit page latch driving an external RAM chip).
+
+### `&00EE` — RAM shadow of the JIM paging register (IRQ-safe pattern)
+
+The paging register at `&FCFF` is **write-only** — you cannot read back the current page. Per [[sources/master-arm]] Ch 10, Acorn allocated zero-page `&00EE` as the canonical RAM image. The MOS reset/BREAK clears both to `&00`.
+
+**The IRQ-safe write sequence is:**
+
+```asm
+LDA #new_page
+STA &EE              ; update RAM image FIRST
+STA &FCFF            ; then write the register
+```
+
+The ordering matters: if an IRQ fires between the two stores and your IRQ handler also touches the paging register, the handler will read `&EE` (still the old value), do its work, and restore by writing `&EE` back to `&FCFF` — which would clobber your in-flight new value. Updating `&EE` first means the handler sees the new value if it interrupts you mid-sequence, and restores correctly.
+
+Any code (interrupt or otherwise) that *transiently* changes the JIM page must save and restore both `&EE` and `&FCFF`:
+
+```asm
+; entry — save state
+LDA &EE : PHA
+LDA #my_page : STA &EE : STA &FCFF
+
+; ... do paged-FD work ...
+
+; exit — restore
+PLA : STA &EE : STA &FCFF
+```
+
+This `&EE` convention stays in the **I/O processor's zero page even if a Tube second processor is fitted** — the paging register physically lives on the host side. Parasite code reaches it via OSBYTEs `&94`/`&95` (which the Tube ROM marshals through to the host's `&FCFF`).
 
 ## Access from CPU
 
