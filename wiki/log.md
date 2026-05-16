@@ -255,3 +255,21 @@ grep "^## \[" wiki/log.md | tail -10
 
 ## [2026-05-14] fix | SAA5050 page — &3C00 alt address mischaracterised
 - Fixed: wiki/hardware/saa5050.md — the &3C00 alternate MODE 7 screen RAM address is **not** "shadow" and exists only on the BBC Model B / B+ (Model A also has it via the same address translator). The dual-block addressing is a quirk of the discrete-logic address translator's MODE 7 path (MA11 selects top bit), not shadow RAM. Master's memory-management ULA does NOT replicate this quirk — MODE 7 lives at &7C00 only; shadow MODE 7 on Master uses ACCCON D/E/X bits to swap which physical bank &7C00 maps to. Electron has no quirk at all (MODE 7 is software-emulated).
+
+## [2026-05-16] ingest | Retrosoftware — "How to do the smooth vertical scrolling" (Talbot-Watkins, 2008)
+- Source: http://www.retrosoftware.co.uk/wiki/index.php/How_to_do_the_smooth_vertical_scrolling
+- Archived: raw/articles/retrosoftware-smooth-vscroll.md
+- Source code (user-supplied): raw/code/vrupt.6502 (BeebASM rupture demo, jbnbeeb 2015 rework) + raw/code/smoothscroll.bas (Talbot-Watkins original).
+- Created: wiki/sources/retrosoftware-smooth-vscroll.md (full claim list + register table from smoothscroll.bas).
+- Created: wiki/techniques/vertical-rupture.md (foundational split-screen technique — worked MODE 2 example with full IRQ + timer code, row-budget table, R7-NG-rewrite caveat).
+- Created: wiki/techniques/smooth-vertical-scroll.md (R5 two-cycle trick for 1-scanline vertical motion — frame anatomy, walk-through of smoothscroll.bas, screen-on timer compensator).
+- Updated: wiki/index.md (1 new source, 2 new techniques).
+- Updated: wiki/video/hardware-scrolling.md — softened "sub-row not possible" claim and linked to smooth-scroll.
+- Key new facts captured:
+  - R4/R6/R7 are read fresh each CRTC cycle (not pre-latched), enabling mid-frame rewrites.
+  - R7 mid-frame rewrites work in practice despite Hitachi's NG verdict, because writes settle during the *previous* cycle.
+  - Total PAL scanlines invariant: Σ(R4+1)(R9+1) + ΣR5 = 312.
+  - Two-cycle R5 split: R5_A = 8-line, R5_B = line.
+  - VSync IRQ fires after VSync pulse width (default 2 scanlines), affecting timer compensator.
+  - Status panel in second cycle = structural; provides timing tolerance for the cycle-switch interrupts.
+- Open follow-ups: derive the smoothscroll.bas compensator constant `((5+V%)*512+6*64-93)`; clarify the cycle-A R8 write at line 510-520.

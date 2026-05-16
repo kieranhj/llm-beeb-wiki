@@ -14,12 +14,12 @@ Companion to [[hardware/crtc-6845]]. This page is for performance and raster-tig
 
 ## When can you rewrite each register mid-frame?
 
-From the Hitachi datasheet "Anomalous Operations" table. Legend:
+From the Hitachi datasheet "Anomalous Operations" table. **The verdicts below are the datasheet's, not ours** — they describe the chip operating outside Hitachi's guaranteed envelope, which is *exactly* where the interesting BBC raster work happens. Treat NG/prohibited entries as "experiment carefully and time the writes", not as "don't do this". Several techniques on this wiki (vertical rupture, smooth scroll, screen-blank-via-R8) demonstrably violate these verdicts and work reliably on real HD6845S silicon.
 
 - **OK** — rewrite freely during display; effect is benign (worst case: one transient raster).
 - **△ conditional** — rewrite is safe outside a specific phase window; inside it, expect transient flicker/glitch.
-- **NG** — rewrite causes visible disturbance; treat as write-once or only-during-reset.
-- **prohibited** — explicitly forbidden by the datasheet; do not do this.
+- **NG** — datasheet says visible disturbance; in practice, often workable if the write is timed during an adjacent cycle's blanking or retrace.
+- **prohibited** — datasheet forbids; the BBC scene routinely ignores this for skew bits (R8 4-7) and others. Verify on real hardware before relying on it.
 
 | Reg | Name | Verdict | Notes |
 |---|---|---|---|
@@ -31,7 +31,7 @@ From the Hitachi datasheet "Anomalous Operations" table. Legend:
 | R5 | Vertical Total Adjust | **△** | Avoid the **last char time of the raster**, or the adjust isn't applied. |
 | R6 | Vertical Displayed | **OK** | Display may briefly inhibit; new value used from next field. |
 | R7 | Vertical Sync Position | **NG** | VSYNC mis-placed or noisy. |
-| R8 | Interlace & Skew | **prohibited** | Dynamic rewrite of scan-mode bits and skew bits is explicitly forbidden. |
+| R8 | Interlace & Skew | **prohibited** (interlace bits 0-1); **OK** (skew bits 4-7) | Interlace mode (bits 0-1) must not change during display. **Skew bits (4-7) are safe to rewrite mid-frame in practice on HD6845S** — used as a screen blank/unblank lever (`&F0`/`&C0`), see [[hardware/crtc-6845]] and [[techniques/smooth-vertical-scroll]]. Datasheet's blanket "prohibited" verdict is over-broad. |
 | R9 | Maximum Raster | **NG** | Internal counter operation is disordered. |
 | R10 | Cursor Start | **△** | Avoid the last char time of the raster — cursor jitter / wrong blink rate temporarily. |
 | R11 | Cursor End | **△** | Same as R10. |

@@ -36,6 +36,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/beebwiki-cycle-stretching]] — BeebWiki: Cycle stretching (mdfs.net). Mechanism + complete list of 1 MHz peripheral addresses; variable 2c/3c penalty per access; phase-aligning notes.
 - [[sources/hd6845sp-hitachi-datasheet]] — Hitachi HD6845R/HD6845S datasheet (primary chip-level reference). Register encodings, programming restrictions, anomalous-rewrite table, HD6845S-vs-HD6845R differences, reset behaviour.
 - [[sources/saa5050-references]] — Combined SAA5050 references (Wikipedia, HandWiki, mdfs.net Teletext Controls, BeebFpga VHDL model). Substitutes for the image-only Mullard datasheet PDF (`raw/manuals/SAA5050.pdf`).
+- [[sources/retrosoftware-smooth-vscroll]] — Talbot-Watkins, "How to do the smooth vertical scrolling" (retrosoftware.co.uk, 2008). Vertical rupture + R5 sub-row scroll technique. Includes BeebASM + BBC BASIC demos.
 
 ## Hardware
 
@@ -103,6 +104,8 @@ Content catalog. Routing table for queries — start here, then drill into pages
 
 - [[techniques/fast-animation]] — MODE 2 byte-move sprites, pre-shifted sprite tables, hardware-scroll as foundation, vsync sync.
 - [[techniques/custom-modes]] — Roll your own resolution/colour by reprogramming CRTC + Video ULA directly. Five-step recipe, MOS-bypass discipline, what breaks (OSWRCH, cursor, light pen), BREAK survival.
+- [[techniques/vertical-rupture]] — Multiple CRTC cycles per TV frame for split-screen / status panel. Worked MODE 2 example (16+23 rows). R12/R13 latching + R4/R6/R7 read-per-cycle as the mechanism.
+- [[techniques/smooth-vertical-scroll]] — 1-scanline vertical scrolling via R5 + two-cycle rupture. Screen-on timer for rock-steady top edge. Builds on vertical-rupture.
 
 ## Tools
 

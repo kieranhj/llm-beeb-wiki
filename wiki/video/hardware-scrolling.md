@@ -37,7 +37,7 @@ STA &FE01
 - **Up by one char row**: add `bytes_per_row` to the screen start (640 for modes 0-3, 320 for 4-6).
 - **Down by one char row**: subtract.
 
-Result: an entire 8-scanline row of cells shifts. Sub-row vertical scrolling (1-7 scanlines) is **not possible** via R12/R13 — you'd need to fake it by re-rendering, or use a raster split.
+Result: an entire 8-scanline row of cells shifts. Sub-row vertical scrolling (1-7 scanlines) is **not possible** via R12/R13 alone, but it *is* achievable via a two-cycle [[techniques/vertical-rupture]] + R5 abuse — see [[techniques/smooth-vertical-scroll]].
 
 ## Sideways scroll
 
