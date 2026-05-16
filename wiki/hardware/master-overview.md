@@ -81,6 +81,8 @@ No speech on the Master — those signals are reclaimed for the 146818. Sound an
 - **Cartridge slots** (2) on the back — same bus as sideways ROM but with extra select signals.
 - **Internal 65C102 second processor option** (Turbo).
 - **Lynne and Hazel** — internal MOS-managed RAM regions (`&8000-&8FFF` Lynne, `&C000-&DFFF` Hazel) that overlay ROM space.
+- **Soft character definitions relocated** from `&0E00+` (Model B) to `&8900-&8FFF` in the second 32 KB (Master). Custom characters no longer steal user RAM. See [[memory/os-workspace]] "second 32 KB workspace map" for the full breakdown.
+- **Soft-key buffer relocated** from `&0B00-&0BFF` (Model B, ~256 bytes) to `&8000-&83FF` (Master, 1 KB). Old code that wrote function-key definitions directly into `&0B00` no longer works — use `OSCLI` `*KEY` instead.
 
 ## Where to go next
 

@@ -405,3 +405,8 @@ grep "^## \[" wiki/log.md | tail -10
 ## [2026-05-16] ingest | Master ARM Ch 10 (1MHz Bus)
 - Refined: wiki/hardware/1mhz-bus.md — added the `&00EE` zero-page RAM shadow of the JIM `&FCFF` paging register; IRQ-safe write sequence (update `&EE` BEFORE `&FCFF`) with worked save/restore pattern. master-arm added to sources.
 - Updated wiki/sources/master-arm.md filed-into log.
+
+## [2026-05-16] ingest | Master ARM Ch 11 (MOS)
+- Refined: wiki/memory/os-workspace.md — added "Master second 32 KB" workspace map (soft-key buffer at &8000-&83FF, soft chars moved to &8900-&8FFF, MOS CLI buffer at &DC00-&DCFF, transient utility at &DD00-&DEFF). Added "Master vector additions" section documenting the extended-vector triple-table install procedure via OSBYTE &A8 and `&FF00 + (vector-&200) * 3 / 2` dispatch. master-arm added to sources.
+- Refined: wiki/hardware/master-overview.md — flagged soft-char and soft-key relocation as user-facing wins.
+- Updated wiki/sources/master-arm.md filed-into log.

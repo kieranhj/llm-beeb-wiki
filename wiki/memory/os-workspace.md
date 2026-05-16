@@ -2,7 +2,7 @@
 title: OS Workspace (Pages 1, 2, 3)
 type: memory
 tags: [workspace, mos, vectors, page-two, page-three]
-sources: [naug-ch06-os-introduction, naug-ch13-video, allmem-ripley-harston]
+sources: [naug-ch06-os-introduction, naug-ch13-video, allmem-ripley-harston, master-arm]
 updated: 2026-05-14
 ---
 
@@ -152,9 +152,39 @@ If you're inside an IRQ handler:
 - Keep your handler under 2 ms (NAUG §8.5 — [[os/interrupts]]).
 - Don't call any OS routine.
 
+## Master "second 32 KB" workspace map (`&3000-&DFFF` in LYNNE+ANDY+HAZEL)
+
+The Master's 128 KB of DRAM splits into two 64 KB regions. The "second 32 KB" (the upper half of the second region, partially overlaid by paged ROMs in the CPU map) contains a mix of shadow display and MOS workspace. Per [[sources/master-arm]] Ch 11:
+
+| Range | Use | Note |
+|---|---|---|
+| `&3000-&7FFF` | LYNNE shadow screen | Any portion not needed by the current mode is free; `*MOVE` will use it |
+| `&8000-&83FF` | Soft-key expansion buffer | 1 KB — replaces the cramped `&0B00-&0BFF` allocation on Model B. Not available for any other use |
+| `&8400-&88FF` | VDU workspace (flood-fill scratch) | Routines tag `&8601` to share; commercial software should avoid |
+| `&8900-&8FFF` | **Soft character definitions** | **Moved from `&0E00+` on B/B+** — exploded font no longer steals from user RAM. Big PAGE win |
+| `&C000-&DBFF` | HAZEL (paged-ROM workspace) | ROMs claim via service calls; static workspace requires filing-system pattern |
+| `&DC00-&DCFF` | MOS CLI buffer | Corrupted by every `*` command |
+| `&DD00-&DEFF` | Transient utility workspace | Used by user `*` commands and `*MOVE` |
+| `&DF00-&DFFF` | MOS private workspace | Off-limits |
+
+**The soft-character-definition relocation from `&0E00+` to `&8900` is one of the Master's biggest practical wins**: on a Model B, defining 32 custom characters cost 256 bytes of OSHWM. On Master those bytes live in the second 32 KB invisibly. Code that explicitly pokes `&0E00`-area font on a Model B needs a Master code path that targets `&8900` instead — see [[memory/memory-map]] for the broader map.
+
+## Master vector additions (`&0D9F-&0DEF`)
+
+Per ARM Ch 11, the Master allocates 80 bytes for **extended vectors** at `&0D9F-&0DEF`. These let a sideways-ROM intercept any vector with the routine *living in the ROM* — without the ROM having to be in slot 15 or whatever. Mechanism:
+
+1. `OSBYTE &A8` (168) returns the start of the extended-vector space (`&0D9F`).
+2. Write the per-vector triple at `extended_start + 3 × vector_index`: `<entry_low> <entry_high> <rom_slot_number>`.
+3. Replace the normal vector at `&02xx` with `&FF00 + (vector_addr - &0200) × 3 / 2` — a special address the MOS recognises as "this dispatches via the extended vector triple".
+
+This is how things like the Master's ADFS filing system, network filing system, and other complex ROM-resident handlers intercept vectors cleanly without trampling each other. The MOS handles ROM-bank switching on each dispatch via the extended vector.
+
+Vector-number indexing (per ARM Ch 11 vector table): `vector_number = (vector_addr - &0200) / 2`. So OSWRCH (vector `&20E`) is vector number 7, OSWORD (`&20C`) is 6, OSBYTE (`&20A`) is 5, EVNTV (`&220`) is 16, etc.
+
 ## See also
 
 - [[memory/zero-page]] — Page 0 detail.
 - [[memory/memory-map]] — Big picture.
 - [[os/calls]] — OS entry-point reference.
 - [[os/interrupts]] — IRQ handler conventions and `&FC` usage.
+- [[os/paged-roms]] — extended vectors install pattern (the high-level companion to the &0D9F-&0DEF detail above).

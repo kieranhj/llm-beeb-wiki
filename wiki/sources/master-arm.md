@@ -58,7 +58,7 @@ For performance and demo work, the Master matters because:
 | 8 | The Serial Processor | 63-64 | *pending — low priority* |
 | 9 | Peripheral Bus Controller | 65-71 | *pending — low priority* |
 | 10 | The 1MHz Bus | 72-78 | Refined [[hardware/1mhz-bus]] with the `&00EE` zero-page RAM shadow convention and IRQ-safe paging-register write sequence |
-| 11 | The Machine Operating System | 79-99 | *pending* |
+| 11 | The Machine Operating System | 79-99 | Refined [[memory/os-workspace]] (Master "second 32 KB" workspace map, soft-char + soft-key relocation, extended-vector triple-table install procedure); refined [[hardware/master-overview]] (soft-char + soft-key relocation notes) |
 | 12 | Dual Processor Systems / Tube | 100-121 | *pending* |
 | 13 | Z80 Second Processor | 122-132 | *pending — low priority* |
 | 14 | 80186 Second Processor | 133-146 | *pending — low priority* |
@@ -85,3 +85,4 @@ Updated incrementally as chapters are ingested. Each entry: chapter → wiki pag
 - **Ch 6 (screen display)** → cross-checked [[hardware/crtc-6845]] per-mode register table (no contradictions); added master-arm to [[hardware/video-ula]] sources; refined [[video/modes]] with shadow modes 128-135 allocation table; created [[techniques/interlaced-640x512]] (Master-specific 640×512 interlaced 2-colour recipe using main+LYNNE half-frame alternation).
 - **Ch 7 (user port)** → cross-checked [[hardware/user-via]] / [[hardware/via-6522]] / [[timing/via-timers]] — already comprehensive. master-arm added to user-via.md sources.
 - **Ch 10 (1MHz bus)** → refined [[hardware/1mhz-bus]] with the `&00EE` zero-page RAM shadow of the JIM `&FCFF` paging register and the IRQ-safe write sequence (update `&EE` *before* `&FCFF` to prevent IRQ handlers from restoring stale values).
+- **Ch 11 (MOS)** → refined [[memory/os-workspace]] with the Master "second 32 KB" workspace map (soft-key buffer at `&8000-&83FF`, soft chars moved to `&8900-&8FFF`, MOS CLI buffer at `&DC00-&DCFF`, transient-utility at `&DD00-&DEFF`) and the extended-vector triple-table install procedure (`OSBYTE &A8`, `&FF00+(vector-&200)*3/2` dispatch). Refined [[hardware/master-overview]] with the relocation notes.
