@@ -113,6 +113,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[os/printer]] — Printer driver: `*FX 5` destinations, UPTV (`&222`), ignore character, custom printer hooks.
 - [[os/vdu]] — Full VDU control code reference (VDU 0-31 + 127). Byte counts, semantics, VDU 23 sub-functions, VDU 18 GCOL modes.
 - [[os/vdu-internals]] — VDU driver internals: ~120 variables at `&300-&37F` + page-0 hot vars; the 8 `&C000-&C015` primitive entry points (PLBYTE, HPLOT, GADDR, WIND, EIGABS, IEG); sideways-ROM intercept caveats.
+- [[os/star-commands]] — Full `*command` reference. Resident MOS commands, dispatch order, FS / sideways-ROM extension points, `*CONFIGURE` / `*KEY` / `*HELP` detail.
 - [[os/errors]] — Error number ↔ message reference. BASIC errors 0-44, CFS 216-223, MOS 250+, filing-system errors. BRK-raising pattern.
 
 ## Techniques

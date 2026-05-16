@@ -546,3 +546,13 @@ Lint findings deferred / left for human:
   - Added VDU driver substitution table (#/£/_ swap) explaining why direct-pokes to &7C00+ see different glyphs than what PRINT produces
   - Added "VDU commands that work in MODE 7" reference table (~22 commands documented; all others ignored except VDU 25/23-unknown routing to VDUV)
 - master-rm added to saa5050.md sources.
+
+## [2026-05-16] ingest | MRM Part 1 Ch C (MOS commands)
+- Created: wiki/os/star-commands.md — comprehensive *command reference:
+  - Dispatch chain (MOS resident → FS → sideways ROMs via service call &04 → *RUN → error 254)
+  - Full Master MOS resident command table (~45 commands, with min abbreviations + who executes each)
+  - Per-FS command index summary (DFS, ADFS, NFS/ANFS)
+  - Sideways-ROM command extension via paged-ROM service-call 4
+  - Per-command detail: GO/GOIO, CODE/LINE (USERV dispatch), CONFIGURE/STATUS (CMOS), FX (OSBYTE shortcut), KEY (soft keys + |M / |J / |" pipe escapes), HELP (interactive query)
+  - Internal dispatch description
+- Updated wiki/index.md (1 new OS page).
