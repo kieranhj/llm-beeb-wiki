@@ -2,7 +2,7 @@
 title: CMOS RTC (146818 — Master only)
 type: hardware
 tags: [cmos, rtc, 146818, master-specific, battery-backed]
-sources: [naug-ch19-clocks-cmos]
+sources: [naug-ch19-clocks-cmos, master-arm]
 machines: [Master 128]
 updated: 2026-05-13
 ---
@@ -186,6 +186,10 @@ For features MOS doesn't expose (alarm IRQ setup, periodic IRQ), you must drive 
 ```
 
 Combined with hooking IRQ2V (because CMOS RTC IRQs come through the normal IRQ path), you can use the RTC's alarm/periodic IRQ for any task — wake at a specific time of day, periodic 122 µs ticks for audio, etc. Full worked example in NAUG §19.6 p363.
+
+The Master ARM ([[sources/master-arm]] Ch 4) recommends a sideways-ROM hosting pattern for alarm-driven code: install a paged ROM that recognises Service Call `&04` (Offer Command) for `*SETALARM hh:mm:ss` to load the alarm registers + set AIE, and Service Call `&05` (Unknown Interrupt) to test Register C bit 5 (AF) and respond. This pattern keeps the alarm-handling code resident across BREAK and out of main RAM.
+
+ARM also gives an alternative slow-bus sequence (BBC BASIC `EQUB`/`EQUD` style) — functionally equivalent to the routine above but instructive for the strobe-ordering: `CE+DS inactive → AS active → DDRA out → address on PA → CE active → AS latch low → set R/W direction → DS active → access data → DS inactive → CE inactive → DDRA back to input`. The order matters: do not assert DS before CE is active or the chip will see a phantom access.
 
 ## Performance considerations
 
