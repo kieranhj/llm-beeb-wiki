@@ -2,7 +2,7 @@
 title: System VIA
 type: hardware
 tags: [via, system-via, keyboard, sound, vsync, latch]
-sources: [naug-ch22-vias, master-arm]
+sources: [naug-ch22-vias, master-arm, master-rm]
 sheila: ["&FE40", "&FE4F"]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact]
 updated: 2026-05-13

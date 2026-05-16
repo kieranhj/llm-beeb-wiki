@@ -567,3 +567,7 @@ Lint findings deferred / left for human:
 - Cross-checked: wiki/os/osword.md against MRM Ch D.3 — only 16 OSWORD calls (0-F); Master-new &0E/&0F (RTC read/write) already covered via NAUG Ch19 ingest.
 - Cross-checked: wiki/os/calls.md against MRM Ch D.4-D.10 (OSCLI / OSRDCH / OSRDSC / OSWRCH / OSNEWL / OSASCI / OSWRSC / OSEVEN / GSINIT / GSREAD) — already comprehensive.
 - master-rm added to osword.md sources; updated date bumped.
+
+## [2026-05-16] ingest | MRM Part 1 Ch F (Hardware and memory usage)
+- Cross-checked: Ch F against existing hardware/master-overview, memory/memory-map, memory/shadow-ram, memory/paged-rom, hardware/1mhz-bus, hardware/system-via, hardware/user-via pages — already comprehensive (Master ARM Ch 1/3/4/6/7/10/11 ingest covered same ground at greater electrical detail).
+- master-rm added to sources of all 7 of those pages.

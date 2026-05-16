@@ -2,7 +2,7 @@
 title: 1MHz Bus & Cartridge Interface
 type: hardware
 tags: [1mhz-bus, fred, jim, cartridge, expansion]
-sources: [naug-ch23-1mhz-bus, beebwiki-cycle-stretching, master-arm]
+sources: [naug-ch23-1mhz-bus, beebwiki-cycle-stretching, master-arm, master-rm]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact, Electron]
 updated: 2026-05-14
 ---

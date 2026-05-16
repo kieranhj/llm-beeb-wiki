@@ -2,7 +2,7 @@
 title: User/Printer VIA
 type: hardware
 tags: [via, user-via, printer, user-port, gpio]
-sources: [naug-ch22-vias, master-arm]
+sources: [naug-ch22-vias, master-arm, master-rm]
 sheila: ["&FE60", "&FE6F"]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact]
 updated: 2026-05-13

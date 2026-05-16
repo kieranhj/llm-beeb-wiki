@@ -2,7 +2,7 @@
 title: BBC Master Series — Hardware Overview
 type: hardware
 tags: [master, m128, architecture, overview]
-sources: [master-arm]
+sources: [master-arm, master-rm]
 updated: 2026-05-16
 ---
 

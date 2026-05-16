@@ -2,7 +2,7 @@
 title: Memory Map
 type: memory
 tags: [memory, address-space, fred, jim, sheila]
-sources: [naug-ch12-memory, naug-ch13-video, allmem-ripley-harston]
+sources: [naug-ch12-memory, naug-ch13-video, allmem-ripley-harston, master-rm]
 updated: 2026-05-14
 ---
 

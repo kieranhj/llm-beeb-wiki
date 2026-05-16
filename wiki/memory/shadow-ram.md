@@ -2,7 +2,7 @@
 title: Shadow RAM & ACCCON
 type: memory
 tags: [shadow-ram, acccon, hazel, double-buffer]
-sources: [naug-ch12-memory, master-arm]
+sources: [naug-ch12-memory, master-arm, master-rm]
 machines: [BBC B+, Master 128, Master Compact]
 updated: 2026-05-16
 ---
