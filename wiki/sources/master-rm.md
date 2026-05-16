@@ -39,7 +39,7 @@ For Master-internal electrical and chip-level detail, prefer [[sources/master-ar
 | B | The Machine Operating System (MOS) | 18-23 | *overview — cross-checked vs [[os/calls]]* |
 | C | MOS commands | 24-44 | *pending — *command reference* |
 | D | Using MOS routines | 45-164 | *cross-check vs [[os/osbyte]] / [[os/osword]] / [[os/calls]]* |
-| **E** | **The VDU driver (~60 pages)** | **165-224** | E.1-E.3 filed: extensively extended [[os/vdu]] (parsing model, OSBYTE &DA, VDU 18 ECF modes, VDU 23,n complete sub-function reference) + [[video/plot-codes]] (precise k mod 8 semantics, GXR primitive geometry, move/copy rect). E.4-E.5 pending. |
+| **E** | **The VDU driver (~60 pages)** | **165-224** | E.1-E.3 filed: extended [[os/vdu]] + [[video/plot-codes]]. E.4 filed: created [[os/vdu-internals]] (variable table, page-0 workspace, second-32K layout, 8 C000 primitive entry points). E.5 pending. |
 | F | Hardware and memory usage | 225-264 | *cross-check vs Master ARM* |
 | G | Filing Systems (common) | 265-296 | *pending — filing-system API* |
 | H | The Cassette Filing System | 297-308 | *pending* |
@@ -62,6 +62,7 @@ For Master-internal electrical and chip-level detail, prefer [[sources/master-ar
 Populated as chapters are ingested. Each entry: chapter → wiki pages created/extended.
 
 - **Ch E.1-E.3 (VDU driver: intro, summary, descriptions)** → significantly extended [[os/vdu]] with: parsing model (byte-range table), `OSBYTE &DA` queue-length call, full VDU 18 GCOL mode 5 + ECF mode-byte encoding, VDU 23,n complete sub-function reference (cursor on/off levels, ECF row-byte pixel mapping per bpp, VDU 23,7 direct scroll, VDU 23,8 clear-block base-position table, VDU 23,16 cursor-movement-control flag bits). Significantly extended [[video/plot-codes]] with: precise "k mod 8" coord+colour semantics (relative/absolute + plot-mode selection), precise GXR primitive specifications (circles with radius limit, arc/chord/sector 3-point geometry, ellipse parameter convention with worked rotated-ellipse PROC, flood-fill workspace usage), move/copy rectangle special k handling.
+- **Ch E.4 (VDU variables + plot vector internals)** → created [[os/vdu-internals]] — comprehensive VDU variable table (`&300-&37F`), Page-0 VDU workspace map, Master second-32K layout (ECF patterns + 7 character-definition pages + ROM defaults at `&B900-&BFFF`), and the 8 `&C000-&C015` primitive entry points (load/store shadow-aware byte, PLBYTE, HPLOT, EIGABS, WIND with 9-position window-clipping table, GADDR, IEG) with worked example re-implementing PLOT 64-71 from the unknown-PLOT-codes vector. Sideways-ROM intercept caveat documented.
 
 ---
 

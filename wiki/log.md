@@ -529,3 +529,14 @@ Lint findings deferred / left for human:
   - Flood-fill workspace usage (&8400-&87FF in MOS sideways RAM on Master)
   - Horizontal line fill 4-variant table (background-stop vs foreground-stop, R-only vs L+R)
 - master-rm added to sources of vdu.md + plot-codes.md.
+
+## [2026-05-16] ingest | MRM Part 1 Ch E.4 (VDU variables + plot vector)
+- Created: wiki/os/vdu-internals.md — comprehensive new page covering VDU driver internals from MRM Ch E.4:
+  - Storage map (page 0 / page 3 / second 32K)
+  - Full VDU variable table at &300-&37F with (p)/(e) coordinate annotation
+  - Page-0 VDU workspace (&D0-&E1): STATE, ZMASK, ZORA, ZEOR, ZGORA, ZGEOR, ZMEMG, ZMEMT, ZTEMP, ZTEMPB, ZTEMPC, ZTEMPD
+  - Master second-32K layout (ECF patterns at &8800+, soft chars at &8900+, ROM defaults at &B900+, flood-fill workspace at &8400-&87FF)
+  - All 8 C000-area primitive entry points: load/store shadow-aware byte (&C000/&C003), PLBYTE (&C006), HPLOT (&C009), EIGABS (&C00C), WIND (&C00F) with the 9-position clipping table, GADDR (&C012), IEG (&C015)
+  - Worked example re-implementing PLOT 64-71 single-point from VDUV
+  - Sideways-ROM intercept caveats (filing-system RAM overlay + sideways ROM overlay breaks both the C000 entry points and the &8400-&8FFF data areas)
+- Updated wiki/index.md (1 new OS page).
