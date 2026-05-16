@@ -637,3 +637,19 @@ Fixes:
 - wiki/os/osbyte.md — corrected the &A4 line in the Master-new-OSBYTE list with the same correction + pointer.
 - wiki/hardware/6502.md — added "Detecting NMOS vs CMOS at runtime" section with the canonical Exmon II PHX/PLX idiom and the why-not-OSBYTE-&A4 caveat.
 - Memory: added `feedback_osbyte_a4_not_proc_check.md` so future ingests don't repeat the mistake. Generalised lesson: Master ARM tabular OSBYTE descriptions are terse — verify against per-call descriptions before trusting short names.
+
+## [2026-05-16] feedback fix | Delete invented OSBYTE mnemonics + sub-lint corrections
+Two related fixes:
+
+**1. Removed invented OSBYTE mnemonic column from synthesis/model-differences.md.** The "Name" column (TUBESEL / SHADRAM / RDPROC / WRSCRN / RDSCRN / TEMPFS / RDCMOS / WRCMOS) I had populated in the Master-new-OSBYTE table was *invented* — none of these mnemonics appear in NAUG, MRM, or Master ARM (Acorn doesn't assign short mnemonic names to individual OSBYTEs, only to vectors like BYTEV/WORDV/KEYV). Column dropped; added explicit "Acorn does not assign OSBYTE short names" note. Also refined the &A4 entry: NAUG App A's honest "Check for 6502 code" wording cited as more reliable than MRM/ARM's misleading "Check processor type".
+
+**2. Sub-lint pass on wiki/os/osbyte.md, fixing MRM-overlay damage on NAUG-sourced entries** (Explore agent surfaced these):
+
+- `&6B` (107): "Select 1MHz bus / cartridge" → expanded to note internal cartridge vs external 1MHz bus on Master + Tube selection effect.
+- `&6C` (108): "Select screen memory for direct access" → corrected to "Master CPU view of &3000-&7FFF — X=0 main, X=1 shadow. NOT for direct screen access" (the OSBYTE remaps CPU access, not the display).
+- `&70` (112): "Select memory for VDU" → expanded to "VDU-driver write destination, X=0/1/2 default/main/shadow; CRTC display unaffected".
+- `&71` (113): "Select memory for display" → expanded to "CRTC display source, X=0/1/2; pairs with &70 for double-buffering".
+- `&72` (114): "Write shadow memory use" → corrected to "set shadow state at NEXT mode change (= *SHADOW); doesn't take effect immediately".
+- `&14` (20): added Model-B-vs-Master parameter-handling difference (B uses X for count; Master ignores params and resets standard exploded font).
+
+Generalised root cause: when ingesting the Master Reference Manual's functional-grouping OSBYTE summary (Ch D.2.1) on top of an existing wiki page sourced from NAUG App A's per-call detail, I retained the MRM summary's terse / sometimes-imprecise wording instead of preserving NAUG's more accurate per-call descriptions. Same class of error as the &A4 case.

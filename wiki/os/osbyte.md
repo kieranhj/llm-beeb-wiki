@@ -38,7 +38,7 @@ NAUG page numbers are *book pages* — they are 8 less than the PDF page numbers
 | `&11` | 17 | Force ADC conversion | 367 | (Ch20, pending) |
 | `&12` | 18 | Reset soft function keys | 227 | (Ch14, pending) |
 | `&13` | 19 | **Wait for vertical sync** | 182 | [[sources/naug-ch13-video]] |
-| `&14` | 20 | Explode character definition RAM | 172 | [[sources/naug-ch13-video]] |
+| `&14` | 20 | Explode character definition RAM (Model B: X = char-group count; Master: parameters ignored, always resets standard exploded font) | 172 | [[sources/naug-ch13-video]] |
 | `&15` | 21 | Flush specific buffer | 143 | (Ch9, pending) |
 | `&16` | 22 | Increment polling semaphore | 325 | (Ch17, pending) |
 | `&17` | 23 | Decrement polling semaphore | 325 | (Ch17, pending) |
@@ -53,8 +53,8 @@ OSBYTEs `&1A`-`&43` (26-67) are **unused by the OS**.
 |---|---|---|---|---|
 | `&44` | 68 | Test for sideways RAM | 159 | [[sources/naug-ch12-memory]] |
 | `&45` | 69 | Sideways RAM allocation | 160 | [[sources/naug-ch12-memory]] |
-| `&6B` | 107 | Select 1MHz bus / cartridge | 413 | (Ch23, pending) |
-| `&6C` | 108 | Select screen memory for direct access (Master) | 157 | [[sources/naug-ch12-memory]] |
+| `&6B` | 107 | Switch internal (cartridge) vs external 1MHz bus (Master); also affects Tube selection | 413 | (Ch23, pending) |
+| `&6C` | 108 | Master CPU view of `&3000-&7FFF` — X=0 main, X=1 shadow. NOT for "direct screen access" — it remaps where the CPU's reads/writes to that range go, not the display itself | 157 | [[sources/naug-ch12-memory]] |
 | `&6D` | 109 | Make temporary filing system permanent | 260 | (Ch16, pending) |
 
 `&46`-`&6A` and `&6E`-`&6F` unused.
@@ -63,9 +63,9 @@ OSBYTEs `&1A`-`&43` (26-67) are **unused by the OS**.
 
 | Hex | # | Function | NAUG p | Source |
 |---|---|---|---|---|
-| `&70` | 112 | Select memory for VDU (Master) | 158 | [[sources/naug-ch12-memory]] |
-| `&71` | 113 | Select memory for display (Master) | 158 | [[sources/naug-ch12-memory]] |
-| `&72` | 114 | Write shadow memory use | 159 | [[sources/naug-ch12-memory]] |
+| `&70` | 112 | Master: select VDU-driver write destination — X=0 default, X=1 main, X=2 shadow (=LYNNE). Controls where MOS character output lands; CRTC display source unaffected. | 158 | [[sources/naug-ch12-memory]] |
+| `&71` | 113 | Master: select CRTC display source — X=0 default, X=1 main, X=2 shadow. The display half of the [[techniques/interlaced-640x512]]-style double-buffering pair with `&70`. | 158 | [[sources/naug-ch12-memory]] |
+| `&72` | 114 | Master: set shadow state at *next* mode change (= `*SHADOW` command). Doesn't take effect immediately; queued until next `VDU 22`. | 159 | [[sources/naug-ch12-memory]] |
 | `&73` | 115 | Blank or restore palette (Electron) | 181 | [[sources/naug-ch13-video]] |
 | `&74` | 116 | Reset sound system (Electron) | 375 | (Ch21, pending) |
 | `&75` | 117 | Read VDU status | 176 | [[sources/naug-ch13-video]] |

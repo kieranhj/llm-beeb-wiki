@@ -161,17 +161,19 @@ What differs:
 
 ## New OSBYTEs / *commands on Master (vs B+)
 
-| OSBYTE | Name | Function |
-|---|---|---|
-| `&6B` (107) | TUBESEL | Switch internal/external 1MHz bus or Tube |
-| `&6C` (108) | SHADRAM | CPU view of `&3000-&7FFF`: main (0) / shadow (1) |
-| `&6D` (109) | TEMPFS | Make temporary filing system permanent |
-| `&70` (112) | WRSCRN | VDU writes to main (1) / shadow (2) |
-| `&71` (113) | RDSCRN | CRTC reads from main (1) / shadow (2) |
-| `&72` (114) | SHADOW | Set shadow state at next mode |
-| `&A1` (161) | RDCMOS | Read CMOS RAM byte |
-| `&A2` (162) | WRCMOS | Write CMOS RAM byte |
-| `&A4` (164) | RDIMG | Check ROM-image valid for I/O processor execution — **NOT a processor-type read** despite the misleading short name (X+Y undefined on return; raises `BRK` on failure). See [[os/paged-roms]]. |
+| OSBYTE | Function |
+|---|---|
+| `&6B` (107) | Switch internal/external 1MHz bus or Tube |
+| `&6C` (108) | CPU view of `&3000-&7FFF`: main (0) / shadow (1) |
+| `&6D` (109) | Make temporary filing system permanent |
+| `&70` (112) | VDU writes to main (1) / shadow (2) |
+| `&71` (113) | CRTC reads from main (1) / shadow (2) |
+| `&72` (114) | Set shadow state at next mode (= `*SHADOW`) |
+| `&A1` (161) | Read CMOS RAM byte |
+| `&A2` (162) | Write CMOS RAM byte |
+| `&A4` (164) | Check whether ROM image at X+Y is valid for I/O-processor `*RUN`. **NOT a processor-type read** despite Acorn's misleading "Check processor type" heading in MRM Ch D.2 + ARM App 2 (X+Y undefined on return; raises `BRK` on failure). NAUG App A is more accurate: "Check for 6502 code". See [[os/paged-roms]]. |
+
+(Acorn does not assign short mnemonic names to OSBYTEs — only the vectors `BYTEV`/`WORDV`/`KEYV`/etc have official names. Use the OSBYTE number.)
 
 New `*` commands include `*CONFIGURE`, `*STATUS`, `*INSERT`, `*UNPLUG`, `*SHADOW`, `*GO`, `*GOIO`, `*EX`, `*INFO`, `*ROMS`, `*SHOW`, `*SHUT`, `*MOVE`, `*COPY`, `*SRDATA`, `*SRROM`, `*SREAD`, `*SRWRITE`, `*BUILD`, `*APPEND`, `*CREATE`, `*DELETE`, `*REMOVE`, `*RENAME`, `*DUMP`, `*LIST`, `*PRINT`, `*TYPE`, `*TIME`.
 
