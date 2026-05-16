@@ -368,3 +368,9 @@ grep "^## \[" wiki/log.md | tail -10
 - Updated wiki/index.md (2 new techniques).
 - Phase A+B together: 5 new pages + 5 refined pages from ACCC ingest. The Compendium is now woven through the wiki's CRTC coverage as the canonical chip-internal reference.
 - No new memory entries this phase — the ones from Phase A cover the relevant patterns.
+
+## [2026-05-16] ingest | Master ARM Ch 1 (Architecture overview)
+- Created: wiki/sources/master-arm.md (source page for the whole manual, with per-chapter status table).
+- Created: wiki/hardware/master-overview.md (Master 128 orientation: 65C12, 128 KB DRAM, ACCCON, SDB Port B reuse for CMOS, what's new vs B+, what's gone).
+- Updated: wiki/index.md (added source entry + hardware entry).
+- Per-chapter ingest plan registered as tasks 54-65; will commit after each chapter.

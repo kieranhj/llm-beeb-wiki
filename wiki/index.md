@@ -42,6 +42,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/twisted-brain]] — kieran's 15-part write-up of the Bitshifters Twisted Brain demo (Stardot, 2018). First BBC demo to use extensive single-rasterline CRTC vertical rupture. Foundation reference for modern Beeb demo techniques.
 - [[sources/hexwab-stable-raster]] — hexwab's "Cycle-exact display diddling" post (Retrosoftware, 2016). The canonical 2-cycle-precision stable-raster technique: narrowing-loop sync + T1 free-run + per-IRQ latch-read jitter compensation.
 - [[sources/accc-compendium]] — Serge Querné's *Amstrad CPC CRTC Compendium* (Logon System, v1.7 2023). 284-page chip-internal cycle-by-cycle reference for the 6845. CPC "CRTC 0" = BBC's HD6845S/SP — canonical reference for chip-internal CRTC behaviour.
+- [[sources/master-arm]] — Acorn *Advanced Reference Manual for the BBC Master Series* (~1986, 292 pages). Canonical reference for Master 128 / Compact / ET / Turbo. Ingested chapter-by-chapter.
 
 ## Hardware
 
@@ -65,6 +66,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[hardware/address-translation]] — Discrete-logic CPU/CRTC → DRAM mapper. CPU/TTX/HI-RES modes, IC 32 + IC 39 hardware-scroll wraparound, MODE 7 formula, per-mode DRAM refresh intervals.
 - [[hardware/crtc-internal-counters]] — The C0/C4/C9/C5/VMA internal state model that underpins all 6845 behaviour. Last Line + Additional Management states. Per-register write-window summary. Foundation page for everything CRTC.
 - [[hardware/saa5050]] — Mullard teletext character generator (MODE 7 pixel source). 12×20 cells, full control-code table, set-after vs set-at semantics, hold-graphics quirks, BBC integration.
+- [[hardware/master-overview]] — BBC Master 128 hardware orientation. 65C12 CPU, 128 KB DRAM, ACCCON, what changed vs B/B+, where things live.
 
 ## Memory
 
