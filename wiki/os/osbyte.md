@@ -2,8 +2,8 @@
 title: OSBYTE Calls
 type: os
 tags: [osbyte, mos, reference]
-sources: [naug-appendix-ab, bbc-user-guide]
-updated: 2026-05-13
+sources: [naug-appendix-ab, bbc-user-guide, master-rm]
+updated: 2026-05-16
 ---
 
 # OSBYTE Calls
@@ -238,6 +238,52 @@ OSBYTE round-trip is **expensive** — JSR + indirect through `&20A` + dispatch 
 For tight raster code: read state via the OSBYTE once, cache the result, then do direct hardware writes inside your loop. E.g. for palette updates, query the OS palette copy once via OSBYTE `&B9`, then `STA &FE21` directly inside the hot loop — the OS shadow goes stale, but you'll restore it before exiting your routine (or accept the desync if MOS won't be called again).
 
 See [[hardware/video-ula]] for the OSBYTE-vs-direct trade-off discussion.
+
+## Master Reference Manual functional grouping
+
+[[sources/master-rm]] Ch D.2 organises OSBYTEs by **functional area** rather than by number — a useful complementary index when you know what you want to do but don't remember the OSBYTE number. The MRM groups:
+
+- **ADC**: 16-21, 128-129, 188-190, 217
+- **BREAK / reset**: 200, 247-249, 253, 255
+- **CMOS RAM** (Master only): **161** (read), **162** (write)
+- **Econet**: 206-208
+- **ESCAPE**: 124-126, 220, 229-230
+- **Filing system**: 109, 119, 127, 137-141, 164, 176, 183, 198, 199
+- **Input/output**: 2-3, 15, 21, 138, 145, 152-153, 177, 236
+- **Character interpretation**: 4, 219, 221-228, 237, **238** (new), **254** (new)
+- **Interrupts/events**: 13-14, 231-235
+- **Keyboard**: 11-12, 118, 120, 124-125, 138-139, 145, 178, 196-202, 217-228, 237-238, 254
+- **Mode/screen**: 19, 25, 75, 112-114, 117, 132-135, 144, 159-160
+- **Printer**: 5-6, 117, 144, 182, 213
+- **RS423**: 2-3, 7-8, 15, 21, 152, 157, 181, 191-192, 203-205, 207-208
+- **Shadow RAM** (B+/Master): 108, 110-114, 250-251
+- **Sound**: 117-118, 210-216
+- **System info**: 0-1, 117, 128-135, 164
+- **Time/clock**: 4-7 (CMOS RTC, Master only via OSWORD &0E/&0F), 158, 165-167
+- **Tube**: 145-146, 191, 234
+
+Calls marked £ in the MRM are Master-new or have new Master behaviour. The notable Master-new ones are:
+
+- `&14` (20): reset font now ignores params (Model B used X for char count)
+- `&16` (22) / `&17` (23): increment/decrement ROM-polling semaphore (for service call 21)
+- `&6B` (107): internal/external 1MHz bus switch
+- `&6C` (108): main/shadow CPU view of `&3000-&7FFF`
+- `&6D` (109): make temporary FS permanent
+- `&70` (112): VDU-write target — main/shadow
+- `&71` (113): CRTC display source — main/shadow
+- `&72` (114): default shadow at next mode (`*SHADOW` equivalent)
+- `&81` (129): extended to return Master-specific machine IDs
+- `&84` / `&85` (132/133): read top of user RAM (was display RAM start on B/B+)
+- `&A1` / `&A2` (161/162): CMOS RAM read/write
+- `&A4` (164): processor type check
+- `&A5` (165): read output cursor position
+- `&B3` (179): ROM-polling semaphore read/write (was OSHWM read/write on B)
+- `&B6` (182): read NOIGNORE state (was font-explosion state)
+- `&EE` (238): numeric keypad base setting
+- `&FA` / `&FB` (250/251): read VDU memory write/read areas
+- `&FE` (254): SHIFT effect on numeric pad (was RAM size on B/B+)
+
+Some of these were repurposed from Model B/B+ — code that uses the old meaning on Master gets unexpected results.
 
 ---
 
