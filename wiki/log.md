@@ -455,3 +455,9 @@ Lint findings deferred / left for human:
 - Created: wiki/sources/bbc-user-guide.md (source page for the 522-page User Guide, per-chapter status table).
 - Created: wiki/os/vdu.md — full VDU 0-31 + 127 control code reference. Byte counts per code; semantics; VDU 17/18/19/22/23/24/25/28/29/31 detailed sections; VDU 23 sub-function table including Master extensions; programmatic invocation patterns; cross-model differences.
 - Updated wiki/index.md (1 new source + 1 new OS page).
+
+## [2026-05-16] ingest | User Guide Ch 29 + Ch 33 (Advanced Graphics + PLOT keyword)
+- Created: wiki/video/plot-codes.md — full PLOT k=0-255 reference. Codes 0-95 from User Guide (line variants, fills, triangles, single points, line-fill primitives); codes 96-255 from Master ARM Ch 6 (rectangle, parallelogram, circle, ellipse, flood fill, arc). Bit-field decomposition of k showing the move/draw/colour mode sub-pattern.
+- Updated wiki/index.md (1 new video page).
+- Updated wiki/os/vdu.md to point at the live plot-codes page (was "forthcoming").
+- Updated wiki/sources/bbc-user-guide.md filed-into log.

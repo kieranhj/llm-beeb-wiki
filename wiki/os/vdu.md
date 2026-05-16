@@ -131,7 +131,7 @@ User-definable character range: **224-255** on Model B (32 chars). Master can al
 VDU 25, k, xlo, xhi, ylo, yhi
 ```
 
-Equivalent to BASIC `PLOT k, x, y`. Coordinates are in **external graphics coordinates** (0-1279 × 0-1023). `k` selects the operation; see [[video/plot-codes]] for the full table.
+Equivalent to BASIC `PLOT k, x, y`. Coordinates are in **external graphics coordinates** (0-1279 × 0-1023). `k` selects the operation (256 codes); see [[video/plot-codes]] for the full table.
 
 The `;` punctuation in `VDU 25, k, x;y;` form sends the X and Y values as 2-byte pairs (low byte first). The two forms are equivalent:
 - `VDU 25, 4, 100; 500;` ↔ `VDU 25, 4, 100, 0, 244, 1` (500 = `&01F4` → `244, 1`).
@@ -189,7 +189,7 @@ For long sequences (e.g. CRTC reprogramming), it's faster to use **OSWORD `&FFF1
 
 ## See also
 
-- [[video/plot-codes]] — full PLOT k=0-255 reference (forthcoming).
+- [[video/plot-codes]] — full PLOT k=0-255 reference.
 - [[hardware/video-ula]] — palette mechanics behind VDU 19.
 - [[hardware/crtc-6845]] — CRTC register reference behind VDU 23,0.
 - [[memory/os-workspace]] — Page 3 VDU workspace layout.

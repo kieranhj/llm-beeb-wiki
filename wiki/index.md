@@ -81,6 +81,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 
 - [[video/modes]] — Mode summary: resolution, bpp, screen base, screen size, byte→pixel layout (MODE 2 interleaving), address arithmetic.
 - [[video/hardware-scrolling]] — R12/R13 lever, vertical & sideways scroll, hardware wrap-around, MODE 7 correction, vsync timing, OS shadow-copy issue.
+- [[video/plot-codes]] — VDU 25 PLOT k reference, k=0-95 (User Guide) + k=96-255 (Master extensions). Filled triangles/rectangles/circles/ellipses/flood fill.
 
 ## Timing
 

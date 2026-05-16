@@ -39,7 +39,7 @@ For Master-era content, prefer [[sources/master-arm]]. For Master-era OSBYTE/OSW
 |---|---|---|---|
 | 1-27 | BASIC tutorial chapters | 9-126 | *out of scope (BASIC programming primer)* |
 | 28 | Teletext and MODE 7 | 152-161 | *pending — cross-check vs [[hardware/saa5050]]* |
-| 29 | Advanced Graphics | 162-181 | *pending — extends [[hardware/video-ula]] with VDU 19/23 detail and PLOT 0-79 table* |
+| 29 | Advanced Graphics | 162-181 | Created [[video/plot-codes]] (PLOT k=0-95 from this chapter + k=96-255 from Master ARM Ch 6) |
 | 30 | Sound | 182-189 | *cross-checked vs [[hardware/sn76489]] / [[os/sound]] — no new content* |
 | 31-33 | File handling, BASIC keywords | 190-378 | *out of scope* |
 | 34 | VDU drivers | 379-391 | Created [[os/vdu]] (full VDU 0-31 + 127 control code reference) |
@@ -54,3 +54,4 @@ For Master-era content, prefer [[sources/master-arm]]. For Master-era OSBYTE/OSW
 ## Filed into
 
 - **Ch 34 (VDU drivers)** → created [[os/vdu]] (full VDU control code reference table, per-code semantics, byte-count for each).
+- **Ch 29 (Advanced Graphics) + Ch 33 (PLOT BASIC keyword)** → created [[video/plot-codes]] covering PLOT k=0-95 (line variants, fills, triangles, single points) from User Guide and k=96-255 (rectangle, parallelogram, circle, ellipse, flood fill) from Master ARM Ch 6.
