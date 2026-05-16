@@ -628,3 +628,12 @@ Lint findings deferred:
   - "Voltage decay + volume refresh" mechanism added under analog-chain section — the physical reason sample playback works
 - smspower-sn76489 added to wiki/sources/scarybeast-sn76489-sampled.md and stardot-sn76489-sampled.md (next commit will catch those — left as a deliberate cross-link).
 - Updated wiki/index.md (1 new source).
+
+## [2026-05-16] feedback fix | OSBYTE &A4 is not a processor-type check
+Expert reviewer pointed out that the wiki incorrectly described `OSBYTE &A4` as a processor-type detection call, picking up the misleading "Check processor type" short name from the Master ARM OSBYTE table. Actual behaviour per disassembly + Stardot thread t=24701 (Tom Seddon): &A4 is a paged-ROM image validity check — inspects header at supplied address, raises BRK on failure, X+Y undefined on return.
+
+Fixes:
+- wiki/synthesis/model-differences.md — corrected the &A4 row in the new-OSBYTE table; replaced the wrong "use &A4" advice with the Exmon II PHX/PLX (&DA/&FA) NMOS-vs-CMOS detection idiom. Added note about R65C02 vs 65C12 detection requiring a BRKV-trap of a Rockwell-only opcode.
+- wiki/os/osbyte.md — corrected the &A4 line in the Master-new-OSBYTE list with the same correction + pointer.
+- wiki/hardware/6502.md — added "Detecting NMOS vs CMOS at runtime" section with the canonical Exmon II PHX/PLX idiom and the why-not-OSBYTE-&A4 caveat.
+- Memory: added `feedback_osbyte_a4_not_proc_check.md` so future ingests don't repeat the mistake. Generalised lesson: Master ARM tabular OSBYTE descriptions are terse — verify against per-call descriptions before trusting short names.

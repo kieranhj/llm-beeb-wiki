@@ -275,7 +275,7 @@ Calls marked £ in the MRM are Master-new or have new Master behaviour. The nota
 - `&81` (129): extended to return Master-specific machine IDs
 - `&84` / `&85` (132/133): read top of user RAM (was display RAM start on B/B+)
 - `&A1` / `&A2` (161/162): CMOS RAM read/write
-- `&A4` (164): processor type check
+- `&A4` (164): paged-ROM image validity check ("check whether code at X+Y can be `*RUN` in the I/O processor"). **NOT a CPU-type read** despite the misleading short name; X+Y are undefined on return and it raises `BRK` on failure rather than returning a status. See [[os/paged-roms]]. For NMOS-vs-CMOS detection use the PHX/PLX idiom on [[hardware/6502]].
 - `&A5` (165): read output cursor position
 - `&B3` (179): ROM-polling semaphore read/write (was OSHWM read/write on B)
 - `&B6` (182): read NOIGNORE state (was font-explosion state)

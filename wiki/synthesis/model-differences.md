@@ -171,7 +171,7 @@ What differs:
 | `&72` (114) | SHADOW | Set shadow state at next mode |
 | `&A1` (161) | RDCMOS | Read CMOS RAM byte |
 | `&A2` (162) | WRCMOS | Write CMOS RAM byte |
-| `&A4` (164) | RDPROC | Check processor type |
+| `&A4` (164) | RDIMG | Check ROM-image valid for I/O processor execution — **NOT a processor-type read** despite the misleading short name (X+Y undefined on return; raises `BRK` on failure). See [[os/paged-roms]]. |
 
 New `*` commands include `*CONFIGURE`, `*STATUS`, `*INSERT`, `*UNPLUG`, `*SHADOW`, `*GO`, `*GOIO`, `*EX`, `*INFO`, `*ROMS`, `*SHOW`, `*SHUT`, `*MOVE`, `*COPY`, `*SRDATA`, `*SRROM`, `*SREAD`, `*SRWRITE`, `*BUILD`, `*APPEND`, `*CREATE`, `*DELETE`, `*REMOVE`, `*RENAME`, `*DUMP`, `*LIST`, `*PRINT`, `*TYPE`, `*TIME`.
 
@@ -193,7 +193,19 @@ Best practice: `OSBYTE &81` (`INKEY-256`) with X=0, Y=255:
 
 Or `OSBYTE 0` with X≠0: returns X=3 for Master 128.
 
-For finer-grained processor detection (NMOS vs CMOS vs Rockwell), use `OSBYTE &A4` (164) — returns the processor type in X.
+For **NMOS vs CMOS detection**, use the PHX/PLX trick (CMOS-only opcodes; NOPs on NMOS):
+
+```asm
+LDX #&FF       ; X = &FF
+EQUB &DA       ; PHX on CMOS / NOP on NMOS
+INX            ; X = &00 (wraps)
+EQUB &FA       ; PLX on CMOS / NOP on NMOS
+; result: X = &FF on CMOS, X = &00 on NMOS
+```
+
+Idiom credited to Acorn's Exmon II ROM. **Do not use `OSBYTE &A4`** for processor detection — despite its brief description as "check processor type" in the Master ARM, it is actually a paged-ROM-image validity check (per [[sources/master-rm]] Ch D.2 the precise wording is *"used by filing systems to determine if a piece of code to be `*RUN` is suitable for execution in an I/O processor"*) — it parses a ROM header at the parameter address, X+Y are undefined on return, and it raises `BRK` errors on failure rather than returning a status. See [[os/paged-roms]] for its real use.
+
+To distinguish R65C02 (with Rockwell `BBR`/`BBS`/`RMB`/`SMB`) from plain 65C12, no clean software idiom exists in stock MOS — try executing a Rockwell-only opcode inside an intercepted BRKV handler.
 
 ## Pitfalls when targeting "all models"
 
