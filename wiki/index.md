@@ -43,6 +43,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/hexwab-stable-raster]] — hexwab's "Cycle-exact display diddling" post (Retrosoftware, 2016). The canonical 2-cycle-precision stable-raster technique: narrowing-loop sync + T1 free-run + per-IRQ latch-read jitter compensation.
 - [[sources/accc-compendium]] — Serge Querné's *Amstrad CPC CRTC Compendium* (Logon System, v1.7 2023). 284-page chip-internal cycle-by-cycle reference for the 6845. CPC "CRTC 0" = BBC's HD6845S/SP — canonical reference for chip-internal CRTC behaviour.
 - [[sources/master-arm]] — Acorn *Advanced Reference Manual for the BBC Master Series* (~1986, 292 pages). Canonical reference for Master 128 / Compact / ET / Turbo. Ingested chapter-by-chapter.
+- [[sources/bbc-user-guide]] — Acorn *BBC Microcomputer System User Guide* (Coll, 1982, 522 pages). Original Model B end-user manual. Mostly BASIC tutorial (out of scope); canonical for VDU control codes / PLOT codes / error messages.
 
 ## Hardware
 
@@ -107,6 +108,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[os/adc]] — Joystick + ADC reading: `OSBYTE &10/&11/&80/&BC/&BD/&BE`, conversion modes, event 3, Compact simulator config.
 - [[os/break-intercept]] — BREAK / reset handling: `OSBYTE &F7-&F9` JMP intercept, reset types (`&FD`), startup options (`&FF`), game-launcher patterns.
 - [[os/printer]] — Printer driver: `*FX 5` destinations, UPTV (`&222`), ignore character, custom printer hooks.
+- [[os/vdu]] — Full VDU control code reference (VDU 0-31 + 127). Byte counts, semantics, VDU 23 sub-functions, VDU 18 GCOL modes.
 
 ## Techniques
 

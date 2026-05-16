@@ -450,3 +450,8 @@ Lint findings deferred / left for human:
 - cmos-rtc.md Register A rate table has a suspect non-monotonic entry (122.07 µs nested between 3.9ms and 7.8ms). Likely a copy-paste from datasheet where order is non-obvious — left for cross-check against NAUG p361.
 - synthesis/model-differences.md "Sideways slots" Master row says "16 (4 + 12 internal)" — phrasing ambiguous re cartridge-paired chips; left as cosmetic.
 - Master ARM ingest complete: 8 commits + 1 lint commit. 1 new source page, 2 new technique pages, 1 new hardware page, 1 new synthesis page, refinements to ~12 existing pages.
+
+## [2026-05-16] ingest | User Guide source page + Ch 34 (VDU drivers)
+- Created: wiki/sources/bbc-user-guide.md (source page for the 522-page User Guide, per-chapter status table).
+- Created: wiki/os/vdu.md — full VDU 0-31 + 127 control code reference. Byte counts per code; semantics; VDU 17/18/19/22/23/24/25/28/29/31 detailed sections; VDU 23 sub-function table including Master extensions; programmatic invocation patterns; cross-model differences.
+- Updated wiki/index.md (1 new source + 1 new OS page).
