@@ -158,7 +158,7 @@ For when you bypass `VDU 19` / OSBYTE `&9B` and write `&FE21` directly. From [[s
 - Switching the chars-per-line bits (bits 2-3) mid-frame at the right horizontal time changes MODE width without a full mode reset — used for split-mode tricks.
 - Direct `&FE20`/`&FE21` writes are 4 cycles (STA abs); OSBYTE round-trip costs hundreds of cycles. For raster-tight work, save the OS copy yourself and use direct STA inside an SEI/CLI window — but only when you control the whole machine state (no Tube).
 
-The user-level palette workflow (VDU 19, OSWORD `&0C`, expansion rules) is fully captured on this page above. For mid-frame palette change techniques, see [[techniques/raster-splits]] (planned).
+The user-level palette workflow (VDU 19, OSWORD `&0C`, expansion rules) is fully captured on this page above. For mid-frame palette change techniques, see [[techniques/raster-splits]].
 
 ## Hardware history
 

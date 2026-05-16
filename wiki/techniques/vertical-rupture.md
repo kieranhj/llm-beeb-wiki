@@ -130,9 +130,14 @@ The `23 - 5 = 18` is the key timing identity: default MODE 2 has 5 char rows aft
 - **Timing tolerance**: the 2560/8192-tick waits are bounded above by "before the *current* cycle ends" and below by "after the new cycle has actually started". Talbot-Watkins notes the tolerance is generous, but tight timing is needed if you reduce status-panel height — a status panel acts as slack.
 - **R12/R13 update is the only mid-frame rewrite that's universally safe**. The R4/R6/R7 rewrites here work because they happen during the *previous* cycle. Don't move them earlier or later without thinking through which cycle samples them.
 
+## The extreme version: single-rasterline rupture
+
+The technique above splits a frame into 2-3 CRTC cycles for status panels and similar. The same mechanism scales to **64, 128, or 256 cycles per frame**, each cycle just 1-4 scanlines tall, used to display tiny pre-rendered buffers or beam-raced 80-byte scanline buffers over the whole screen. That's the basis of essentially every Twisted-Brain-style demo effect — see [[techniques/single-rasterline-rupture]] for the chassis and [[sources/twisted-brain]] for an inventory of effects built on it.
+
 ## Builds on / used by
 
 - [[techniques/smooth-vertical-scroll]] — two-cycle rupture + R5 manipulation for sub-row vertical motion.
+- [[techniques/single-rasterline-rupture]] — the extreme version of this technique used by modern Beeb demos.
 - [[hardware/crtc-6845]], [[hardware/crtc-6845-advanced]] — chip-level latching behaviour.
 - [[video/hardware-scrolling]] — the address arithmetic this technique splits across cycles.
 - [[hardware/system-via]] — addressable latch bits for 10K/16K/20K screen wraparound select.

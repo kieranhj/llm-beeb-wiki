@@ -5,7 +5,7 @@ tags: [video, crtc, 6845, sheila, raster, performance]
 sources: [hd6845sp-hitachi-datasheet, naug-ch13-video]
 sheila: ["&FE00", "&FE01"]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact]
-updated: 2026-05-14
+updated: 2026-05-16
 ---
 
 # 6845 CRTC — Advanced
@@ -27,7 +27,7 @@ From the Hitachi datasheet "Anomalous Operations" table. **The verdicts below ar
 | R1 | Horizontal Displayed | **OK** | One raster's DISPTMG may be shortened — invisible in practice. |
 | R2 | Horizontal Sync Position | **NG** | HSYNC mis-placed or noisy. |
 | R3 | Sync Widths | **△** | Pulse width may be cut short if rewritten while HSYNC/VSYNC is active. |
-| R4 | Vertical Total | **△** | Avoid the **last raster period of the line**. |
+| R4 | Vertical Total | **△** | Avoid the **last raster period of the line**. In **1-scanline-per-row CRTC cycles** every scanline is the last-raster window, so R4 writes have ambiguous timing relative to the chip's internal compare/sample/reset phases (R12/R13 sampling, R4 compare, R7 compare all want to happen in the same window the datasheet doesn't fully specify). Observed result on HD6845SP: R4 written during the final cycle takes effect one cycle late, frame is 313 lines long instead of 312. Documented with 311-line rebalance fix in [[techniques/kefrens-bars]]. |
 | R5 | Vertical Total Adjust | **△** | Avoid the **last char time of the raster**, or the adjust isn't applied. |
 | R6 | Vertical Displayed | **OK** | Display may briefly inhibit; new value used from next field. |
 | R7 | Vertical Sync Position | **NG** | VSYNC mis-placed or noisy. |
@@ -69,7 +69,7 @@ Because R12/R13 are sampled only once per field, you **cannot** use them for ras
 3. **R6/R7 mid-field rewrite**: marked OK / NG respectively in the datasheet. Some demos rewrite R7 to advance vsync; results are display-dependent.
 4. **Indirect via the Video ULA**: palette flips at `&FE21` are *not* stretched ([[timing/cycle-stretching]]) and are the cheapest way to get mid-frame visual changes. Combine with R12/R13 once-per-frame.
 
-For raster-line-exact timing, see [[techniques/raster-splits]] (planned).
+For raster-line-exact timing, see [[techniques/raster-splits]] (overview of the split families) and [[techniques/hexwab-stable-raster]] (2-cycle-precision sync).
 
 ## Cursor as a raster signal
 
@@ -104,5 +104,5 @@ For MODE 7 (R4=30, R5=2, R9=18): one field = 31 × 20 + 2 = 622 half-rasters ≈
 - [[hardware/address-translation]] — how MA → DRAM address.
 - [[hardware/video-ula]] — companion chip; preferred for raster-tight visual changes.
 - [[timing/cycle-stretching]] — CRTC writes pay 1-2c extra; Video ULA writes do not.
-- [[techniques/raster-splits]] (planned) — applying these primitives to produce split-screen effects.
+- [[techniques/raster-splits]] — applying these primitives to produce split-screen effects.
 - [[sources/hd6845sp-hitachi-datasheet]] — primary source for everything on this page.

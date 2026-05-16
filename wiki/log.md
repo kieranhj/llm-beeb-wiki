@@ -302,3 +302,41 @@ grep "^## \[" wiki/log.md | tail -10
 - Updated: wiki/index.md (1 source + 1 technique).
 - Key correction during ingest: my initial summary described modes 0/1/2 chunky as "scrambled" / broken on Model B; user pointed out (and our own address-translation page already documents) that the second byte comes from `addr XOR &40` — deterministic, exploitable. Re-framed the technique as achievable, not broken.
 - Genuine open mystery captured: the Model B's H/V sync corruption when TTXVDU is asserted in a non-MODE-7 graphics mode (Julian's hardware report). Separate from the address interleave. Speculated causes (IC 5 / IC 6 / IC 15 interaction) but no resolution. Needs scope work on real hardware.
+
+## [2026-05-16] ingest | Twisted Brain demo write-up (kieran/Bitshifters, 2018) — 15 parts
+- Source: https://stardot.org.uk/forums/viewtopic.php?t=15300 (kieran's multi-part technical write-up, Stardot 2018-06-27 onwards).
+- Archived: raw/articles/twisted-brain-writeup.md (all 15 parts + key follow-up replies).
+- Created: wiki/sources/twisted-brain.md (full source page with part-index table linking to each technique page).
+- Created 8 new technique pages:
+  - wiki/techniques/fx-framework.md (Part 1) — T1 stable-raster + module init/update/draw/kill interface + 312-line invariant.
+  - wiki/techniques/single-rasterline-rupture.md (foundation for Parts 6-13) — generalises vertical-rupture from 2-3 cycles/frame to 64-256 cycles/frame; covers re-point vs beam-race patterns and constant-time discipline.
+  - wiki/techniques/copper-bars.md (Parts 6+7 combined — same chassis, differing buffer/palette) — pre-rendered Bayer dither + hue rotation.
+  - wiki/techniques/parallax-bars.md (Part 8) — 64-row buffer split main/SHADOW + mid-frame ACCCON switch.
+  - wiki/techniques/vertical-blinds.md (Part 9) — double-buffered 160B mini-frame + linear line buffer + sink-loop constant-time.
+  - wiki/techniques/kefrens-bars.md (Part 10) — true single-scanline beam-race accumulation + R4-on-final-scanline real-hardware quirk + 311-line rebalance fix.
+  - wiki/techniques/checkerboard-zoom.md (Part 11) — ULA flash-bit toggle per raster for free colour inversion + unrolled MODE 1 partial-byte plot.
+  - wiki/techniques/twister.md (Part 13) — R1=20 narrow display + R2 centring + 128 ribbon rotations + alternate-scanline stipple.
+- Smaller parts captured on the source page rather than dedicated pages: Part 2 (Brain palette anim), Part 3 (text screens — same idea as copper, simpler), Part 12 (Bitshifters logo — applied case of single-rasterline rupture), Part 15 (memory stats).
+- Updated wiki/techniques/vertical-rupture.md — cross-link to single-rasterline extension.
+- Updated wiki/techniques/smooth-vertical-scroll.md — added "applied case: Smiley Drop" section linking Part 14.
+- Updated wiki/hardware/crtc-6845-advanced.md — added the HD6845SP R4-on-final-scanline real-hardware quirk to the anomalous-rewrite table.
+- Updated wiki/index.md — 1 new source + 9 new techniques.
+- Key new technique-class captured: single-rasterline rupture as a *general pattern* (not just one effect). This is arguably the most important addition to the wiki so far — the entire modern Beeb-demo aesthetic depends on it.
+- Real-hardware insight captured: the Kefrens R4-on-final-scanline mystery, which propagates as the Parallax timing bug unless the Kefrens kill function emits a 311-line rebalance frame. Real-hardware fix selectable from the BASIC loader in the shipped demo.
+- Open follow-ups: hexwab's truly-stable-raster technique (used by Twisted Brain only at boot); BeebEm cycle-accuracy modernisation; the Twister parameter (spin/twist/knot) search heuristics.
+
+## [2026-05-16] lint | comprehensive pass + fixes
+- Lint pass run via subagent on the full wiki (~70 pages).
+- Phase 1 (low-risk): bumped stale `updated:` dates on crtc-6845.md and crtc-6845-advanced.md to 2026-05-16; removed `[[sources/...]]` placeholder text in os/osword.md. Dialect-annotation lint item turned out to be a false alarm — all actual asm blocks are already tagged.
+- Phase 2 (display-cycle accounting): the table in single-rasterline-rupture.md was using a confused "Cycles in display" column that disagreed with the math. Reworked into a 5-column table: Display cycles / Loop iterations / Total cycles / Visible scanlines / Final R4/R7. Added explanation that the FX framework enters at cycle 1, so loop = total − 2. Propagated to kefrens-bars (254→256 scanlines), checkerboard-zoom (added accounting note), vertical-blinds (clarified 128 = 127 + 1 final).
+- Phase 3 (checkerboard ULA-flash): rewrote the flash-bit paragraph to match video-ula.md: bit 0 of `&FE20` only affects palette entries programmed with flash physical codes `&08`-`&0F`; the demo programs colours 8-15 as flash entries deliberately to repurpose this single bit as a per-raster colour-flip lever.
+- Phase 4 (parallax loop count): added one-line accounting note explaining 64 = 1 (framework-entered) + 62 (looped) + 1 (final).
+- Phase 5 (new pages):
+  - Fetched http://www.retrosoftware.co.uk/forum/viewtopic.php?f=73&t=1007 → raw/articles/hexwab-stable-raster.md.
+  - Created wiki/sources/hexwab-stable-raster.md (source page; credits hexwab, RichTW's CMOS-6502 correction, tricky's narrowing-loop idea).
+  - Created wiki/techniques/hexwab-stable-raster.md (the 4-stage technique: interlace off, narrowing-loop sync, T1 free-run on User VIA, jitter compensation via latch read).
+  - Created wiki/techniques/raster-splits.md (overview/index page covering all split families, resolving 5+ broken inbound references).
+  - Updated broken links in crtc-6845-advanced.md, video-ula.md, custom-modes.md, fast-animation.md.
+  - Updated fx-framework.md and twisted-brain.md to cross-link to hexwab page.
+  - Updated index.md (1 new source + 2 new techniques).
+- Remaining open: techniques/division, tools/beebasm, video/teletext-mode, synthesis/custom-mode-288x192, techniques/exploding-font, os/z80-2p — all referenced sparingly and not urgent.

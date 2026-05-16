@@ -222,6 +222,12 @@ The technique relies on the same three CRTC properties as [[techniques/vertical-
 - **Variable updates (`line`, `addr`) should be done outside the visible CRTC cycle** — the IRQ handler latches `iline ← line` and reads `addr` only at VSync, so the main loop is free to update between frames.
 - **The status panel is structural**. Reducing it to zero rows breaks the timing tolerance and starts to flicker.
 
+## Applied case — Twisted Brain "Smiley Drop"
+
+[[sources/twisted-brain]] Part 14 uses smooth vertical scroll as a **sprite reveal** rather than a screen scroll. The Smiley image is the only thing in the scrolling window; everything else around it is masked off by setting Vertical Displayed R6 *larger* than Vertical Total R4 so the VADJ scanlines themselves are visible (showing the top fragment of the Smiley sprite as it drops in). The bottom status window is a different prerendered image.
+
+The blank/unblank lever in that implementation is **CRTC R8 (`&00` non-interlace + display delay = 0 vs `&30` display delay = 3 = blanked)** — see [[hardware/crtc-6845]]'s screen-blank-via-R8 note. Same `R8` trick as in this page's `&F0`/`&C0`, just expressed via different bits because Smiley Drop doesn't want the cursor-off behaviour.
+
 ## Builds on
 
 - [[techniques/vertical-rupture]] — required reading first.

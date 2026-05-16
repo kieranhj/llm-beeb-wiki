@@ -39,6 +39,8 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/retrosoftware-smooth-vscroll]] — Talbot-Watkins, "How to do the smooth vertical scrolling" (retrosoftware.co.uk, 2008). Vertical rupture + R5 sub-row scroll technique. Includes BeebASM + BBC BASIC demos.
 - [[sources/retrosoftware-fast-mult]] — Talbot-Watkins, "Fast multiplication routines" + "Fast fixed-point multiplication library" (retrosoftware.co.uk, 2008-09). Half-square LUT + base-127 signed fixed-point. Full BeebASM library.
 - [[sources/chunky-mode-notes]] — Tom Seddon's "mythical chunky mode" page + Julian Brown's 2015 Stardot post on real-hardware behaviour. Combined notes on driving the CRTC from MODE 7 RAM while in graphics modes.
+- [[sources/twisted-brain]] — kieran's 15-part write-up of the Bitshifters Twisted Brain demo (Stardot, 2018). First BBC demo to use extensive single-rasterline CRTC vertical rupture. Foundation reference for modern Beeb demo techniques.
+- [[sources/hexwab-stable-raster]] — hexwab's "Cycle-exact display diddling" post (Retrosoftware, 2016). The canonical 2-cycle-precision stable-raster technique: narrowing-loop sync + T1 free-run + per-IRQ latch-read jitter compensation.
 
 ## Hardware
 
@@ -111,6 +113,16 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[techniques/multiplication]] — Unsigned 8×8 → 16-bit: shift-and-add baseline (~113c) vs half-square LUT trick (~55c, 1 KB tables). Three implementations with tradeoff table.
 - [[techniques/fixed-point]] — Base-127 signed fixed-point representation. Why ×127 beats ×64/128/256. 4-way sign case-split, S8×S8 (~58c), S15×S8 (~170c), free sin/cos.
 - [[techniques/chunky-mode]] — 1 KB chunky display by routing CRTC fetches via MODE 7 RAM in a graphics mode. EOR-64 interleave for modes 0/1/2. Software workaround for Model B sync issue.
+- [[techniques/fx-framework]] — Demo runtime: SEI + System VIA T1 free-run for stable raster, FX module interface (init/update/draw/kill), the 312-line invariant. Foundation from Twisted Brain.
+- [[techniques/single-rasterline-rupture]] — Extreme vertical rupture: 64-256 CRTC cycles per frame, each 1-4 scanlines tall. Re-point R12/R13 or beam-race a tiny buffer. Foundation of most modern Beeb demo effects.
+- [[techniques/copper-bars]] — Pre-rendered MODE 0 ordered-dither buffer + per-row R12/R13 selection + hue-rotation palette. Covers both Copper Bars and Plasma effects (Twisted Brain Parts 6+7).
+- [[techniques/parallax-bars]] — 64-character-row pre-rendered MODE 1 buffer split main/SHADOW RAM, mid-frame ACCCON switch. The most timing-sensitive effect in Twisted Brain (Part 8).
+- [[techniques/vertical-blinds]] — Double-buffered 160-byte mini-frame, beam-race the buffer between FX draws. Linear line-buffer pattern + sink-loop constant-time discipline (Part 9).
+- [[techniques/kefrens-bars]] — True single-scanline beam-race accumulation of bars. R4-on-final-scanline real-hardware mystery + 311-line rebalance frame (Part 10).
+- [[techniques/checkerboard-zoom]] — Per-raster ULA flash-bit toggle for free colour inversion + unrolled MODE 1 partial-byte plot (Part 11).
+- [[techniques/twister]] — Narrow CRTC display via R1=20 + R2 centring + 128 prerendered ribbon rotations + alternate-scanline stipple for 4th colour (Part 13).
+- [[techniques/hexwab-stable-raster]] — 2-cycle-precision sync via narrowing-loop + T1 free-run + per-IRQ latch-read jitter compensation. The next-precision-level alternative to fx-framework's ~8c jitter approach.
+- [[techniques/raster-splits]] — Overview / index of raster-split families. Routes readers from "I want to do a raster split" to the right specific technique page.
 
 ## Tools
 

@@ -187,7 +187,7 @@ Custom-mode geometry is hard to validate without a real screen:
 
 ## Mid-frame mode changes (deferred)
 
-Switching modes mid-frame (e.g. high-res top + low-colour bottom) requires raster-cycle-accurate writes to `&FE20` and possibly `&FE21`/`&FE00`/`&FE01`. The timing window is roughly 64 µs per scan line, with the visible-area boundary determined by R0/R1/R2. Detailed coverage deferred to [[hardware/crtc-6845-advanced]] and [[techniques/raster-splits]] (both planned).
+Switching modes mid-frame (e.g. high-res top + low-colour bottom) requires raster-cycle-accurate writes to `&FE20` and possibly `&FE21`/`&FE00`/`&FE01`. The timing window is roughly 64 µs per scan line, with the visible-area boundary determined by R0/R1/R2. See [[hardware/crtc-6845-advanced]] for which registers tolerate mid-frame rewrites and [[techniques/raster-splits]] for the technique families that exploit this.
 
 ## Worked example
 

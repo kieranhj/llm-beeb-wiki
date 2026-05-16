@@ -96,7 +96,7 @@ To avoid tearing, do **all** screen writes during vertical blanking. Two ways:
 
 Vsync is ~50 Hz on UK BBC, giving ~20 ms per frame. The visible-screen period is ~16 ms (320 scan lines × 64 µs); blanking is ~4 ms. Schedule **fast** writes for the blanking window; long writes can spill into visible scan but should land at lines below where the user is looking.
 
-See [[techniques/raster-splits]] (planned, after Ch8 ingest) for techniques that *exploit* mid-frame timing rather than fight it.
+See [[techniques/raster-splits]] for techniques that *exploit* mid-frame timing rather than fight it.
 
 ## Don't bother with MODE 7 for animation
 

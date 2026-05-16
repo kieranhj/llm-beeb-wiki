@@ -64,4 +64,4 @@ OSWORD round-trip overhead is significant (parameter block fetch + dispatch + wo
 
 ## Cross-reference
 
-For directory-level navigation, see [[sources/naug-appendix-ab]]. As each chapter is ingested the call entries above gain [[sources/...]] links and detail flows in.
+For directory-level navigation, see [[sources/naug-appendix-ab]]. Per-call detail accrues as relevant chapters are ingested — cross-references appear inline against each call entry above.
