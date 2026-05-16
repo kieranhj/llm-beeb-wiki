@@ -37,6 +37,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/hd6845sp-hitachi-datasheet]] — Hitachi HD6845R/HD6845S datasheet (primary chip-level reference). Register encodings, programming restrictions, anomalous-rewrite table, HD6845S-vs-HD6845R differences, reset behaviour.
 - [[sources/saa5050-references]] — Combined SAA5050 references (Wikipedia, HandWiki, mdfs.net Teletext Controls, BeebFpga VHDL model). Substitutes for the image-only Mullard datasheet PDF (`raw/manuals/SAA5050.pdf`).
 - [[sources/retrosoftware-smooth-vscroll]] — Talbot-Watkins, "How to do the smooth vertical scrolling" (retrosoftware.co.uk, 2008). Vertical rupture + R5 sub-row scroll technique. Includes BeebASM + BBC BASIC demos.
+- [[sources/retrosoftware-fast-mult]] — Talbot-Watkins, "Fast multiplication routines" + "Fast fixed-point multiplication library" (retrosoftware.co.uk, 2008-09). Half-square LUT + base-127 signed fixed-point. Full BeebASM library.
 
 ## Hardware
 
@@ -106,6 +107,8 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[techniques/custom-modes]] — Roll your own resolution/colour by reprogramming CRTC + Video ULA directly. Five-step recipe, MOS-bypass discipline, what breaks (OSWRCH, cursor, light pen), BREAK survival.
 - [[techniques/vertical-rupture]] — Multiple CRTC cycles per TV frame for split-screen / status panel. Worked MODE 2 example (16+23 rows). R12/R13 latching + R4/R6/R7 read-per-cycle as the mechanism.
 - [[techniques/smooth-vertical-scroll]] — 1-scanline vertical scrolling via R5 + two-cycle rupture. Screen-on timer for rock-steady top edge. Builds on vertical-rupture.
+- [[techniques/multiplication]] — Unsigned 8×8 → 16-bit: shift-and-add baseline (~113c) vs half-square LUT trick (~55c, 1 KB tables). Three implementations with tradeoff table.
+- [[techniques/fixed-point]] — Base-127 signed fixed-point representation. Why ×127 beats ×64/128/256. 4-way sign case-split, S8×S8 (~58c), S15×S8 (~170c), free sin/cos.
 
 ## Tools
 

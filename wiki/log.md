@@ -273,3 +273,23 @@ grep "^## \[" wiki/log.md | tail -10
   - VSync IRQ fires after VSync pulse width (default 2 scanlines), affecting timer compensator.
   - Status panel in second cycle = structural; provides timing tolerance for the cycle-switch interrupts.
 - Open follow-ups: derive the smoothscroll.bas compensator constant `((5+V%)*512+6*64-93)`; clarify the cycle-A R8 write at line 510-520.
+
+## [2026-05-16] ingest | Retrosoftware — Fast multiplication + Fast fixed-point (Talbot-Watkins, 2008-09)
+- Sources:
+  - http://www.retrosoftware.co.uk/wiki/index.php/Fast_multiplication_routines
+  - http://www.retrosoftware.co.uk/wiki/index.php/Fast_fixed-point_multiplication_library
+- Archived: raw/articles/retrosoftware-fast-{multiplication,fixed-point}.md
+- Source code: raw/code/fastmult.6502 + raw/code/fixedpoint.6502 (saved from article listings).
+- Created: wiki/sources/retrosoftware-fast-mult.md (combined source page for both articles — same author, same lineage).
+- Created: wiki/techniques/multiplication.md (general 8×8 → 16-bit: shift-and-add baseline + half-square LUT, 4-table and 3-table variants, tradeoff table).
+- Created: wiki/techniques/fixed-point.md (base-127 representation derivation, 4-way sign case-split, S8/S15 routines, 256-step angle convention with free sin/cos).
+- Updated: wiki/index.md (1 source + 2 techniques).
+- Key new facts captured:
+  - Half-square identity: ab = f(a+b) − f(|a−b|) where f(x) = x²/4. The /4 is lossless.
+  - 3-table optimisation: sqrlo512(n) = sqrlo256(n) XOR &80 when n odd (saves 256B at ~12c cost).
+  - Base-127 fixed-point: maximises precision in signed 8-bit for [-1, +1] range. Powers of 2 (256/128/64) all have problems (overflow/asymmetry/waste).
+  - /127 baked into the LUT: g(x) = x²/(4·127). Zero runtime divide cost.
+  - Signed multiply via 4-way sign-combo case split: avoids final negation by reversing subtraction order. Uniform cycle cost across all sign combos.
+  - 256-step angle (so 360° = 256): angle arithmetic via ADC, no modulo.
+- Outbound references added: Toby Lobster's multiply_test + sqrt_test benchmark repos (https://github.com/TobyLobster/multiply_test, https://github.com/TobyLobster/sqrt_test) as the authoritative comparison sources for 6502 math.
+- Open follow-ups: division/reciprocal page; S15×S15 or S15×S31 extension for larger-world perspective work.
