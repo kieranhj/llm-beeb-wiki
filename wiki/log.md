@@ -586,3 +586,7 @@ Lint findings deferred / left for human:
   - DFS vs ADFS comparison table
 - master-rm added to os/disc-formats.md sources via creation.
 - Updated wiki/index.md (1 new OS page).
+
+## [2026-05-16] ingest | MRM Part 2 Ch O + P + Q (BASIC assembler + 65C12 ISA + errors)
+- Cross-checked: tools/basic-assembler, hardware/6502-isa, hardware/6502-addressing-modes, hardware/6502 against MRM Part 2 — already comprehensive (NAUG Ch2 + Ch5 + Master ARM App 8 ingests covered same ground).
+- master-rm added to sources of 4 hardware/tool pages.

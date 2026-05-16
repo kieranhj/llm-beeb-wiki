@@ -2,7 +2,7 @@
 title: BBC BASIC Inline Assembler
 type: tool
 tags: [basic-assembler, beebasm, opt, equ]
-sources: [naug-ch02-basic-assembler]
+sources: [naug-ch02-basic-assembler, master-rm]
 updated: 2026-05-13
 ---
 

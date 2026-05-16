@@ -51,9 +51,9 @@ For Master-internal electrical and chip-level detail, prefer [[sources/master-ar
 | Ch | Title | Pages | Filed into |
 |---|---|---|---|
 | K-N | BBC BASIC / keywords / errors / technical | 11-145 | *out of scope (BASIC programming primer); BASIC error list already in [[os/errors]]* |
-| O | The BBC BASIC assembler | 146-169 | *cross-check vs [[tools/basic-assembler]]* |
-| P | Assembler keywords | 170-205 | *cross-check vs [[hardware/6502-isa]] / [[hardware/6502-addressing-modes]]* |
-| Q | Assembler errors | 206-215 | *cross-check vs [[os/errors]]* |
+| O | The BBC BASIC assembler | 146-169 | Cross-checked vs [[tools/basic-assembler]] — already comprehensive (via NAUG Ch2 ingest). master-rm added to sources. |
+| P | Assembler keywords | 170-205 | Cross-checked vs [[hardware/6502-isa]] / [[hardware/6502-addressing-modes]] / [[hardware/6502]] — already comprehensive (via NAUG Ch5 + Master ARM App 8 ingest). master-rm added to sources of all 3 pages. |
+| Q | Assembler errors | 206-215 | Cross-checked vs [[os/errors]] — assembler errors `Byte`/`Index`/`Out of range` already documented. |
 | R-T | System editor / formatter | 216-282 | *out of scope (productivity apps)* |
 | U | TERMINAL emulator | 283-313 | *out of scope* |
 
@@ -70,6 +70,7 @@ Populated as chapters are ingested. Each entry: chapter → wiki pages created/e
 - **Ch F (Hardware and memory usage)** → cross-checked vs [[hardware/master-overview]] / [[memory/memory-map]] / [[memory/shadow-ram]] / [[memory/paged-rom]] / [[hardware/1mhz-bus]] / [[hardware/system-via]] / [[hardware/user-via]]. Master ARM ingest already covered the same ground at greater electrical-level detail. master-rm added to sources of 7 hardware/memory pages.
 - **Ch G + H + I (Filing systems common, CFS, RFS)** → cross-checked vs [[os/filing-systems]] — already comprehensive. G.7 (sideways-RAM addressing modes — absolute vs pseudo with W/X/Y/Z bank IDs at `&00000-&0FFBF`) filed into [[memory/paged-rom]] as a new "Master sideways-RAM addressing modes" section. master-rm added to filing-systems.md sources.
 - **Ch J (DFS + ADFS)** → created [[os/disc-formats]] — DFS catalogue layout (sector 0 = title + names; sector 1 = title-tail + MSN + free-pointer + 31 file headers with 18-bit addresses split across nibbles). ADFS Free Space Map (sectors 0+1, lock-stepped 82-entry start/length arrays + checksum); ADFS Root Directory (sectors 2-6, 47-entry format with Hugo identifier, 32-bit addresses, 5-byte name+access-attribute encoding); attribute encoding in top bits of name bytes (R/W/L/E); DFS-vs-ADFS comparison table.
+- **Part 2 Ch O + P + Q (BASIC assembler + 65C12 ISA + errors)** → cross-checked vs [[tools/basic-assembler]] / [[hardware/6502-isa]] / [[hardware/6502-addressing-modes]] / [[hardware/6502]] / [[os/errors]] — already comprehensive (via NAUG Ch2 + Ch5 + Master ARM App 8 ingest). master-rm added to sources of all 4 hardware/tool pages.
 
 ---
 

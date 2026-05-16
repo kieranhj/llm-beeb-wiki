@@ -2,7 +2,7 @@
 title: 6502 / 65C12 Addressing Modes
 type: hardware
 tags: [6502, 65c12, addressing-modes]
-sources: [naug-ch03-04-arithmetic-addressing]
+sources: [naug-ch03-04-arithmetic-addressing, master-rm]
 updated: 2026-05-13
 ---
 
