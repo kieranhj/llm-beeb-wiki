@@ -38,7 +38,7 @@ For Master-era content, prefer [[sources/master-arm]]. For Master-era OSBYTE/OSW
 | Ch | Title | Pages | Filed into |
 |---|---|---|---|
 | 1-27 | BASIC tutorial chapters | 9-126 | *out of scope (BASIC programming primer)* |
-| 28 | Teletext and MODE 7 | 152-161 | *pending — cross-check vs [[hardware/saa5050]]* |
+| 28 | Teletext and MODE 7 | 152-161 | Cross-checked against [[hardware/saa5050]] — UG is beginner-level intro; technical detail already in saa5050.md (Mullard datasheet + BeebWiki sources). bbc-user-guide added to saa5050 sources. |
 | 29 | Advanced Graphics | 162-181 | Created [[video/plot-codes]] (PLOT k=0-95 from this chapter + k=96-255 from Master ARM Ch 6) |
 | 30 | Sound | 182-189 | *cross-checked vs [[hardware/sn76489]] / [[os/sound]] — no new content* |
 | 31-33 | File handling, BASIC keywords | 190-378 | *out of scope* |

@@ -471,3 +471,7 @@ Lint findings deferred / left for human:
 - Cross-checked: wiki/os/osbyte.md against UG Ch 42 — UG's OSBYTE list is a subset of NAUG App A/B (already ingested) plus Master ARM additions. No new content.
 - Cross-checked: wiki/os/keyboard.md against UG Ch 48 — ASCII/INKEY tables already in via NAUG Ch14 + Master ARM Ch 5.
 - bbc-user-guide added to sources of: os/osbyte.md, os/keyboard.md.
+
+## [2026-05-16] ingest | User Guide Ch 28 (Teletext) cross-check
+- Cross-checked: wiki/hardware/saa5050.md against UG Ch 28 — UG is beginner intro level; technical detail already in saa5050.md (Mullard datasheet + BeebWiki + technical sources).
+- bbc-user-guide added to saa5050.md sources.
