@@ -17,7 +17,7 @@ The runtime architecture used by [[sources/twisted-brain|Twisted Brain]] (and re
 
 The entire demo runs with **interrupts disabled** (`SEI`). IRQs are not used — System VIA flags are polled via `BIT &FE4D` instead. This lets you put cycle-counted code anywhere without worrying about an IRQ stealing 7+ cycles unpredictably.
 
-Synchronisation to the TV signal uses **System VIA Timer 1 in free-run mode**, latched to *exactly* one PAL frame (`312 × 64 − 2 = 19 966 µs`). T1 then fires at the same scanline every frame for as long as the program runs. The 2 µs subtracted is the latch-load delay observed by RTW.
+Synchronisation to the TV signal uses **System VIA Timer 1 in free-run mode**, latched to *exactly* one PAL frame (`312 × 64 − 2 = 19 966 µs`). T1 then fires at the same scanline every frame for as long as the program runs. The 2 µs subtracted is the standard VIA-timer `+2` offset (1 µs startup-load tick + 1 µs through-zero underflow tick — see [[timing/via-timers#anatomy-of-the-2]]). Writing `N = period − 2` inverts the formula so the actual period equals `period`.
 
 The boot-time setup positions T1 zero-cross to coincide with the start of raster line 0:
 

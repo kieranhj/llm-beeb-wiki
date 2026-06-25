@@ -51,12 +51,15 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/bbc-service-manual]] — Acorn *BBC Microcomputer Service Manual* (1982-85, 90 pages). Electrical-level circuit description + repair / link options for Model A/B PCB issues 1-7. Cross-checks for chip pages.
 - [[sources/line-drawing-implementations]] — Comparative analysis of 5 Bresenham line implementations (Elite, RTW, NJ, Tricky, Raster). Per-pixel cycle tables, setup costs, named innovations. Source repo: `kieranhj/line-test`.
 - [[sources/raster-source]] — `raster.s` from `ebenupton/virus`. Annotated MODE 2 line rasterizer with the canonical carry-chain + branch-outlining + chained-polygon implementation. **65C12-only**.
+- [[sources/6502org-65c02-opcodes]] — 6502.org canonical 65C02 opcode reference. Covers unused-opcode behaviour across G65SC / R65SC / R65C02 / W65C02S variants. Source for [[hardware/6502-undefined-opcodes]].
+- [[sources/via-timer-chip-level-refs]] — Combined chip-level references for 6522 VIA timers: WDC W65C22 datasheet Fig 18 (N+1.5 IRQ assertion), Frank Kontros 6522 timers page, Stardot hoglet hardware tests (`1, 0, &FF, &FE` through-zero sequence). Decomposes the `(N+2) µs` formula.
 
 ## Hardware
 
 - [[hardware/6502]] — CPU entity: registers, flags, machine variants (NMOS 6502 / 65C12 / R65C02), reset/interrupt vectors.
 - [[hardware/6502-isa]] — Full instruction-set reference: per-mnemonic addressing modes, bytes, cycles, opcodes. Performance summary at end.
 - [[hardware/6502-addressing-modes]] — Mode mechanics: 12 NMOS modes + 2 65C12 additions. Worked examples, page-crossing penalty, mode-cost summary, zp forward-reference trap.
+- [[hardware/6502-undefined-opcodes]] — Every undefined opcode per CPU variant. R65SC12 (Master) hole map: 78 deterministic NOPs, no BRK trap. Column-3/B = 1c pads; multi-byte holes have I/O hazard. R65C02 difference: `$x7`/`$xF` become RMB/SMB/BBR/BBS.
 - [[hardware/crtc-6845]] — 6845 CRTC entity: register map, per-mode values, screen-start lever, light pen, wrap-around.
 - [[hardware/crtc-6845-advanced]] — Anomalous-rewrite table (which registers tolerate mid-frame writes), R12/R13 sample phase, split-screen primitives, field timing.
 - [[hardware/video-ula]] — Acorn Video ULA: control register, palette mechanics, cursor width, logical-colour expansion rules per mode.
@@ -92,7 +95,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 
 ## Timing
 
-- [[timing/via-timers]] — T1/T2 modes, periodic IRQ, raster splits, PB7 audio, pulse counting, MOS-sound conflict on System VIA T1.
+- [[timing/via-timers]] — T1/T2 modes, periodic IRQ, raster splits, PB7 audio, pulse counting, MOS-sound conflict on System VIA T1. **Anatomy of the `(N+2) µs` formula:** +1 µs load tick + 1 µs through-zero underflow tick.
 - [[timing/cycle-stretching]] — Which addresses cost extra cycles (most of SHEILA, FRED, JIM); variable 2c/3c penalty; phase-aligning; what's NOT stretched (Video ULA, Tube, FDC, ROMSEL).
 
 ## OS / MOS

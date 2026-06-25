@@ -29,7 +29,7 @@ This is the technique that [[techniques/fx-framework]] (Twisted Brain) decided *
    - Why 2-cycle precision: VIA reads are cycle-stretched, aligning to 1 MHz boundaries. Frames are always an even number of 2 MHz cycles, so this is sufficient.
 3. **Stage 2 — set up T1 to fire just before each frame.**
    - Wait until just before the first displayed raster.
-   - Set T1 latches to `&4DFE` for a 312-line screen (= `312*64 − 2`). The `−2` is empirically required — likely the same latch-load-time delay RTW documented elsewhere.
+   - Set T1 latches to `&4DFE` for a 312-line screen (= `312*64 − 2`). The `−2` inverts the standard VIA-timer `+2` offset: 1 µs startup-load tick + 1 µs through-zero underflow — see [[timing/via-timers#anatomy-of-the-2]].
    - Must use T1 (not T2) because T2 doesn't have continuous-reload mode.
    - Must hook **`IRQ1V`** (not `IRQ2V`) for minimum-latency dispatch.
    - Must use the **User VIA** T1 (not System VIA T1) so the IRQ handler can read T1's latch without acknowledging the *system* T1's interrupt — which would otherwise leave MOS with no way to detect that the system T1 had also fired.

@@ -59,7 +59,7 @@ Why 2-cycle precision is the floor: VIA reads (`BIT &FE4D`) are cycle-stretched 
 Configure System VIA + User VIA T1 to fire at exactly the right phase:
 
 ```asm
-; T1 latch = frame_cycles - 2 (the -2 is empirically required, likely the latch-load delay)
+; T1 latch = frame_cycles - 2 (the -2 inverts the standard VIA-timer +2 offset: 1µs startup-load tick + 1µs through-zero underflow — see timing/via-timers#anatomy-of-the-2)
 LDA #<&4DFE : STA UVIA_T1L_L          ; user VIA T1 low latch (= frame period - 2)
 LDA #>&4DFE : STA UVIA_T1L_H          ; user VIA T1 high latch
 ; ACR: T1 continuous, PB7 disabled

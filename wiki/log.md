@@ -667,3 +667,25 @@ Comparative analysis PDF (`raw/notes/BBC Line drawing implementations.pdf`) cove
 - Flagged contradiction: comparative-analysis PDF says all 5 implementations "Works on 65C02: Yes" in §6 Feature Comparison. raster.s uses `BRA` extensively (65C12-only) — it is Master-only / not NMOS-compatible. Recorded in `sources/raster-source.md` Contradictions and in `techniques/bresenham-line.md` Implementation Notes.
 - Flagged internal inconsistency: PDF §3 prose ("~50 cycles" Elite division-loop setup) vs §10 setup-cost table (Elite 80-100). Used higher figure; flagged in source page.
 - Did NOT write: `techniques/deferred-counting.md` (referenced as wikilink TODO from cumulative-mask-batching). The technique is well-covered inline in `bresenham-line.md`; can promote to its own page later if useful.
+
+## [2026-06-17] query+ingest | undefined opcodes on the 65C12 (Master)
+- Triggered by user query: "what does undocumented opcode $93 do on the BBC Master?"
+- Initial wrong answer cited `hardware/6502.md`:76 claim that the 65C12 raises BRK on undocumented opcodes. User pushed back.
+- Verified against http://www.6502.org/tutorials/65c02opcodes.html: $93 is a 1-byte 1-cycle NOP on every non-WDC 65C02 variant including Acorn's R65SC12. BRK-on-undefined is WDC W65C02S behaviour only. Cross-checked Master CPU identity (R65SC12, no SMB/RMB/BBR/BBS) via web search.
+- Created: `wiki/hardware/6502-undefined-opcodes.md` — full hole map for R65SC12 (78 NOPs) and R65C02 (46 NOPs), byte/cycle table per category, I/O hazard call-out for multi-byte holes, NMOS-vs-CMOS-vs-WDC summary, R65SC12-vs-R65C02 detection idiom.
+- Created: `wiki/sources/6502org-65c02-opcodes.md` — source page for the 6502.org reference.
+- Updated: `wiki/hardware/6502.md` — corrected the "BRK on undocumented" claim in the variant-detection section; rewrote the R65C02 detection idiom to rely on observed side-effect rather than a trap that doesn't happen. Bumped `updated:` to 2026-06-17.
+- Updated: `wiki/index.md` — added entries for the new hardware page and the new source.
+- Open follow-up: NMOS undocumented-opcode page (Oxyron table) not yet ingested; would round out the picture for Model B and Electron.
+
+## [2026-06-17] query+ingest | VIA T2 timer startup delay — anatomy of the (N+2)
+- Triggered by user query: "is there a delay when setting SYSVIA T2 timer value and when it starts counting down?" Wiki had the (N+2) µs formula but didn't decompose it.
+- Research: WDC W65C22 datasheet Fig 18 (IRQ at N+1.5 Φ2 cycles), Frank Kontros 6522 timers page (period = N+2), Stardot 16138 hoglet real-hardware test on Model B + Master 128 (T2C-L sequence `1, 0, &FF, &FE, &FD, &FC` confirms through-zero underflow), Stardot 16252 + 16262 (ACR / IFR race details). jsbeeb source code (`this.t2c = this.t2l + 1`) confirms +1 startup-load tick.
+- Decomposition: (N+2) µs = 1 µs load tick (counter loaded, no decrement) + N µs countdown + 1 µs through-zero underflow that fires IFR.
+- Created: `wiki/sources/via-timer-chip-level-refs.md` — combined source page for WDC datasheet + Kontros + 3 Stardot threads. Triangulates the chip-internal mechanism.
+- Updated: `wiki/timing/via-timers.md` — new "Anatomy of the +2" section with 5-stage table (write → load tick → count → underflow → IRQ entry); covers re-trigger gotcha. Bumped `updated:` to 2026-06-17.
+- Updated: `wiki/hardware/via-6522.md` — expanded T1/T2 timeout quick-reference to name the two ticks; cross-linked to anatomy section.
+- Updated: `wiki/techniques/fx-framework.md` — the "2 µs latch trim observed by RTW" remark now points at the explanation rather than treating it as empirical magic.
+- Updated: `wiki/techniques/hexwab-stable-raster.md` + `wiki/sources/hexwab-stable-raster.md` + `wiki/sources/twisted-brain.md` — same cross-link for their respective `−2` latch-load discussions.
+- Updated: `wiki/index.md` — added source entry, expanded via-timers entry, removed duplicate.
+- Open follow-up: confirm whether free-run cycle 2+ is N+1 or N+2 µs per cycle (i.e. does the reload-on-underflow re-run the load-tick or merge with the underflow). hoglet's test rig could verify.

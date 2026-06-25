@@ -49,7 +49,7 @@ Every effect in the demo shares the same underlying idea: a tiny pre-rendered or
 - Interrupts disabled (`SEI`) throughout the demo. IRQ flags polled via `&FE4D` instead.
 - Stable raster sync at boot via narrowing-loop on `BIT &FE4D` for vsync (code attributed by kieran to Tom Seddon + tricky originally, later corrected — credit hexwab for the `Mode 7 stable raster` code).
 - System VIA Timer 1 in free-run mode, latched to `FramePeriod = 312*64 - 2` so it fires at the same scanline every frame.
-- Initial T1 value: `32*64 - 2*64 - 22 - 2 = 1896 µs` = (32 lines to end of frame) - (2 lines vsync pulse) - (22 µs framework code) - (2 µs latch trim).
+- Initial T1 value: `32*64 - 2*64 - 22 - 2 = 1896 µs` = (32 lines to end of frame) - (2 lines vsync pulse) - (22 µs framework code) - (2 µs latch trim — standard VIA-timer +2 offset, see [[timing/via-timers#anatomy-of-the-2]]).
 - ~8-cycle jitter on T1-poll due to cycle stretching on `&FE4D`. Truly-stable-raster (hexwab's technique) is possible but more code; not used in Twisted Brain.
 - Effect modules expose 4 entry points: `init` (called at raster 0, display off), `update` (vblank, ≤18 raster lines budget), `draw` (called at raster 0, typically runs ~256 raster lines), `kill` (vblank, restores known state).
 - Every module must leave system in MODE 2 + ULA `&F4` + default palette + main RAM displayed/visible on exit.

@@ -2,8 +2,8 @@
 title: VIA Timers (T1, T2)
 type: timing
 tags: [via, t1, t2, timer, raster, vsync]
-sources: [naug-ch22-vias]
-updated: 2026-05-13
+sources: [naug-ch22-vias, via-timer-chip-level-refs]
+updated: 2026-06-17
 ---
 
 # VIA Timers (T1, T2)
@@ -28,7 +28,7 @@ LDA #lo : STA T1C_L     ; load low latch (no count starts yet)
 LDA #hi : STA T1C_H     ; loads high latch AND starts count
 ```
 
-**Timeout** = `(N+2) × 1 µs` where N is the loaded 16-bit value (NAUG §22.4.10 p397). At N=0, the first timeout is 2 µs (4 CPU cycles).
+**Timeout** = `(N+2) × 1 µs` where N is the loaded 16-bit value (NAUG §22.4.10 p397). At N=0, the first timeout is 2 µs (4 CPU cycles). See [[#anatomy-of-the-2|Anatomy of the +2]] below for what the two extra µs actually are.
 
 For continuous (free-run) operation, write both latches via `T1L_L`/`T1L_H` (regs 6/7) to update the *period* of the next cycle without restarting the current one.
 
@@ -50,6 +50,39 @@ T2 has no PB7 output, no continuous mode. It's a one-shot from the moment T2C-H 
 ### Clearing T2 IFR
 
 Read T2C-L or write T2C-H. `LDA T2C_L` (4c).
+
+## Anatomy of the +2
+
+The `(N+2) µs` formula applies to **both** T1 and T2 in interval mode. It is **not** a magic constant — it decomposes into one µs of startup delay plus one µs of through-zero underflow. Understanding the breakdown matters when you're synchronising to T2/T1 at single-cycle precision (e.g. [[techniques/hexwab-stable-raster]]) or polling T2C-L for a specific tick.
+
+Sequence from the CPU's `STA TxC_H` to the IRQ firing:
+
+| Stage | What happens on the chip | Cost |
+|---|---|---|
+| 1. The write | `STA TxC_H` is a SHEILA access → cycle-stretched to align with the 1 MHz Φ2 bus. Register update completes at the *end* of the stretched bus cycle. | 4-6 CPU cycles (2-3 µs) — see [[timing/cycle-stretching]] |
+| 2. **Load tick** | On the *next* Φ2 edge after the write, the counter loads N from the latch pair. **No decrement on this tick** — this is the startup delay. | +1 µs |
+| 3. Countdown | Counter decrements once per Φ2 edge: N, N-1, …, 2, 1, 0. | N µs |
+| 4. **Underflow tick** | The `0 → &FFFF` transition fires the IFR bit (5 for T2, 6 for T1). | +1 µs |
+| 5. CPU sees IRQ | Standard 6502 IRQ entry — finish current instruction, push PC/P, fetch vector. | 7+ CPU cycles |
+
+So the **+2** is exactly: +1 dead load tick + 1 underflow tick. Stages 1 and 5 are outside the formula — they're the cost of getting to and from the timer, not the timer's own delay.
+
+The WDC W65C22 datasheet (Fig 18) actually shows `!IRQ` falling at **N+1.5** Φ2 cycles. The half-cycle is because the IRQ-out pin is updated on the opposite Φ2 phase from the count itself. For polled or IRQ-driven code on the BBC this rounds to the +2 µs that NAUG quotes; for chip-level emulation (jsbeeb / b2 / beebjit) it matters.
+
+### Real-hardware verification
+
+hoglet ran a real-hardware test on Model B and Master 128 ([Stardot 16138](https://stardot.org.uk/forums/viewtopic.php?t=16138)): write T2C-H = 1, then read T2C-L back in a tight loop. Sequence observed: `1, 0, &FF, &FE, &FD, &FC, ...`. This confirms:
+
+- The counter passes **through zero** (not skipping to `&FFFF`).
+- The IFR bit fires on the `0 → &FFFF` transition (stage 4 above), not when the counter first becomes zero.
+- So you have a **1 µs window at T2C-L = 0** to catch the count via polling before the IRQ trigger.
+
+### When you can't use the formula
+
+The +2 model breaks down in two cases:
+
+- **Re-trigger before timeout.** Writing TxC-H again re-runs stage 2 (load tick) — you get one *extra* µs you wouldn't get from waiting for the first count to expire and re-arming in the IRQ handler. Useful for extending a wait without losing precision.
+- **Reading T1C-L mid-count to clear IFR while continuing.** The read doesn't perturb the count, but the bus-side cycle stretch on the read itself is variable depending on Φ2 phase — see [[timing/cycle-stretching]] for the 2c/3c distribution. T2 has the same property.
 
 ## Practical patterns
 
