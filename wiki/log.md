@@ -694,3 +694,10 @@ Comparative analysis PDF (`raw/notes/BBC Line drawing implementations.pdf`) cove
 - Updated: wiki/hardware/system-via.md
 - Bug report: "set line 3 to 1" example gave `PB0-PB3 = 0,1,1,1`, which decodes to line 6 (PB2..PB0 = 110), value 1 — wrong. Reporter's `1,0,1,1` (MSB-first PB3..PB0 = &0B) is correct.
 - Rewrote as an explicit nibble (`%1011` = `&0B`) plus the formula `(V << 3) | N`, and noted the PB0-first vs PB3-first ordering trap. Now consistent with the ORA #(N | (V<<3)) code block further down the page, which was already correct.
+
+## [2026-08-15] lint | Bit-order / bit-field sweep across all 136 wiki pages
+- Method: mechanical check of every binary-vs-hex literal, `bit N` vs single-bit mask, and `1<<N` claim; then manual review of every multi-bit field table and LSB/MSB ordering claim.
+- Updated: wiki/os/serial.md — 6850 control words were wrong. 8-N-1 ÷64 RX-IRQ is `&96`, not `&95` (bits 1-0 = `01` is ÷16); 7-E-1 is `&8A`, not `&91` (`&91` decodes to 8-N-2 ÷16). Contradicted [[hardware/6850-acia]], which was correct. Also fixed the malformed OSBYTE `&9C` call (value goes in X) and added dialect annotations.
+- Updated: wiki/hardware/sn76489.md — noise NF1/NF0 = `11` said "Tone 2's current frequency"; under this page's own NAUG labelling that generator is **Tone 1** (register field `100`). Cause: SMSPower's zero-indexed "Tone2" was carried over untranslated. Documented both numbering conventions explicitly; clarified the latch-byte `%1cctdddd` layout and the "channel 3 = noise generator, not BBC channel 3" collision.
+- Updated: wiki/sources/smspower-sn76489.md — added the same numbering caveat under the quoted table (quote left verbatim).
+- Clean: no arithmetic bin/hex contradictions anywhere (7 candidates, all false positives). CRTC R8 skew/interlace fields, Video ULA bit fields, µPD7002 result justification, ROMSEL, and the ACIA chip page all check out.

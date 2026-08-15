@@ -6,7 +6,7 @@ publisher: smspower.org
 author: Maxim, with contributions from John Kortink, Charles MacDonald, Daniel Bienvenu, finaldave, blargg
 year: 2002-2005
 url: https://www.smspower.org/Development/SN76489
-updated: 2026-05-16
+updated: 2026-08-15
 ---
 
 # SMSPower — SN76489 reference
@@ -76,7 +76,9 @@ Bit 2 = mode (1 = white, 0 = "periodic"). Bits 1, 0 = shift rate.
 > | 10 | 0x40 |
 > | 11 | Tone2 |
 
-So setting noise register low bits to `11` uses **tone channel 2's current frequency** to drive the noise rate. This is the "modulated noise" mode that lets you sweep noise pitch dynamically.
+So setting noise register low bits to `11` drives the noise rate from a tone generator's current frequency — the "modulated noise" mode that lets you sweep noise pitch dynamically.
+
+⚠ **Numbering caution**: SMSPower's "Tone2" is **zero-indexed** (`cc`=`10`, register field `100`). In the NAUG/BBC labelling used by [[hardware/sn76489]] that same generator is called **Tone 1**. Translate via the register field, not the label.
 
 ### LFSR width and taps — varies per system
 

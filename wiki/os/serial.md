@@ -3,7 +3,7 @@ title: Serial I/O (RS232 / RS423)
 type: os
 tags: [serial, rs232, rs423, baud, 6850, serial-ula]
 sources: [naug-ch15-serial]
-updated: 2026-05-13
+updated: 2026-08-15
 ---
 
 # Serial I/O — MOS Interface
@@ -125,19 +125,26 @@ When the RS423 input buffer has fewer than X bytes free, the OS deasserts RTS to
 For standard RS423 8-N-1 at the selected baud:
 
 ```asm
+; BeebAsm
 ; 6850 control: clk÷64, 8 bits no parity 1 stop, RTS low, TX IRQ disabled, RX IRQ enabled
-LDA #&95         ; 1001 0101 — bit 7=1 (RX IRQ), bits 6-5=00 (RTS low TX off), bits 4-2=101 (8-N-1), bits 1-0=10 (÷64)
-LDX #&95
-LDA #&9C : JSR &FFF4
+; %1001 0110 — bit 7=1 (RX IRQ), bits 6-5=00 (RTS low, TX IRQ off),
+;              bits 4-2=101 (8-N-1), bits 1-0=10 (÷64)
+LDX #&96
+LDY #0
+LDA #&9C : JSR &FFF4      ; OSBYTE &9C — value in X, keeps MOS shadow in step
 ```
 
-For raw 7-E-1 (common for ASCII terminals):
+For raw 7-E-1 (common for ASCII terminals) — same RX IRQ and ÷64, word format `010`:
 
 ```asm
-LDA #&91         ; bits 4-2=010 (7 bits, even, 1 stop)
-LDX #&91
+; BeebAsm
+; %1000 1010 — bits 4-2=010 (7 bits, even parity, 1 stop)
+LDX #&8A
+LDY #0
 LDA #&9C : JSR &FFF4
 ```
+
+Bit fields per [[hardware/6850-acia]]. Note `&95`/`&91` are *not* these values — bits 1-0 = `01` is ÷16, not ÷64.
 
 ## Bulk transfer pattern
 
