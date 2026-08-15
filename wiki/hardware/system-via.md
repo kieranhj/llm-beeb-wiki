@@ -5,7 +5,7 @@ tags: [via, system-via, keyboard, sound, vsync, latch]
 sources: [naug-ch22-vias, master-arm, master-rm]
 sheila: ["&FE40", "&FE4F"]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact]
-updated: 2026-05-16
+updated: 2026-08-15
 ---
 
 # System VIA
@@ -56,7 +56,9 @@ Driven from PB0-PB3:
 - PB0-PB2 = latch line index (0-7).
 - PB3 = value to store at that line.
 
-To "set line 3 to 1": clock PB0-PB3 = `0,1,1,1` → addressable latch line 3 becomes high. The chip latches the value on each PB write.
+To "set line 3 to 1", write the nibble `PB3..PB0 = %1011` (= `&0B`) to ORB — i.e. PB3 = 1 (the value), PB2/PB1/PB0 = 0/1/1 (index 3) → addressable latch line 3 becomes high. The chip latches the value on each PB write.
+
+Written as a general formula: `ORB low nibble = (V << 3) | N`, where `N` is the line index 0-7 and `V` the value. Beware pin-order confusion: `%1011` is MSB-first (PB3 first); listed PB0-first the same write is `1,1,0,1`.
 
 ### Line assignments
 

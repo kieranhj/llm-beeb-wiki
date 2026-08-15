@@ -689,3 +689,8 @@ Comparative analysis PDF (`raw/notes/BBC Line drawing implementations.pdf`) cove
 - Updated: `wiki/techniques/hexwab-stable-raster.md` + `wiki/sources/hexwab-stable-raster.md` + `wiki/sources/twisted-brain.md` — same cross-link for their respective `−2` latch-load discussions.
 - Updated: `wiki/index.md` — added source entry, expanded via-timers entry, removed duplicate.
 - Open follow-up: confirm whether free-run cycle 2+ is N+1 or N+2 µs per cycle (i.e. does the reload-on-underflow re-run the load-tick or merge with the underflow). hoglet's test rig could verify.
+
+## [2026-08-15] fix | System VIA addressable latch bit order
+- Updated: wiki/hardware/system-via.md
+- Bug report: "set line 3 to 1" example gave `PB0-PB3 = 0,1,1,1`, which decodes to line 6 (PB2..PB0 = 110), value 1 — wrong. Reporter's `1,0,1,1` (MSB-first PB3..PB0 = &0B) is correct.
+- Rewrote as an explicit nibble (`%1011` = `&0B`) plus the formula `(V << 3) | N`, and noted the PB0-first vs PB3-first ordering trap. Now consistent with the ORA #(N | (V<<3)) code block further down the page, which was already correct.
