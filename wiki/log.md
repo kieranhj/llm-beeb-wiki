@@ -701,3 +701,14 @@ Comparative analysis PDF (`raw/notes/BBC Line drawing implementations.pdf`) cove
 - Updated: wiki/hardware/sn76489.md — noise NF1/NF0 = `11` said "Tone 2's current frequency"; under this page's own NAUG labelling that generator is **Tone 1** (register field `100`). Cause: SMSPower's zero-indexed "Tone2" was carried over untranslated. Documented both numbering conventions explicitly; clarified the latch-byte `%1cctdddd` layout and the "channel 3 = noise generator, not BBC channel 3" collision.
 - Updated: wiki/sources/smspower-sn76489.md — added the same numbering caveat under the quoted table (quote left verbatim).
 - Clean: no arithmetic bin/hex contradictions anywhere (7 candidates, all false positives). CRTC R8 skew/interlace fields, Video ULA bit fields, µPD7002 result justification, ROMSEL, and the ACIA chip page all check out.
+
+## [2026-08-26] fix + expand | Direct keyboard read: the "test one key" path
+- Updated: wiki/os/keyboard.md — bumped `updated:` to 2026-08-26.
+- Bug: the "Direct matrix scan" section described only the *discovery* scan ("iterate over all 16 columns x 8 rows") and gave the pin assignment as "output column on PA0-PA3, read row on PA4-PA7". The row is **written** on PA4-PA6 and the answer is **read** on PA7 — as the KBDENC section further down the same page already had it correctly. The two contradicted each other.
+- Cause: the section was written from the MOS's own interrupt-driven scan, which genuinely does iterate. But the common case in user code is testing a key you can name, and that is one write and one read with no iteration at all.
+- Split into two subsections: "Test one known key" (with a complete, working routine) and "Scan for whatever is pressed". The insight worth stating plainly: **the internal key number IS the key's matrix address**, PA0-PA3 column and PA4-PA6 row, so you write the IKN and read PA7.
+- Added the four traps: `&FE4F` not `&FE41` (no-handshake — `&FE41` strobes CA2), IKN = INKEY EOR &FF so bit 7 written is always 0, PHP/PLP over SEI/CLI, and DDRA needing no restore.
+- Measured on a Model B (jsbeeb, breakpoint pair differencing elapsed_cycles): `OSBYTE &81` = **243 cycles** JSR-to-RTS, direct = **69**. Corrected the Performance section, which claimed a full scan of all keys in "~200 cycles total" — that is optimistic by an order of magnitude and was also answering the wrong question.
+- Recorded the Model B mapping as **`IKN = row * 16 + column`**, verified against P (`&37`), `[` (`&38`) and cursor up (`&39`) — the page previously said "capture per-machine matrix if/when needed".
+- Observable proof added: write IKN `&61` (Z) and read back `&61` key-up, `&E1` key-down.
+- Source: `test_inkey` in Thrust (Superior Software, 1986), cited inline.

@@ -3,7 +3,7 @@ title: Keyboard
 type: os
 tags: [keyboard, ascii, inkey, ikn, soft-keys, scan]
 sources: [naug-ch14-keyboard, master-arm, bbc-user-guide]
-updated: 2026-05-16
+updated: 2026-08-26
 ---
 
 # Keyboard
@@ -108,16 +108,71 @@ JSR &FFF4
 
 ## Direct matrix scan — bypassing MOS
 
-For maximum control (e.g. detect chord presses, scan all keys per frame in a game), drive the System VIA matrix directly. NAUG doesn't give this code explicitly, but the protocol:
+Two different jobs here, and they need different code. **Testing a key you can name** is one write
+and one read — no iteration, and it is what a game's control loop wants. **Discovering what is
+pressed** is the scan proper. Take the first unless you actually need the second.
 
-1. SEI (MOS owns the slow bus).
-2. Set System VIA Port A DDRA = `&FF` low nibble, `&00` high nibble (or all-output for column select).
-3. Disable keyboard IRQ (set keyboard line of addressable latch high — line 3).
-4. Output column number on PA0-PA3, read row on PA4-PA7.
-5. Iterate over all 16 columns × 8 rows.
-6. Re-enable keyboard IRQ (line 3 low) and CLI.
+### Test one known key — the useful one
 
-Detailed matrix layout differs between Model B, Master, Master Compact (NAUG §14 opening note). Capture per-machine matrix if/when needed.
+The internal key number *is* the address of the key in the matrix: PA0-PA3 carry the column,
+PA4-PA6 the row. So you write the IKN to port A and read the answer back on PA7.
+
+```asm
+\ X = INKEY value (e.g. &9E for Z). Returns Z set if the key is down.
+.test_key
+  TXA
+  EOR #&FF          \ INKEY value -> internal key number (0-127)
+  LDX #&03          \ addressable latch: line 3, value 0
+  LDY #&0B          \ addressable latch: line 3, value 1
+  PHP
+  SEI               \ the MOS owns the slow bus; do not be interrupted
+  STX &FE40         \ ORB: keyboard /WE low — stop the free-run scan
+  LDX #&7F
+  STX &FE43         \ DDRA: PA0-PA6 output, PA7 input
+  STA &FE4F         \ port A, NO HANDSHAKE — the key number
+  LDA &FE4F         \ read it back: PA7 is the key's state
+  STY &FE40         \ ORB: keyboard /WE high — free-run scan resumes
+  PLP
+  LDX #0
+  ROL A             \ PA7 -> carry: set = pressed
+  BCC key_up
+  LDX #&FF
+.key_up
+  CPX #&FF          \ Z set = pressed
+  RTS
+```
+
+Four details that are easy to get wrong:
+
+- **`&FE4F`, not `&FE41`.** The no-handshake port A register. `&FE41` strobes CA2 and disturbs the
+  MOS's own keyboard handling.
+- **IKN = INKEY EOR &FF**, which is 0-127 — so the bit 7 you write is always 0 and PA7 stays a
+  clean input.
+- **`PHP`/`PLP`, not `SEI`/`CLI`**, so a caller that was already masked stays masked.
+- **DDRA is not restored** and does not need to be: the MOS sets it in its own scan, and any
+  well-behaved sound driver saves and restores it around its own writes.
+
+You can watch it work: writing IKN `&61` (Z) and reading back gives `&61` with the key up and
+`&E1` with it down — the same seven bits, PA7 carrying the answer.
+
+**Cost: ~55-70 cycles against ~240 for `OSBYTE &81`** — measured on a Model B, `JSR` to `RTS`
+inclusive, with the SHEILA accesses' 1 MHz bus stretching included. Worth it for any loop testing
+several keys per frame. The masked window is 26 cycles, which matters if you are running
+cycle-critical raster code.
+
+Working example: `test_inkey` in Thrust (Superior Software, 1986).
+
+### Scan for whatever is pressed
+
+Only when you genuinely need to discover keys rather than test them — chord detection with unknown
+keys, a redefine-keys screen. Same setup, then iterate: write each (row, column) pair to PA0-PA6
+and read PA7, over columns 0-14 and rows 0-7. The MOS does exactly this from its CA2 interrupt,
+which is why `nKBEN` has to be low throughout.
+
+Detailed matrix layout differs between Model B, Master, Master Compact (NAUG §14 opening note).
+For the Model B the mapping is **`IKN = row * 16 + column`** — verified against P (row 3, col 7 =
+`&37`, INKEY -56), `[` (row 3, col 8 = `&38`, -57), cursor up (row 3, col 9 = `&39`, -58) and the
+constants in the table above.
 
 ## Auto-repeat
 
@@ -192,8 +247,9 @@ After writing the status byte directly, call `OSBYTE &76` to update the keyboard
 
 ## Performance / bypass
 
-- **MOS scan via `OSBYTE &81` or `&7A`** costs several hundred cycles per call.
-- **Direct matrix scan** (custom System VIA driver) can poll all 80-something keys in ~200 cycles total — useful for games needing per-frame full-keyboard read.
+- **MOS scan via `OSBYTE &81` or `&7A`** costs several hundred cycles per call — **243 measured** on a Model B, `JSR` to `RTS` inclusive.
+- **Testing one named key direct** costs **~55-70 cycles** — see [[#test-one-known-key--the-useful-one]]. A control loop polling a dozen keys a frame saves ~2,000 cycles by going direct, which is a couple of percent of a 50 Hz frame.
+- **A full direct scan** of every key is a different (and much rarer) job; budget per key tested, ~3 µs each.
 - **Disabling auto-repeat** (`*FX 11,0`) is mandatory for any game that distinguishes "key down" from "auto-repeated".
 - The keyboard buffer (ID 0) carries the type-ahead — purge with `OSBYTE &15, X=0` if you want a clean slate ([[os/buffers]]).
 
