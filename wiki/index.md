@@ -53,6 +53,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/raster-source]] — `raster.s` from `ebenupton/virus`. Annotated MODE 2 line rasterizer with the canonical carry-chain + branch-outlining + chained-polygon implementation. **65C12-only**.
 - [[sources/6502org-65c02-opcodes]] — 6502.org canonical 65C02 opcode reference. Covers unused-opcode behaviour across G65SC / R65SC / R65C02 / W65C02S variants. Source for [[hardware/6502-undefined-opcodes]].
 - [[sources/via-timer-chip-level-refs]] — Combined chip-level references for 6522 VIA timers: WDC W65C22 datasheet Fig 18 (N+1.5 IRQ assertion), Frank Kontros 6522 timers page, Stardot hoglet hardware tests (`1, 0, &FF, &FE` through-zero sequence). Decomposes the `(N+2) µs` formula.
+- [[sources/beeb-port-kit-hardware-facts]] — Kieran Connell's *beeb-port-kit* `hardware-facts.md` (2026-09-06): hardware, MOS, DFS, beebasm and emulator facts **measured** (dated, instrument named) during two C64 → BBC ports, Paradroid (Model B) and Edge Grinder (Master 128). CRTC rupture write windows, R5 trap, wrap sizes, Master ACCCON/ANDY/HAZEL, SWR probing, reclaimable workspace, measured IKN table, 128c scanline, ZX0 rules, emulator calibration.
 
 ## Hardware
 
@@ -97,6 +98,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 
 - [[timing/via-timers]] — T1/T2 modes, periodic IRQ, raster splits, PB7 audio, pulse counting, MOS-sound conflict on System VIA T1. **Anatomy of the `(N+2) µs` formula:** +1 µs load tick + 1 µs through-zero underflow tick.
 - [[timing/cycle-stretching]] — Which addresses cost extra cycles (most of SHEILA, FRED, JIM); variable 2c/3c penalty; phase-aligning; what's NOT stretched (Video ULA, Tube, FDC, ROMSEL).
+- [[timing/field-timing]] — Measured constants: 128 CPU cycles a scanline (not 64), 39,936 a field, MODE 1 display cycles 0-79 / blanking 80-127, `SL = 64` T1 ticks, ~4-scanline CA1 service latency, IRQ-latency swing, the two ports' rupture T1 constants. (1 source)
 
 ## OS / MOS
 
@@ -153,10 +155,13 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[techniques/cumulative-mask-batching]] — NJ's threading of X across pixel-column entries to batch 8 EORs into one RMW. Drops shallow horizontal cost to ~8.75c/pixel.
 - [[techniques/carry-chain-invariant]] — Raster's systematic C=1 maintenance. Eliminates per-iteration `SEC`; exploits `DEY/BMI` carry-neutrality on Y-up.
 - [[techniques/open-endpoint-chaining]] — Raster's "draw start but not end" convention. Polygon vertices write exactly once; no XOR double-plot artifacts at shared corners.
+- [[techniques/zx0-loading]] — Shipping data ZX0-compressed and unpacking at boot: the in-place rule (`max(write − consumed)`, per stream), where a stream may not be staged (`&0800` under the MOS, `&8000` during DFS, HAZEL/ANDY), what compression actually buys on a 1770 DFS, disc-order and VSync traps. (1 source)
 
 ## Tools
 
 - [[tools/basic-assembler]] — BBC BASIC inline assembler cheatsheet: OPT bits, P%/O%, labels, EQU directives, two-pass dance, FN-macro pattern, BeebAsm porting notes.
+- [[tools/beebasm]] — BeebAsm 1.11 gotchas that cost builds in two ports: no `IFDEF` / symbol-defined-twice, local labels shadowing globals, `SAVE` order on the disc, `CLEAR` vs `GUARD`, `SKIP` in gap-finders, stderr under PowerShell, the symbol dump, proving a change mechanical. (1 source)
+- [[tools/emulators]] — jsbeeb (via MCP), b-em and b2 as instruments: what each sees that the others cannot (b2 rolls a misplaced field, b-em disagrees with jsbeeb below `&3000` on a Master), `cycles_run` vs `elapsed_cycles`, snapshots mid-routine, zeroed RAM, NuLA palette emulated, unpadded SSDs boot, disc-model timings. (1 source)
 
 ## Synthesis
 
