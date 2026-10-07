@@ -2,8 +2,8 @@
 title: Filing Systems
 type: os
 tags: [filing-system, osfile, osargs, osbget, osbput, osgbpb, osfind, fscv, dfs, adfs, cfs, rfs]
-sources: [naug-ch16-filing, master-rm]
-updated: 2026-05-16
+sources: [naug-ch16-filing, master-rm, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # Filing Systems — MOS API
@@ -271,6 +271,22 @@ For game / demo loaders: OSGBPB with a custom NMI handler captured from DFS is t
 - [[os/paged-roms]] — Filing systems implement themselves as service ROMs; service-call dispatch.
 - [[os/disc-formats]] — DFS / ADFS sector-level layout (catalogue, FSM, root directory).
 - [[memory/shadow-ram]] — Master HAZEL FS-handler workspace.
+
+## Measured in practice — loading two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up. Both ports boot through OSFILE with every data file ZX0-compressed ([[techniques/zx0-loading]]); Paradroid on an 8271 DFS Model B, Edge Grinder on a 1770 DFS Master 128.
+
+- **OSFILE writes a file's catalogue addresses back into its parameter block after a load**, so reset load/exec (+2..+9) before every call or the second file lands wherever the first said (Edge Layer 2, 2026-09-02, jsbeeb; [Edge CLAUDE.md](https://github.com/kieranhj/edge-beeb/blob/master/CLAUDE.md)). The action-255 description above does not mention the write-back.
+- **Every `*LOAD`/OSFILE must happen before you take IRQ1V** (Paradroid Layer 3), and **the MOS's disc code needs VSync**: with CRTC R7 parked where VSync never fires, the second `*LOAD` hung forever in DFS's 8271 status poll at `&ACAE`; bisecting the CRTC writes showed R7 was the trigger. It reproduces from BASIC, so it is not the game (Paradroid Layer 3, jsbeeb; [bug-map-corruption.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/bug-map-corruption.md)).
+- **The DFS ROM is paged in at `&8000` during a filing-system call**, so a sideways bank cannot be loaded at `&8000` even uncompressed; stage below and copy or unpack (Paradroid Layer 13d). See [[memory/paged-rom]].
+- **On the Master, OSFILE cannot write into HAZEL** (its own workspace) **or ANDY while the filing system is running**; and once HAZEL is taken, BREAK must clear memory (`OSBYTE 200, X=3`) or a soft BREAK leaves a machine with no DFS. Load HAZEL's contents LAST and touch the disc no more (Edge, 2026-09-04, jsbeeb). See [[memory/shadow-ram]].
+- **DFS throughput is about 0.07 s a sector, plus about 0.7 s once per path for the first access after the drive has been idle** (motor spin-up). The same 368-byte file cost 0.181 s or 0.902 s depending on nothing but context; every non-first load sat in 0.046-0.091 s/sector with no measurable per-file overhead, so merging files buys nothing. Effective raw rate ~5.6 KB/s, ~14 sectors/s. **This is jsbeeb's disc model** — a faster reader's gain is only real if the model is faithful (Paradroid, 2026-08-29, breakpoints on the `JSR &FFF7` sites and `elapsed_cycles`; [loader-compression.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/loader-compression.md)).
+- **OSFILE loading 21K on the emulated 1770 DFS takes ~130 fields**, with the PC sitting in the DFS NMI routine at `&0D50` for most of it. That is not a crash (Edge, 2026-09-02, jsbeeb Master).
+- **beebasm lays files on the disc in `SAVE` order**, which put `!BOOT` and the main executable physically last; every boot read the end of the disc and seeked back to track 0. Reordering into boot access order was the whole of a 6.01M → 4.33M cycle saving on the first boot phase (Paradroid, 2026-08-21, jsbeeb). See [[tools/beebasm]].
+- **While `!BOOT` is being EXECed, `INKEY` and OSRDCH read the exec stream, not the keyboard.** An intro's `INKEY(0)` consumed the `*` of the next `*RUN` line. Use the `OSBYTE &7A` keyboard scan for "any key". A program that `*TAPE`s must close the exec file first (Paradroid, 2026-08-26 and 2026-08-29, jsbeeb).
+- **`VDU 22` clears `&3000-&7FFF`**, so data loaded above `&3000` is wiped by a later mode change — change mode first (Paradroid Layer 3; Edge 2026-09-02). See [[os/vdu]].
+- **DFS filenames are seven characters** ([Paradroid CLAUDE.md](https://github.com/kieranhj/paradroid-beeb/blob/main/CLAUDE.md)).
+- **jsbeeb WILL boot an unpadded SSD**; padding to 200K is convention. See [[tools/emulators]].
 
 ---
 

@@ -2,8 +2,8 @@
 title: Escape
 type: os
 tags: [escape, osbyte, event-6]
-sources: [naug-ch10-escape]
-updated: 2026-05-13
+sources: [naug-ch10-escape, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # Escape
@@ -39,6 +39,8 @@ bit 1-7: 0 = preserve memory on BREAK,  non-zero = clear memory on BREAK
 | `n=3` | ESCAPE disabled, memory cleared on BREAK |
 
 `*FX 200,1` is the canonical "game launcher" setting — survives soft BREAK with memory intact, ESCAPE doesn't kill your game.
+
+**Caveat, measured (Edge Grinder, 2026-09-04, jsbeeb — [[sources/beeb-port-kit-hardware-facts]] §4):** a Master program that takes HAZEL for its own data needs `*FX 200,3` instead, so that BREAK clears memory; with `n=1` a soft BREAK left the machine with no DFS. Detail on [[os/break-intercept]]. Also, when measuring keys from a BASIC session, **`*FX 229,1` first, or BASIC eats ESCAPE** (Paradroid Layer 3; Edge 2026-09-06) — see [[os/keyboard]].
 
 ## What `OSBYTE &7E` tears down
 

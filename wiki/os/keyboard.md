@@ -2,8 +2,8 @@
 title: Keyboard
 type: os
 tags: [keyboard, ascii, inkey, ikn, soft-keys, scan]
-sources: [naug-ch14-keyboard, master-arm, bbc-user-guide]
-updated: 2026-08-26
+sources: [naug-ch14-keyboard, master-arm, bbc-user-guide, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # Keyboard
@@ -58,6 +58,25 @@ So `INKEY(-1)` (= `&FF`) tests **IKN 0** (SHIFT). `INKEY(-2)` (= `&FE`) tests **
 
 Full table in NAUG §14.1 p219-220. The IKN ordering doesn't follow ASCII — it's matrix-determined.
 
+### Measured internal key numbers (2026)
+
+The table below was **measured, not recalled**, on a Master 128 in jsbeeb by [Edge Grinder](https://github.com/kieranhj/edge-beeb) (2026-09-06, [layer-9h-keyredef.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-9h-keyredef.md)); [Paradroid](https://github.com/kieranhj/paradroid-beeb)'s own table, measured on a Model B, agrees on every key it has and is the cross-check, not the source ([[sources/beeb-port-kit-hardware-facts]] §7). **Every key that appears in the quick-reference table above agrees with it** — SHIFT 0, CTRL 1, RETURN 73, ESCAPE 112, SPACE 98, cursor up/down/left/right 57/41/25/121.
+
+| Key | IKN | Key | IKN | Key | IKN | Key | IKN |
+|---|---|---|---|---|---|---|---|
+| A | 65 | K | 70 | U | 53 | UP | 57 |
+| B | 100 | L | 86 | V | 99 | DOWN | 41 |
+| C | 82 | M | 101 | W | 33 | LEFT | 25 |
+| D | 50 | N | 85 | X | 66 | RIGHT | 121 |
+| E | 34 | O | 54 | Y | 68 | SHIFT | 0 |
+| F | 67 | P | 55 | Z | 97 | CTRL | 1 |
+| G | 83 | Q | 16 | `/` | 104 | RETURN | 73 |
+| H | 84 | R | 51 | `:` | 72 | SPACE | 98 |
+| I | 37 | S | 81 | | | ESCAPE | 112 |
+| J | 69 | T | 35 | | | | |
+
+Method: `A%=121:X%=16:Y%=0` (`OSBYTE &79` scanning from key 16) in a BASIC loop with the key held, proved against a number the port already had (Z = 97) before it was trusted. **The MOS scan will not report keys 0-2** (SHIFT, CTRL), and `OSBYTE &7A` starts at 16 for the same reason; those were measured through `INKEY` and calibrated on a known key — internal = `(-INKEY) - 1`, the same thing as the `IKN = INKEY EOR &FF` conversion above (Z is `INKEY -98`, internal 97). INKEY codes confirmed in Paradroid's Layer 3 through `OSBYTE &81`: Z -98, X -67, K -71, M -102, UP -58, DOWN -42; CTRL is `INKEY -2`. When measuring from a BASIC session: `*FX 4,1` first or the cursor keys edit the line; `*FX 229,1` or BASIC eats ESCAPE.
+
 ## Read a character (blocking) — OSRDCH
 
 ```asm
@@ -103,6 +122,8 @@ LDY #0
 JSR &FFF4
 ; X = IKN of first pressed key, or 0 if none
 ```
+
+> **Flagged 2026-09-07:** "or 0 if none" disagrees with NAUG's own `&FF` for `&79` (see [[sources/naug-ch14-keyboard]]) and with a measurement — **the MOS in jsbeeb returns `X = &FF` from `OSBYTE &7A` when no key is down** (Paradroid, 2026-08-26; [[sources/beeb-port-kit-hardware-facts]] §7). Treat both 0 and `&FF` as idle. Text kept for the record.
 
 **Model B caveat**: `OSBYTE &79` scans in a strange order (`&10, &20, &30, …, &70, &11, &21, …`). Master / Compact / Electron scan ascending.
 
@@ -248,6 +269,10 @@ After writing the status byte directly, call `OSBYTE &76` to update the keyboard
 ## Performance / bypass
 
 - **MOS scan via `OSBYTE &81` or `&7A`** costs several hundred cycles per call — **243 measured** on a Model B, `JSR` to `RTS` inclusive.
+- **Exact figures from the port that took them** ([Paradroid](https://github.com/kieranhj/paradroid-beeb), 2026-08-26, jsbeeb — [[sources/beeb-port-kit-hardware-facts]] §3): **69 cycles direct against 243 through `OSBYTE &81`**, `JSR` to `RTS` inclusive; the OSBYTE figure taken twice by different routes (a poll-loop rate and a timer bracket, 238 and 237), the direct figure a breakpoint pair differencing `elapsed_cycles`. The 26 masked cycles, twelve times a pass, cost a T1-driven rupture nothing: 25.0 Hz before and after.
+- **Phantom keys, on real hardware.** The matrix has no diodes, so five keys held at once can phantom a sixth, and testing one key at a time does not save you: Z, X, K, M and L together triggered a debug key on C. Reported by KC, not instrumented; addressed by gating every debug key on CTRL. A phantom landing on a play control is still an open problem ([Paradroid human-notes-status.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/human-notes-status.md)).
+- **Edge-triggered keys must not block waiting for release** where two can be held together, or the loop deadlocks swallowing the press (Paradroid Layer 3, jsbeeb).
+- **While `!BOOT` is being EXECed, `INKEY` and OSRDCH read the exec stream, not the keyboard.** An intro's `INKEY(0)` consumed the `*` of the next `*RUN` line. Use the `OSBYTE &7A` scan for "any key" (Paradroid, 2026-08-26 and 2026-08-29). See [[os/filing-systems]].
 - **Testing one named key direct** costs **~55-70 cycles** — see [[#test-one-known-key--the-useful-one]]. A control loop polling a dozen keys a frame saves ~2,000 cycles by going direct, which is a couple of percent of a 50 Hz frame.
 - **A full direct scan** of every key is a different (and much rarer) job; budget per key tested, ~3 µs each.
 - **Disabling auto-repeat** (`*FX 11,0`) is mandatory for any game that distinguishes "key down" from "auto-repeated".

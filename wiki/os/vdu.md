@@ -2,8 +2,8 @@
 title: VDU Control Codes
 type: os
 tags: [vdu, control-codes, ascii, mos, screen]
-sources: [bbc-user-guide, master-rm, master-arm]
-updated: 2026-05-16
+sources: [bbc-user-guide, master-rm, master-arm, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # VDU Control Codes
@@ -337,6 +337,12 @@ For long sequences (e.g. CRTC reprogramming), each VDU byte still costs an OSWRC
 - [[os/calls]] — OSWRCH / OSWORD entry points.
 - [[techniques/custom-modes]] — bypassing VDU for direct CRTC + ULA control.
 - [[sources/bbc-user-guide]] — Ch 34, the canonical primary source.
+
+## Measured in practice — `VDU 22` at boot (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up.
+
+- **`VDU 22` clears `&3000-&7FFF`** — what the OS thinks is its screen — so data loaded above `&3000` is wiped before it can be read. It also re-enables the display (CRTC R8) and the cursor (R10): a program that blanks with `R8 = &30` / `R10 = &20` during loading must do so *after* the mode change (Paradroid Layer 3; Edge Grinder 2026-09-02, jsbeeb; [Edge layer-9-loader.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-9-loader.md)). Both ports change mode as the first thing boot does and stage everything afterwards. See [[techniques/zx0-loading]], [[hardware/crtc-6845]].
 
 ---
 

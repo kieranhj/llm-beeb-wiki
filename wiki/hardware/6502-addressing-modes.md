@@ -2,8 +2,8 @@
 title: 6502 / 65C12 Addressing Modes
 type: hardware
 tags: [6502, 65c12, addressing-modes]
-sources: [naug-ch03-04-arithmetic-addressing, master-rm]
-updated: 2026-05-16
+sources: [naug-ch03-04-arithmetic-addressing, master-rm, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # Addressing Modes
@@ -89,6 +89,8 @@ LDA &80,X       ; 4c — A = mem[(&80 + X) AND &FF]
 ```
 
 Cheaper than `abs,X` (saves 1c, 1 byte). Use when the table fits in zero page.
+
+> **Flagged 2026-09-07:** "saves 1c" contradicts this page's own cost table below (`zp,X` **4c**, `abs,X` **4c** +1 on a page cross) and the cycle tables as the ports used them: `LDA abs` is 4 and `LDA zp` 3, but **`LDA abs,X` and `LDA zp,X` are both 4**. `zp,X` saves a byte and can never pay the page-crossing cycle; it does not save a cycle outright. Paradroid's RAM pass moved scalars to zero page and left indexed tables where they were for exactly this reason (2026-08-25; [[sources/beeb-port-kit-hardware-facts]] §8). Text kept for the record.
 
 `LDX` and `STX` use `zp,Y` instead of `zp,X` (the only instructions to do so).
 
@@ -212,6 +214,15 @@ To eliminate the penalty in hot loops:
 - Or split the loop into a low-page and high-page half so the index never crosses.
 
 See [[hardware/6502-isa]] for the full cycle table.
+
+## Measured in practice — two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up.
+
+- **`LDA abs` is 4c and `LDA zp` 3c, but `LDA abs,X` and `LDA zp,X` are both 4c.** Zero page went to scalars; indexed tables gained nothing by moving (Paradroid RAM pass, 2026-08-25, from the cycle tables — worth knowing before costing a zero-page change; [Paradroid CLAUDE.md](https://github.com/kieranhj/paradroid-beeb/blob/main/CLAUDE.md)). See the flag under "Zero page,X" above.
+- **`LDX zp,Y` is a legal mode**, one byte shorter and a cycle cheaper than `LDX abs,Y`; and `ldx zpaddr` is the same two bytes `ldx #imm` was, so moving a constant table into zero page can cost nothing at its call sites — Edge Grinder's redefinable keys are five bytes of zero page for this reason (2026-09-06, from the listing; [layer-9h-keyredef.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-9h-keyredef.md)).
+- **Self-modified base addresses argue against unrolling**: unrolling by eight multiplies the addresses that have to be patched, not the loop overhead saved (about 64 cycles a row against 24 saved). Count the patches first. Edge's `scroll_frame` went 5,951 µs → 5,106 µs by deleting a pass instead (2026-09-04, jsbeeb; [performance.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/performance.md)).
+- **IRQ latency swings by more than a few cycles**: the 6502 finishes the instruction it is on, and a `SEI` window in the foreground adds to it (Paradroid, 2026-09-06). See [[timing/field-timing]].
 
 ---
 

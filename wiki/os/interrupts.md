@@ -2,8 +2,8 @@
 title: Interrupts (MOS IRQ chain)
 type: os
 tags: [interrupts, irq, irq1v, irq2v, vsync, nmi]
-sources: [naug-ch08-interrupts, naug-ch22-vias]
-updated: 2026-05-13
+sources: [naug-ch08-interrupts, naug-ch22-vias, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # Interrupts — MOS IRQ Chain
@@ -119,6 +119,19 @@ If you want "do something every 10 ms (centi-second)" — hook **T1 via IRQ2V** 
 NMI is non-maskable (SEI doesn't block it). Vector `&FFFA` points to MOS code that jumps to **`&0D00`** — a one-page RAM area where the NMI handler lives. Filing systems (DFS, Econet) install their NMI handlers here and chain.
 
 User code generally doesn't touch NMI — it's reserved for disc/network. See [[sources/naug-ch17-paged-roms]] for the NMI claim/release protocol via paged-ROM service calls (`OSBYTE &8F` with reason `&0B`/`&0C`).
+
+## Measured in practice — two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up. Both ports take IRQ1V outright: VSync (CA1) and System VIA T1 only, no MOS tick, no OS sound, keyboard read direct from the VIA.
+
+- **The entry state above is right as measured: the MOS saves the interrupted A in `&FC` and not X or Y** (Paradroid Layer 3, jsbeeb).
+- **Taking IRQ1V outright**: disable every interrupt source on both VIAs except System VIA CA1 and T1, or anything unserviced holds the IRQ line asserted forever (Paradroid Layer 3; [layer-3-scroll.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-3-scroll.md)).
+- **Every `*LOAD`/OSFILE must happen before you take IRQ1V**: taking it stops the MOS servicing the filing system (Paradroid Layer 3). And **the MOS's disc code needs VSync** — with the CRTC's R7 parked where VSync never fires, the second `*LOAD` hung forever in DFS's 8271 status poll at `&ACAE`; bisecting the CRTC writes one at a time showed R7 was the trigger (Paradroid Layer 3, jsbeeb; [bug-map-corruption.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/bug-map-corruption.md)). See [[os/filing-systems]].
+- **The MOS's 100 Hz T1 tick is 20,000 CPU cycles, exactly half a frame** — which is why a `&FE44` read at a fixed point in a VSync-locked loop is near-constant, not random (Paradroid, 2026-08-26). Consistent with the 50 Hz / 100 Hz table above.
+- **IRQ latency swings by more than a few cycles**: the 6502 finishes the instruction it is on, and a `SEI` window in the foreground (17 cycles in Paradroid's CRTC-start write) adds to it. A CRTC write with 3-7 cycles of margin to the end of horizontal blanking overran intermittently and showed a character of the next row in the bottom-left corner (Paradroid, 2026-09-06, jsbeeb, phase of the `STA &FE01` against a `run_frames` anchor, differenced mod 128). The VSync CA1 interrupt itself is serviced about 4 scanlines after the edge. See [[timing/field-timing]].
+- **Hand IRQ1V back with your data over `&0800-&08FF` and the MOS plays it as notes** — flush every buffer (`OSBYTE &0F, X=0`) before uninstalling (Paradroid, 2026-08-26). See [[memory/os-workspace]], [[os/sound]].
+- **On the Master, `&FFFE` reads `&E59E`**, above HAZEL, so paging HAZEL in cannot break the dispatch at the top of this page (Edge, 2026-09-04, jsbeeb). See [[memory/shadow-ram]].
+- **An IRQ fires with whatever sideways bank the foreground has paged**; an IRQ that needs a bank saves `&F4`, pages, and restores both (Paradroid's sound tick, 2026-08-21). See [[memory/paged-rom]].
 
 ---
 

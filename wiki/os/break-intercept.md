@@ -2,8 +2,8 @@
 title: BREAK Intercept & Reset Handling
 type: os
 tags: [break, reset, intercept, osbyte, startup]
-sources: [naug-ch24-misc, bbc-service-manual]
-updated: 2026-05-16
+sources: [naug-ch24-misc, bbc-service-manual, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # BREAK Intercept & Reset Handling
@@ -95,6 +95,8 @@ bits 1-7: 0 = preserve memory on BREAK,  non-zero = clear memory on BREAK
 ```
 
 `*FX 200,1` = "ESCAPE disabled, memory preserved on soft BREAK" — the canonical game-launcher setting.
+
+**Caveat, measured (Edge Grinder, Master 128, jsbeeb, 2026-09-04 — [[sources/beeb-port-kit-hardware-facts]] §4):** `*FX 200,1` is the right default *unless the program has taken HAZEL* (`&C000-&DFFF`, ACCCON Y — the filing system's workspace on the Master). Then BREAK must clear memory: a soft BREAK out of a game that had loaded its music into HAZEL gave `Acorn MOS` with no DFS banner and `*CAT` returned nothing. `OSBYTE 200, X=3` (ESCAPE disabled **and** memory cleared, making BREAK a power-on reset) at the top of the program fixed it — afterwards BREAK gave a clean `Acorn 1770 DFS` and SHIFT+BREAK reloaded the game ([Edge layer-7-music.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-7-music.md)). See [[memory/shadow-ram]].
 
 ### `OSBYTE &D7` — message suppression
 

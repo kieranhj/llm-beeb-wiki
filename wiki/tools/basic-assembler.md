@@ -2,8 +2,8 @@
 title: BBC BASIC Inline Assembler
 type: tool
 tags: [basic-assembler, beebasm, opt, equ]
-sources: [naug-ch02-basic-assembler, master-rm]
-updated: 2026-05-16
+sources: [naug-ch02-basic-assembler, master-rm, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # BBC BASIC Inline Assembler
@@ -163,6 +163,7 @@ Code written for BBC BASIC inline assembly usually ports to BeebAsm by:
 3. Adding `SAVE "FILE", start, end` at the bottom.
 
 A dedicated [[tools/beebasm]] page is planned.
+It now exists: [[tools/beebasm]] collects the beebasm 1.11 gotchas that cost builds in two C64 → BBC ports (no `IFDEF`, the local-label shadowing trap, `SAVE` order on the disc, `CLEAR` vs `GUARD`, stderr in PowerShell), from [[sources/beeb-port-kit-hardware-facts]]. The forward-reference zero-page trap above has a beebasm form too — it errors on pass 2 rather than shifting the labels.
 
 ## See also
 

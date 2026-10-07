@@ -2,8 +2,8 @@
 title: MOS Sound Interface
 type: os
 tags: [sound, osword, envelope, bell]
-sources: [naug-ch21-sound]
-updated: 2026-05-13
+sources: [naug-ch21-sound, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # MOS Sound Interface
@@ -73,6 +73,8 @@ After definition, the envelope is referenced by number in the amplitude field of
 | `&D1` (209) | Speech on/off | `&50` (SPEAK) = enabled, `&20` (NOP) = disabled. |
 | `&EB` (235) | Speech presence | Read-only effectively; 0 = absent, `&FF` = present. |
 
+**Measured (Paradroid, 2026-08-26, jsbeeb — [[sources/beeb-port-kit-hardware-facts]] §6):** `OSBYTE &D2` gates *new* `SOUND` commands; it does **not** stop a queue that is already draining. See "Measured in practice" below.
+
 ## CTRL-G BELL parameters
 
 The `&07` ASCII bell. Configured via:
@@ -116,6 +118,14 @@ The 100 Hz envelope step is the speed ceiling for MOS-driven sound. Anything fas
 - [[os/buffers]] — Channel buffers 4-7.
 - [[os/interrupts]] — 100 Hz T1 IRQ that services the buffers.
 - [[timing/via-timers]] — Timer-driven direct sound writes.
+
+## Measured in practice — handing the sound system back (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up. Neither port uses the MOS sound system at all — Paradroid has its own SN76489 driver on its own IRQ, Edge Grinder replays a converted Arkos tune — so the facts here are about what the MOS does when it gets the machine back.
+
+- **The MOS plays your data as notes.** Hand IRQ1V back with a character set over `&0800-&08FF` and the 100 Hz sound driver finds its queue pointers and channel buffers full of bitmaps: a quiet, rising sequence that a game's own mute cannot touch (chip read CH0 attenuation 14, CH1 13, periods falling 401 → 146 → 95). Zeroing `&0800-&087F` stopped it instantly. **`OSBYTE &D2` does NOT stop it** — it gates new `SOUND` commands, not a draining queue. **`OSBYTE &0F, X=0` (flush every buffer) BEFORE uninstalling the IRQ is the fix** (Paradroid, 2026-08-26, jsbeeb; [layer-11e-sound.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-11e-sound.md)). Layout of that page on [[memory/os-workspace]].
+- **The 100 Hz sound driver writes `&0800-&08FF` while the MOS owns the machine**, which corrupted a compressed stream staged there at boot (Paradroid, 2026-08-30). See [[techniques/zx0-loading]].
+- **A direct chip write from an IRQ coexists with a foreground keyboard poll** if it saves and restores DDRA and ORA around its strobe and touches only latch line 0 (Paradroid, 2026-08-21, 8,192 polls each way). See [[hardware/sn76489]], [[hardware/system-via]].
 
 ---
 
