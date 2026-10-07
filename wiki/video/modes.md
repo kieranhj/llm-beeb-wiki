@@ -2,8 +2,8 @@
 title: Screen Modes
 type: video
 tags: [modes, screen-memory, pixel-format]
-sources: [naug-ch13-video, master-arm]
-updated: 2026-05-13
+sources: [naug-ch13-video, master-arm, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # Screen Modes
@@ -131,6 +131,14 @@ addr    = screen_base + char_y * bytes_per_row + char_x * 8 + scan
 Where `bytes_per_row` is the screen width in bytes (640 for 80-col modes, 320 for 40-col modes 4-6).
 
 This 2D-into-1D layout is unusual — the screen is **column-major within a row of cells, row-major over rows**. Per-pixel plotting touches 8 bytes for the cell. See [[techniques/pixel-plot]] (planned).
+
+## Measured in practice — two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up.
+
+- **MODE 1 layout confirmed as above** (pixel n = bit `7-n` high, bit `3-n` low; `&00`/`&0F`/`&F0`/`&FF` solid). Within a row-aligned buffer `addr = base + (y DIV 8)*640 + (x DIV 4)*8 + (y MOD 8)` — the address arithmetic above — and the trap that cost a build: **adjacent 4-pixel columns are 8 bytes apart, not 1**; consecutive bytes within a column are consecutive scanlines (Paradroid Layer 3, jsbeeb, [Paradroid CLAUDE.md](https://github.com/kieranhj/paradroid-beeb/blob/main/CLAUDE.md)).
+- **MODE 2: which pixel is which.** The interleave above does not say which of P1/P2 is on the left. Measured: the **left** pixel of a byte lives in bits 7, 5, 3, 1 and the **right** pixel in bits 6, 4, 2, 0 (each the four bits of its logical colour); 32 bytes per character cell, 640 per row, a CRTC unit is 2 px (Edge Layer 1, 2026-09-02, by exporting column planes and checking the plot in jsbeeb; [layer-1-graphics-pipeline.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-1-graphics-pipeline.md)).
+- **A 16K buffer with 640-byte rows does not wrap on a row boundary** (16,384 / 640 = 25.6): a sprite's columns can straddle `&8000` and stop being 8 bytes apart (Edge, 2026-09-03). The screen-size table above is for the MOS's own screens; a hardware-scrolled ring picks its own wrap on [[hardware/system-via]].
 
 ---
 

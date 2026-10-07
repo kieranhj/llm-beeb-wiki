@@ -2,8 +2,8 @@
 title: Vertical Rupture (CRTC split-screen)
 type: technique
 tags: [crtc, raster, split-screen, scrolling, mode-2]
-sources: [retrosoftware-smooth-vscroll, hd6845sp-hitachi-datasheet, naug-ch13-video, accc-compendium]
-updated: 2026-05-16
+sources: [retrosoftware-smooth-vscroll, hd6845sp-hitachi-datasheet, naug-ch13-video, accc-compendium, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # Vertical Rupture
@@ -93,6 +93,8 @@ LDA #&58/8  : STA addr+1
 CLI
 ```
 
+> **Flagged 2026-09-07 — the two latch comments above are wrong, the code is right.** `12` = `%1100` is value 1 on line 4 and `13` = `%1101` is value 1 on line 5: both writes **set** their line (`(V << 3) | N`, see [[hardware/system-via]]). Lines 4/5 = 1/1 selects the **10K** wrap to `&5800`, which is exactly what this demo's `&5800-&7FFF` playfield needs. Measured table (Edge Grinder, jsbeeb, 2026-09-04; the 10K case independently in Paradroid's Layer 3): 0/0 → `&4000` 16K, 1/0 → `&6000` 8K, 0/1 → `&3000` 20K, 1/1 → `&5800` 10K — [[sources/beeb-port-kit-hardware-facts]] §3. The original comment text is kept above for the record.
+
 ### IRQ handler (three entry paths via `whichtimer` state)
 
 **On VSync**: latch R12/R13 to the new playfield address, then start a T2 timer for **2560 1MHz ticks** (5 char rows × 8 scanlines × 64 ticks/scanline) to wake us once the new CRTC cycle has begun.
@@ -177,6 +179,20 @@ The technique above splits a frame into 2-3 CRTC cycles for status panels and si
 - [[video/hardware-scrolling]] — the address arithmetic this technique splits across cycles.
 - [[hardware/system-via]] — addressable latch bits for 10K/16K/20K screen wraparound select.
 - [[timing/via-timers]] — System VIA T2 one-shot used for the inter-cycle waits.
+
+## Measured in practice — two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up. Both ports are ruptures of exactly this kind: Paradroid a three-cycle MODE 1 rupture with a 10K hardware-scrolled strip (16 rows) on a Model B; Edge Grinder a two-cycle MODE 2 rupture (5-row panel at `&3000` in both shadow banks, 34-row tail with a 20-row play area) on a Master 128, with a four-cycle variant on its title page.
+
+- **The per-register write windows, as they held after two wrong builds:** R4 inside its own cycle before C4 reaches it; **R6, R7 and R12/R13 inside the previous cycle** (for R6 and R7 the precise rule is "before C4 reaches that row", so the current cycle is fine while the row is still ahead: KC, 2026-09-07); R5 anywhere in the cycle but not near a boundary. Symptoms when wrong (R7 late: VSync never fires, the chip free-runs on the last cycle's shape and the picture rolls; R6 late: display enable is a flip-flop cleared on match and cannot be re-raised) and the R5 trap (~29 extra scanlines from the 5-bit wrap) are written up on [[hardware/crtc-6845-advanced]]. These agree with the C0<2 / previous-cycle rules in the table above and add the failure modes (Paradroid Layer 3, jsbeeb; reconfirmed Edge 2026-09-02).
+- **Rows must sum to 39 or the picture rolls** — confirmed by counting VSyncs: 1,000 fields in 39,936,000 cycles exactly (Paradroid Layer 3). The "R5 must sum to 0 or 8" pitfall above is the same constraint.
+- **Use T1 in continuous mode, not T2, for the inter-cycle waits.** The worked example above uses T2 one-shot, as the retrosoftware demo does. Paradroid tried T2 first and moved to T1: T2 is one-shot only, so the interval starts when the handler writes `T2C-H` and every interrupt's service latency feeds into the next interval. T1 auto-reloads from its latch at underflow, so the period is exact however late the service; restart it at VSync and the fires stay phase-locked. A latch write takes effect one reload later, so intervals are set one fire ahead (Paradroid Layer 3, jsbeeb, [layer-3-scroll.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-3-scroll.md)). See [[timing/via-timers]].
+- **The VSync CA1 interrupt is serviced about 4 scanlines after the VSync edge**; the timer chain itself is exact. Both ports carry a `-4 * SL` term for it. Timer fires that must land in a cycle should overshoot the boundary by a few rows — sized to reach it exactly, IRQ latency carried them into the previous cycle. The two ports' T1 constants are tabulated on [[timing/field-timing]].
+- **R7 for the panel cycle must go in at VSync, not at the first timer fire**, or a panel cycle that reaches the stale R7 fires a second VSync and re-enters the handler mid-frame (Paradroid, 2026-08-21).
+- **Switching CRTC shapes costs malformed fields** unless the writes are aligned to row 0 of a fresh frame, and a right-length field can still be in the wrong phase — **jsbeeb showed no fault; b2 rolled and KC photographed it**. Suppress VSync (`R7 = 255`) across the intermediate cycles, exactly as the worked example does for cycle 1 (Paradroid, 2026-08-31). Details on [[hardware/crtc-6845-advanced]]; which emulator sees what on [[tools/emulators]].
+- **Interlace must be off (`R8 = 0`)**: the MOS leaves MODE 1 at `R8 = 1`, which moves VSync by half a scanline on alternate fields and a timer-placed split with it (Paradroid Layer 3).
+- **Do the last disc load before the rupture is armed.** With R7 parked where VSync never fires, DFS's 8271 status poll at `&ACAE` hung the second `*LOAD` forever (Paradroid Layer 3, jsbeeb, [bug-map-corruption.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/bug-map-corruption.md)). See [[os/filing-systems]].
+- **Taking IRQ1V outright** (both ports do) means disabling every interrupt source on both VIAs except System VIA CA1 and T1, or anything unserviced holds the IRQ line asserted forever. The MOS saves the interrupted A in `&FC` but not X or Y (Paradroid Layer 3). See [[os/interrupts]].
 
 ---
 

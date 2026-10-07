@@ -2,9 +2,9 @@
 title: Address Translation
 type: hardware
 tags: [memory, dram, address-translation, video, scrolling]
-sources: [beebwiki-address-translation, naug-ch12-memory, naug-ch13-video, bbc-service-manual]
+sources: [beebwiki-address-translation, naug-ch12-memory, naug-ch13-video, bbc-service-manual, beeb-port-kit-hardware-facts]
 machines: [BBC Model A, BBC Model B, BBC B+]
-updated: 2026-05-14
+updated: 2026-09-07
 ---
 
 # Address Translation
@@ -136,6 +136,15 @@ This is also the mechanism behind R12/R13's "XOR `&54`" rule documented on [[har
 - [[video/hardware-scrolling]] — how to use the wraparound for scrolling.
 - [[memory/memory-map]] — DRAM layout.
 - [[sources/beebwiki-address-translation]] — primary reference for this page.
+
+## Measured in practice — two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up.
+
+- **The wrap table above holds, bit for bit, and the four sizes are NOT powers of two.** Measured on a Master 128 in jsbeeb by Edge Grinder (2026-09-04) from 6502 in main RAM, and the 10K case independently in Paradroid's Layer 3: with `C0` = latch line 4 and `C1` = latch line 5, 0/0 wraps `&8000` to `&4000` (16K), 1/0 to `&6000` (8K), 0/1 to `&3000` (20K, the MOS's own MODE 2 setting), 1/1 to `&5800` (10K). Written as `LDA #4` / `LDA #12` to `&FE40` for line 4 clear/set, `#5` / `#13` for line 5 ([Edge layer-6e-titles.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-6e-titles.md), [Paradroid layer-3-scroll.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-3-scroll.md)).
+- **The subtraction happens once and does not iterate**, so a displayed window must fit inside one wrap span. A window larger than the span fetches from `&8000` upward (ROM) at some scroll positions and shows garbage on its last rows; with the 10K wrap and 80-unit rows the usable strip is exactly 16 rows (Paradroid Layer 3, jsbeeb — the model predicted garbage from unit 5 of the bottom row at scroll offset 10200 and that is where it started).
+- **On the Master the wrap applies inside whichever bank is displayed.** With ACCCON D = 1 and the wrap at 8K, a display crossing `&8000` lands on *shadow* `&6000`, not main; Edge Grinder's title page runs one 8K ring in each bank (2026-09-04, jsbeeb only; no real-hardware confirmation). The `machines:` list above stops at the B+, but the same table was measured on the Master. See [[memory/shadow-ram]].
+- A 16K buffer with 640-byte rows wraps mid-row (16,384 / 640 = 25.6), so a sprite's 8-byte column stride breaks across `&8000` (Edge, 2026-09-03).
 
 ---
 

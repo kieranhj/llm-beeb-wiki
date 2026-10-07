@@ -2,8 +2,8 @@
 title: Hardware Scrolling
 type: video
 tags: [scrolling, crtc, raster, vsync]
-sources: [naug-ch13-video]
-updated: 2026-05-13
+sources: [naug-ch13-video, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # Hardware Scrolling
@@ -96,6 +96,17 @@ The OS keeps the screen-start copy at `&350/&351` (page 3 — see [[memory/os-wo
 - Or only do hardware scrolling in code that doesn't rely on OSWRCH afterwards (i.e., the game owns the screen).
 
 OSBYTE `&A0` with X=&50 will read these back if you need to recover the current value (R12/R13 are write-only on the chip).
+
+## Measured in practice — two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up. Paradroid scrolls a 10K MODE 1 strip in both axes; Edge Grinder scrolls a 16K MODE 2 play area 1 px a frame by alternating two shadow banks half a byte out of phase.
+
+- **CRTC start address = screen address / 8** — a buffer at `&5800` is `R12/R13 = &0B00` (Paradroid Layer 3, jsbeeb).
+- **One CRTC address unit is 8 bytes, one byte per scanline of an 8-scanline cell**: 8 px in MODE 0, 4 in MODE 1, 2 in MODE 2. Horizontal hardware scroll granularity is therefore half a MODE 1 character (4 px), not a whole one — the "6845 char" step tabulated above (Paradroid Layer 3, 10 steps in 10 frames at 4 px).
+- **A hardware-scrolled area is a one-dimensional ring through memory, not a 2-D grid.** A character leaving the left edge reappears one row up on the right (the caveat above). Drawn as a flat grid it is corruption that scales with the offset; treated as a circular strip the redraw per step collapses to one column or one row (Paradroid Layer 3: at 80 px offset the right quarter showed the wrong rows; [layer-3-scroll.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-3-scroll.md)).
+- **The half-updated-address frame is real**: R12/R13 form one 14-bit value across two writes, and if the CRTC samples between them the display shows one frame at a half-updated address. Write both in vertical blanking (Paradroid Layer 3, jsbeeb). Both ports write them in the VSync handler.
+- **The display window must fit inside ONE hardware wrap** — the translator subtracts once and does not iterate. Larger windows fetch from `&8000` upward at some scroll positions (Paradroid Layer 3). And on the Master **the wrap applies inside whichever bank is displayed** (Edge, 2026-09-04, jsbeeb). See [[hardware/address-translation]], [[memory/shadow-ram]].
+- The "wait for vsync" idiom above: the CA1 interrupt is serviced about 4 scanlines after the edge, and polling `&FE4D` bit 1 races the MOS's own handler while the MOS is alive — see [[hardware/system-via]].
 
 ---
 

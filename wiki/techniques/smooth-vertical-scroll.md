@@ -2,8 +2,8 @@
 title: Smooth Vertical Scrolling (1-scanline granularity)
 type: technique
 tags: [crtc, scrolling, raster, vertical-rupture, mode-2, smooth-scroll]
-sources: [retrosoftware-smooth-vscroll, hd6845sp-hitachi-datasheet, naug-ch13-video]
-updated: 2026-05-16
+sources: [retrosoftware-smooth-vscroll, hd6845sp-hitachi-datasheet, naug-ch13-video, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # Smooth Vertical Scrolling
@@ -211,6 +211,8 @@ The 80-byte stride is `bytes_per_row (640) ÷ 8` because R12/R13 stores `addr DI
 | User VIA `&FE43` | `&7F` | DDR for keyboard scan |
 | IRQ1V `&204/5` | `irqhandler` | take all IRQs ourselves (MOS bypassed) |
 
+> **Flagged 2026-09-07 — the addressable-latch row above is wrong on both counts; the text is kept for the record.** `raw/code/smoothscroll.bas` line 230 is `LDX#4:STX&FE40:INX:STX&FE40` — it writes `4` then `5`, i.e. value 0 to line 4 and value 0 to line 5, **both cleared**. Lines 4/5 = 0/0 is the **16K** wrap to `&4000` (NAUG §22.3.2 on [[hardware/system-via]], and measured on a Master 128 in jsbeeb by Edge Grinder, 2026-09-04: 0/0 → `&4000` 16K, 1/0 → `&6000` 8K, 0/1 → `&3000` 20K, 1/1 → `&5800` 10K — [[sources/beeb-port-kit-hardware-facts]] §3). A 20K screen wraps to `&3000`, not `&4000`. The demo's own `&4000/8` wraparound check under "Updating the scroll position" is consistent with the 16K reading: the scrolling window is a 16K ring at `&4000-&7FFF`.
+
 ## Why this can be done at all
 
 The technique relies on the same three CRTC properties as [[techniques/vertical-rupture]] — R12/R13 latched per cycle, R4/R6/R7 read per cycle, R5 added per cycle — plus one extra: **the Video ULA can be re-enabled mid-frame** without disturbing the CRTC or the TV's sync lock. The chip just keeps producing addresses; the ULA decides whether to push pixels.
@@ -235,6 +237,19 @@ The blank/unblank lever in that implementation is **CRTC R8 (`&00` non-interlace
 - [[hardware/crtc-6845-advanced]] — register-rewrite phase verdicts.
 - [[hardware/video-ula]] — screen-enable bit used for the rock-steady top edge.
 - [[timing/via-timers]] — T2 one-shot, ISR-entry cost.
+
+## Measured in practice — two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up. Paradroid's play strip is a 1-scanline vertically scrolling three-cycle rupture built on this page's technique.
+
+- **The R5 trap, as it bit.** Never write R5 near a cycle boundary: the vertical adjust counts up and compares against R5, so a write landing after the count has passed the new value misses the match and the adjust runs on to its 5-bit wrap, about 29 extra scanlines. In Paradroid it stretched a 64-scanline panel cycle to 85. R5's legal window is the whole cycle — use the middle of it. R5 is sampled at each cycle's end, so a value must be in place between the sample it must not disturb and the one it serves (Paradroid Layer 3, jsbeeb, [layer-3-scroll.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-3-scroll.md)).
+- **Each scanline really is 64 T1 ticks** (`SL = 64`, T1 at 1 MHz) and 128 CPU cycles — measured, not assumed; a scanline had been taken for 64 *cycles* and it cost a build (Paradroid 2026-08-15; Edge 2026-09-02). Constants on [[timing/field-timing]].
+- **The compensator is a property of the whole IRQ path.** The VSync CA1 interrupt is serviced about 4 scanlines after the VSync edge; the timer chain from there is exact (breakpoint bisection put fire 1 within a scanline of design). Paradroid's `T1_TUNE = -4 * SL - 32` absorbs the latency and centres the later fires in blanking; the phase drifted ~6 µs as the handler changed. Take it from the emulator, not the arithmetic — the page's own "−93 is calibrated rather than computed" is the same lesson (Paradroid Layer 3 and 2026-09-06).
+- **T1 in continuous mode, not T2 one-shot**, for the fires: T1 auto-reloads so the period is exact however late the service, restarted at VSync so the fires stay phase-locked. T2's interval starts when the handler writes it, so service latency accumulates (Paradroid Layer 3, after T2 was tried first). See [[timing/via-timers]].
+- **Blank with R8 `&30`, unblank with `&00`** — the same lever as this page's `&F0`/`&C0`; the transition is clean and immediate. Two things it does not cover: the hardware cursor (`R10 = &20` as well) and `R6 = 0`, which is **not** a blank and leaks one row (Paradroid 2026-08-31; Edge 2026-09-02). See [[hardware/crtc-6845]].
+- **Interlace off (`R8 = 0`)** or a timer-placed split lands half a scanline differently on alternate fields (Paradroid Layer 3).
+- **The display window must fit inside one hardware wrap.** With the 10K wrap and 80-unit rows the strip is exactly 16 rows, so 1-scanline vertical scrolling costs one row of play area (Paradroid Layer 3). See [[hardware/address-translation]].
+- **Erring late on the top edge is harmless; erring early shows content from the bottom of the window at the top.** Bias late if in doubt (Paradroid Layer 3, jsbeeb and b-em). KC spotting two wrong lines on b-em is what pinned the VSync latency; jsbeeb screenshots resolve no better than ±2 lines ([[tools/emulators]]).
 
 ---
 

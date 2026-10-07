@@ -2,10 +2,10 @@
 title: System VIA
 type: hardware
 tags: [via, system-via, keyboard, sound, vsync, latch]
-sources: [naug-ch22-vias, master-arm, master-rm]
+sources: [naug-ch22-vias, master-arm, master-rm, beeb-port-kit-hardware-facts]
 sheila: ["&FE40", "&FE4F"]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact]
-updated: 2026-08-15
+updated: 2026-09-07
 ---
 
 # System VIA
@@ -88,6 +88,8 @@ Written as a general formula: `ORB low nibble = (V << 3) | N`, where `N` is the 
 
 The MOS sets these correctly at mode-set time; you only need to know about them if you build a custom mode.
 
+**Measured in practice (Edge Grinder, Master 128, jsbeeb, 2026-09-04; the 10K case independently in Paradroid's Layer 3 — [[sources/beeb-port-kit-hardware-facts]] §3):** the table agrees with the measurement bit for bit. Stated as what is added back when the display address passes `&8000`: line 4/line 5 = 0/0 → `&4000` (16K), 1/0 → `&6000` (8K), 0/1 → `&3000` (20K), 1/1 → `&5800` (10K). Written as `LDA #4` / `LDA #12` to `&FE40` for line 4 clear/set, `#5` / `#13` for line 5. Two wiki pages had these the wrong way round in their comments — see the flags on [[techniques/vertical-rupture]] and [[techniques/smooth-vertical-scroll]].
+
 ## Writing to the addressable latch
 
 ```asm
@@ -122,6 +124,30 @@ MOS hooks IRQ1V (`&204/&205`) and reads `IFR` at `&FE4D` to dispatch:
 - **Vsync IRQ hook**: hook IRQ1V, in your handler check `&FE4D` bit 1, if set then run frame-start work and clear the flag by *reading* ORA (`&FE41`). Use **`BIT &FE41`** rather than `LDA &FE41` — same 4 cycles, same bus read (so the chip still clears the IFR bit), but `BIT` doesn't clobber the accumulator. That matters in an IRQ handler, where A is already stashed at `&FC` by MOS and reloading it costs cycles. See [[techniques/fast-animation]].
 - **Free-running T1**: if MOS isn't using T1 for sound (test by reading IER bit 6), repurpose T1 to fire raster splits at a specific scan line within a frame. Set ACR for free-run + PB7 toggle, load latches with `lines_per_split × 64`.
 - **Manual sound-chip writes** are tricky — between writing the sound data byte to PA and pulsing line 0 of the latch you need to ensure MOS doesn't preempt and overwrite. Many demos disable IRQs across the whole sequence.
+
+## Measured in practice — two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up. Both ports own IRQ1V outright and drive a rupture from this chip's T1; both read the keyboard directly through Port A.
+
+### Timers
+
+- **T1 in continuous mode, not T2, for raster timing.** T2 is one-shot only, so the interval starts when the handler writes `T2C-H` and every interrupt's service latency feeds into the next interval. T1 auto-reloads from its latch at underflow, so the period is exact however late the service; restart it at VSync and the fires stay phase-locked. A latch write takes effect one reload later, so intervals are set one fire ahead (Paradroid Layer 3, jsbeeb, after T2 was tried first).
+- **T1 ticks at 1 MHz; a scanline is 64 ticks (`SL = 64`)** (Edge, 2026-09-02, jsbeeb). The two ports' T1 constants are on [[timing/field-timing]].
+- **A `&FE44` read at a fixed point in a VSync-locked loop is NOT random.** Under the MOS, System VIA T1 runs the 100 Hz tick: 20,000 cycles, exactly half a frame, so the sampled byte is near-constant and drifts only with interrupt jitter. It cost Paradroid's loading intro its lightning randomness; use a stepped PRNG with the timer as seed only (2026-08-26, jsbeeb; [intro.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/intro.md)).
+- **A T1 difference used as a stopwatch is only modular while the counter does not pass zero between the reads**; when it does, the sample gains ~65,536 ticks, and because the reload point drifts slowly the bad readings come in consecutive runs. Paradroid's `DEBUG_TIME` reported 2,903 cycles for code measured at 1,009 by breakpoints (2026-08-26).
+- **T2's two bytes are read one after the other and the counter can roll between them**, so an elapsed reading can come out 256 µs smaller than the mark before it; reject a sample whose subtraction borrows. A frame longer than 65.5 ms wraps the counter outright (Edge, 2026-09-04, jsbeeb; three readings of three were junk before the fix).
+
+### VSync
+
+- **The VSync CA1 interrupt is serviced about 4 scanlines after the VSync edge.** The timer chain itself is exact — breakpoint bisection put Paradroid's fire 1 at 78.3-79.3 scanlines after handler entry against a design figure of 78 — so the whole error is in where VSync itself sits. The scanline component cannot be read from screenshots better than ±2; it was KC spotting two wrong lines on b-em that pinned it (Paradroid Layer 3).
+- **Polling `&FE4D` bit 1 for VSync races the MOS**, whose own handler clears the flag when it services VSync; chain on IRQ1V instead while the MOS is alive (stated as the design reason; not separately measured). **With interrupts down, polling the flag directly works** — Edge Grinder's memorial fade does exactly that before its IRQ install (Layer 9d, 2026-09-05, jsbeeb).
+- **Taking IRQ1V outright**: disable every interrupt source on both VIAs except System VIA CA1 and T1, or anything unserviced holds the IRQ line asserted forever. The MOS saves the interrupted A in `&FC` but not X or Y (Paradroid Layer 3). See [[os/interrupts]].
+
+### Port A: keyboard and sound chip together
+
+- **Reading one named key direct costs 69 cycles against 243 through `OSBYTE &81`**, `JSR` to `RTS` inclusive (Paradroid, 2026-08-26, jsbeeb, breakpoint pair differencing `elapsed_cycles`; the OSBYTE figure taken twice by different routes, 238 and 237). The routine is on [[os/keyboard]]. The 26 masked cycles round the sequence, twelve times a pass, cost a T1-driven rupture nothing: 25.0 Hz before and after, panel boundary clean while scrolling.
+- **Port A is shared with the SN76489 write path, safely.** A sound write from the IRQ that saves and restores DDRA and ORA around its strobe does not disturb a foreground keyboard poll: key up, 0 of 8,192 polls read down with 225 IRQ writes interleaved; key held, 8,192 of 8,192 with 192 interleaved. The sound strobe touches only latch bit 0, never the keyboard-enable bit (Paradroid, 2026-08-21, jsbeeb, `tools/sndtest.asm`; [layer-11e-sound.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-11e-sound.md)). See [[hardware/sn76489]].
+- **Phantom keys.** The matrix has no diodes, so five keys held at once can phantom a sixth, and asking about one key at a time does not save you: Z, X, K, M and L together triggered a debug key on C. Reported by KC on **real hardware**, not instrumented; addressed by gating every debug key on CTRL ([human-notes-status.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/human-notes-status.md)).
 
 ---
 

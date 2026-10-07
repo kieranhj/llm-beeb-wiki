@@ -2,9 +2,9 @@
 title: Cycle Stretching
 type: timing
 tags: [timing, cycle-stretching, 1mhz, slow-bus, performance, sheila]
-sources: [beebwiki-cycle-stretching, naug-ch11-hardware, naug-ch23-1mhz-bus]
+sources: [beebwiki-cycle-stretching, naug-ch11-hardware, naug-ch23-1mhz-bus, beeb-port-kit-hardware-facts]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact]
-updated: 2026-05-14
+updated: 2026-09-07
 ---
 
 # Cycle Stretching
@@ -104,6 +104,10 @@ See [[hardware/1mhz-bus]] for the cartridge / FRED / JIM specifics, including th
 - [[hardware/tube-ula]] — un-stretched, useful for bulk Tube transfers.
 - [[memory/memory-map]] — full address-space layout.
 - [[sources/beebwiki-cycle-stretching]] — primary reference.
+
+## Note from the 2026 port measurements
+
+A stated (not measured) claim in [Edge Grinder](https://github.com/kieranhj/edge-beeb)'s title-page write-up disagrees with the Video ULA row above: it attributes the phase stability of a per-scanline loop that opens with `STA &FE21` to that write being "on the 1 MHz bus". This page, from [[sources/beebwiki-cycle-stretching]], says the Video ULA is a 2 MHz device and the write is a flat 4c. The port's pad constant was tuned by eye and the bus timing was never measured, so **this page's claim stands** and the disagreement is recorded on [[hardware/video-ula]] and in [[sources/beeb-port-kit-hardware-facts]] as something to measure directly. The cycle constants the ports did measure — 128 CPU cycles a scanline, 39,936 a field — are on [[timing/field-timing]].
 
 ---
 

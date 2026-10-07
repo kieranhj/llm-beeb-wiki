@@ -2,10 +2,10 @@
 title: Acorn Video ULA
 type: hardware
 tags: [video, ula, palette, sheila]
-sources: [naug-ch13-video, beebwiki-video-ula, master-arm]
+sources: [naug-ch13-video, beebwiki-video-ula, master-arm, beeb-port-kit-hardware-facts]
 sheila: ["&FE20", "&FE21"]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact]
-updated: 2026-05-14
+updated: 2026-09-07
 ---
 
 # Acorn Video ULA
@@ -166,6 +166,29 @@ The user-level palette workflow (VDU 19, OSWORD `&0C`, expansion rules) is fully
 - Second source: VLSI Technologies VIDPROC VC 2023, later VC 2069 (Acorn part 201,647).
 - Some Model A units shipped with Video ULAs that failed the high-resolution-mode acceptance test (Model A's 16 KiB RAM cannot drive MODES 0-2, so the bad parts were "good enough"). Owners who upgraded to 32 KiB sometimes saw bad MODES 0/1/2.
 - **VideoNuLA** (Rob Coleman) is a modern drop-in replacement at IC 6 with 12-bit colour depth (16 from 4096), pixel-by-pixel hardware horizontal scrolling, and attribute modes — samples A1 via flying lead.
+
+## Measured in practice — two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up.
+
+### Palette register
+
+- **`&FE21` takes `(logical << 4) OR (physical EOR 7)`, and the logical field is a content-addressable match**: in a 4-colour mode only bits 7 and 5 are compared, so bits 6 and 4 must be written in every combination (four entries per logical colour) or the colour comes out split — exactly the expansion rule tabulated above, confirmed with output identical to the `VDU 19` version (Paradroid Layer 3, jsbeeb).
+- **The MOS's default MODE 2 palette is logical n → physical n for all sixteen**, and `(n << 4) OR (n EOR 7)` reproduces it exactly (the `F8 E9 … 07` sequence above). Logical 8-15 can be mapped back onto 0-7 *without* the flash bit, giving a second black that a sprite engine using logical 0 as its transparency key can use (Edge, 2026-09-05, jsbeeb; [layer-8b-nula.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-8b-nula.md)).
+- **A `&FE21` write from main-loop code lands wherever the raster is.** If a panel has its own palette applied at VSync, a mid-frame write leaves the panel in the wrong palette for the rest of the field: a one-frame flash, about one transition in three in Paradroid (2026-08-31, jsbeeb, stepping a field at a time).
+- A palette write can glitch a few displayed pixels at the beam position on the write line (short dashes at flash peaks, over black) — *stated* in Paradroid's intro write-up as real-hardware behaviour shared with every mid-frame palette split; not separately measured (unverified — [[sources/beeb-port-kit-hardware-facts]] §2).
+- **Disagreement, flagged:** Edge Grinder's title-page write-up says a per-scanline loop that *opens* with a write to `&FE21` is phase-stable because the write is "on the 1 MHz bus" and stalls the CPU to the same phase each iteration. This wiki's [[timing/cycle-stretching]] (from BeebWiki) says the Video ULA is a **2 MHz** device and `STA &FE21` is a flat, unstretched 4c. The port's statement is a stated rationale, not a measurement — its pad constant was tuned by looking at the screen — so the wiki's claim stands; the loop's stability presumably comes from elsewhere. Worth a direct measurement ([[sources/beeb-port-kit-hardware-facts]] §2, §12).
+
+### Byte layouts (as exported and plotted)
+
+- **MODE 1**: pixel n takes bit `7-n` (high colour bit) and bit `3-n` (low bit); solid colour 0/1/2/3 = `&00`/`&0F`/`&F0`/`&FF`; **adjacent 4-pixel columns are 8 bytes apart, not 1** — this cost Paradroid a build (Layer 3, jsbeeb). Agrees with the layout on [[video/modes]].
+- **MODE 2**: the **left** pixel of a byte is bits 7, 5, 3, 1 and the **right** pixel bits 6, 4, 2, 0; 640 bytes per character row (`R1 = 80`), a CRTC unit is 2 px (Edge Layer 1, 2026-09-02).
+
+### VideoNuLA (Edge Grinder's `-Nula` build)
+
+- **By default the NuLA composes both tables**: logical → `&FE21` → physical → `&FE23` → 12-bit RGB. **`&FE22 = &11`** (control 1, parameter 1) selects logical colour mapping and makes `&FE21` ignored. Without it a title screen's per-scanline `&FE21` pulses wrecked the game's colours (a blue background instead of black). Measured 2026-09-05 on **real hardware first** (KC), then jsbeeb; encoding cross-checked against the VideoNuLA User Guide's worked example ([layer-8b-nula.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-8b-nula.md)).
+- **Palette entries go to `&FE23` as two bytes each, `[index<<4 | red]` then `[green<<4 | blue]`, in that order**; `&FE22 = &40` resets the extended features first (2026-09-05, jsbeeb, against the reference library's default table byte for byte).
+- **jsbeeb emulates the NuLA palette** (`?&FE23=&78 : ?&FE23=&88` gives mid grey; sixteen distinct entries come back under logical mapping) but **not its scrolling or attribute modes**. See [[tools/emulators]].
 
 ---
 

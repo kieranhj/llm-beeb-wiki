@@ -2,8 +2,8 @@
 title: VIA Timers (T1, T2)
 type: timing
 tags: [via, t1, t2, timer, raster, vsync]
-sources: [naug-ch22-vias, via-timer-chip-level-refs]
-updated: 2026-06-17
+sources: [naug-ch22-vias, via-timer-chip-level-refs, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # VIA Timers (T1, T2)
@@ -121,6 +121,8 @@ Useful for measuring rotation rate of a quadrature encoder (1 channel into PB6, 
 
 MOS uses System VIA T1 to time sound-envelope updates (every 20 ms). If you steal T1, sound queues stop processing — channels keep playing their current note but envelopes don't update, the next note in a queue won't trigger.
 
+> **Flagged 2026-09-07:** "every 20 ms" disagrees with [[os/interrupts]] and [[os/sound]] on this wiki (System VIA T1 = the **100 Hz** tick) and with a measurement: under the MOS, System VIA T1 fires every **20,000 CPU cycles = 10 ms**, exactly half a frame — which is why a `&FE44` read taken at a fixed point in a VSync-locked loop is near-constant rather than random (Paradroid, 2026-08-26, jsbeeb; [[sources/beeb-port-kit-hardware-facts]] §3). The consequence in the paragraph is right; the period is not. Text kept for the record.
+
 The standard advice: **prefer User VIA timers** for general-purpose timing. Touch System VIA timers only if you've turned off MOS sound (`*FX 210,1` or `OSBYTE 210` with X=1).
 
 ## Caveats
@@ -130,6 +132,16 @@ The standard advice: **prefer User VIA timers** for general-purpose timing. Touc
 - A timer write while IRQs are enabled, with the timer already at a small count, may produce an IRQ between the C-L write and C-H write. Disable IRQs around the load to be safe.
 
 See [[hardware/via-6522]] for register layout. See [[sources/naug-ch08-interrupts]] (pending) for the IRQ dispatch chain.
+
+## Measured in practice — two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up. Both ports drive a vertical rupture from System VIA T1 with IRQ1V taken outright.
+
+- **T1 in continuous mode, not T2, for raster timing.** T2 is one-shot only, so the interval starts when the handler writes `T2C-H` and every interrupt's service latency feeds into the next interval. T1 auto-reloads from its latch at underflow, so the period is exact however late the service; restart it at VSync and the fires stay phase-locked. A latch write takes effect one reload later, so intervals are set one fire ahead (Paradroid Layer 3, jsbeeb, after T2 was tried first; [layer-3-scroll.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-3-scroll.md)). This refines the "raster split" pattern above, which uses one-shot T1 re-armed per fire.
+- **The `-2` in `N = 64 × lines - 2` above is the `(N+2)` anatomy at work**, and both ports carry it: Edge Grinder's `T1_I1 = 56*SL - 4*SL - 2` and `T1_I2 = 40*SL - 2` (SL = 64) give 6,802 and 5,122 cycles, measured with breakpoints on the two handlers (2026-09-02). Paradroid's `T1_TUNE = -4 * SL - 32` adds the ~4-scanline CA1 service latency and a sub-scanline centring term. All on [[timing/field-timing]]. **Take the phase from the emulator, not from the arithmetic**: it is a property of the whole IRQ path and drifted ~6 µs as the handler changed.
+- **A `&FE44` read at a fixed point in a VSync-locked loop is not a random seed** (see the flag above); nor is **User VIA T1C-L unless it is free-running** — code that had retuned it to continuous mode with a `&00FF` latch handed the game a counter spanning 0-255 every 257 µs, phase-locked to a deterministic boot: the same value every time (Paradroid, 2026-08-30, jsbeeb).
+- **A T1 difference used as a stopwatch is only modular while the counter does not pass zero between the reads.** When it does, that sample gains ~65,536 ticks (131,000 cycles), and because the reload point drifts slowly the bad readings come in consecutive runs. Paradroid's `DEBUG_TIME` reported 2,903 cycles for code measured at 1,009 by breakpoints (2026-08-26, jsbeeb).
+- **T2's two bytes are read one after the other and the counter can roll between them**, so an elapsed reading can come out 256 µs smaller than the mark before it; an unsigned maximum then stores a ~65,000 µs junk value. A frame longer than 65.5 ms wraps the counter outright. Reject a sample whose subtraction borrows (Edge, 2026-09-04, jsbeeb; three readings of three were junk before the fix; [performance.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/performance.md)).
 
 ---
 
