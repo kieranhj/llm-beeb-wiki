@@ -2,8 +2,8 @@
 title: Paged ROM / Sideways RAM
 type: memory
 tags: [paged-rom, sideways-rom, sideways-ram, andy]
-sources: [naug-ch12-memory, beebwiki-andy, master-arm, master-rm]
-updated: 2026-05-16
+sources: [naug-ch12-memory, beebwiki-andy, master-arm, master-rm, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # Paged ROM / Sideways RAM
@@ -70,6 +70,8 @@ LDA #&44 : JSR &FFF4
 
 The OS test method (per §12.2 p159-160): switch in the candidate bank via `&FE30`, write a byte at `&80xx` (within the bank), read it back. If the read matches, the bank is RAM.
 
+**Measured in practice (Paradroid, 2026-08-29 — [[sources/beeb-port-kit-hardware-facts]] §5):** on a **Model B, do not assume banks 4-7 are the RAM** — the "banks 4-7" wording above is the OSBYTE's own frame. KC's emulator had sideways RAM in slots 0-3; a game that assumed 4-7 unpacked its banks into slots that were not there, every `*LOAD` appeared to succeed, and the first call into bank code crashed. Probe at boot instead — see "Measured in practice" below.
+
 **`OSBYTE &45`** returns which SWR banks are allocated as "extended addressing" (used as workspace by ROMs).
 
 SWR is commonly used to:
@@ -120,6 +122,29 @@ The `&FFFE`-prefix form is a Tube-safe convention.
 **B+ shadow trick:** on the B+ specifically, the paged-in ANDY window at `&A000-&AFFF` exposes a 4 KB chunk of the shadow display memory. Writing here directly modifies what the shadow screen displays — useful for fast back-buffer fills. Behaviour with shadow display disabled is undocumented.
 
 See [[memory/memory-map]] for the wider layout. See [[memory/shadow-ram]] for screen-area RAM bank-switching (`&FE34` ACCCON), which is a separate mechanism.
+
+## Measured in practice — two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up. Paradroid keeps four 16K sideways-RAM banks of data and code on a Model B; Edge Grinder uses slots 4-7 plus ANDY and HAZEL on a Master 128.
+
+### ANDY, measured
+
+- **ANDY is 4K at `&8000-&8FFF`, selected by ROMSEL bit 7, and it overlays ONLY that 4K.** Writing `&AA` to `&8000` with bank 4 selected and `&55` to `&8000` with `&84` selected gives back `&55` under `&84` and `&AA` under `4`; `&9000` is the selected bank either way. **The test has to be machine code**: BASIC is itself the ROM at `&8000`, so paging ANDY in from a BASIC session removes the interpreter mid-statement and hangs (Edge, 2026-09-04, jsbeeb, from 6502 in main RAM; [layer-7-music.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-7-music.md)).
+- **The loader cannot write into ANDY while the filing system is running**; Edge Grinder loads the ANDY stream before its last file and unpacks it afterwards (Layer 7, 2026-09-04). Same rule as HAZEL on [[memory/shadow-ram]].
+
+### Model B sideways RAM: probe, do not assume
+
+- **Do not assume banks 4-7** (see the note under "Sideways RAM" above). On a machine that has 4-7 (jsbeeb, the development desk) the assumption is right by coincidence (2026-08-29, KC's emulator configuration; [intro.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/intro.md)).
+- **Probe at boot, with stnicc-beeb's method**: sixteen DISTINCT values, because a board decoding three select bits answers for N and N+8 with the same RAM (bank aliasing); a second, latched pass for Solidisk boards, which want the index in the User VIA and `&FE32` too, run only when the first pass found fewer than four. **Probe only banks the MOS found no ROM in** (`&02A1`, the ROM type table): the probe writes a byte at `&8008`, and doing that to a live utility ROM or a sideways-RAM filing system hangs a working machine. Select the bank (`STY ROMSEL`) before reading the byte you save, or the restore stage puts bank 0's byte into every RAM bank (built and measured 2026-08-29, jsbeeb `B-DFS1.2` with eight RAM banks, and a Master; [layer-13-compatibility.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-13-compatibility.md)).
+- **Take the four highest-numbered RAM banks**: the banks that matter to other people sit low, and on a machine with exactly 4-7 the answer is unchanged (decided 2026-08-29, KC).
+- **A bank-number handover at `&0A00` (the printer buffer) survives BASIC dispatching the next exec line, DFS loading over `&1100-&2FFF`, and MODE 1's clear of `&3000-&7FFF`.** It does NOT survive a program that unpacks tables over `&0400-&1BFF`; that is how the 4-7 assumption crept back in (2026-08-29, jsbeeb; `&0A00` reads `FF` after both refusal paths).
+
+### Paging discipline
+
+- **Only one bank is visible at a time, and the IRQ fires with whatever the foreground has paged.** An IRQ that needs a bank must save the ROMSEL shadow (`&F4`), page, and restore both; writing the shadow first is what keeps the claim consistent (Paradroid's sound tick, 2026-08-21, jsbeeb; ~60-80 cycles of overhead; [layer-11e-sound.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-11e-sound.md)). This is the practical form of "**DO NOT** write `&FE30` directly" above for a program that has taken IRQ1V and owns the machine.
+- **Bank code may call main RAM freely; main RAM may call into a bank only with that bank paged**, and a bank routine may not call main-RAM code that pages a different bank and restores somebody else's. Both ports broke the second rule within a day of writing it down (Paradroid's resident depacker, 2026-08-29; Edge's `bank_call`, 2026-09-06; [layer-9h-keyredef.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-9h-keyredef.md)).
+- **The DFS ROM is paged in at `&8000` during a filing-system call**, so a bank cannot be loaded at `&8000` even uncompressed; stage below and copy or unpack (Paradroid Layer 13d, jsbeeb). See [[techniques/zx0-loading]].
+- **jsbeeb's `B-DFS1.2` model has eight sideways RAM banks; a Master model has 4-7** ([[tools/emulators]]).
 
 ---
 

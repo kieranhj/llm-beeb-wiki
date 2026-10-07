@@ -2,8 +2,8 @@
 title: OS Workspace (Pages 1, 2, 3)
 type: memory
 tags: [workspace, mos, vectors, page-two, page-three]
-sources: [naug-ch06-os-introduction, naug-ch13-video, allmem-ripley-harston, master-arm, master-rm]
-updated: 2026-05-16
+sources: [naug-ch06-os-introduction, naug-ch13-video, allmem-ripley-harston, master-arm, master-rm, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # OS Workspace — Pages 1, 2, 3
@@ -188,6 +188,30 @@ Vector-number indexing (per ARM Ch 11 vector table): `vector_number = (vector_ad
 - [[os/calls]] — OS entry-point reference.
 - [[os/interrupts]] — IRQ handler conventions and `&FC` usage.
 - [[os/paged-roms]] — extended vectors install pattern (the high-level companion to the &0D9F-&0DEF detail above).
+
+## Measured in practice — reclaiming MOS workspace in two C64 → BBC ports (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up. Both ports own the machine outright once loaded (IRQ1V taken, no return to BASIC), which is the "going fully native" case above; the table says what each page cost to reclaim and when it became safe.
+
+| Range | What it is | Yours when | Trap |
+|---|---|---|---|
+| `&0100-&017F` | bottom half of the stack page | measured untouched through play, deck load, console and game over including `*LOAD`s (Paradroid) | not loadable from disc; paths not exercised invalidate the measurement |
+| `&0400-&07FF` | language workspace | after `*RUN` (Edge, verified by sentinel) | Paradroid's briefing lives here; the ceiling is `&0800` |
+| `&0800-&08FF` | MOS sound: `&800-&83F` workspace, `&840-&87F` channel queues, `&8C0-&8FF` envelopes | only while you own IRQ1V | see "the MOS plays your data as notes" below |
+| `&0800-&0BFF` | sound, serial, soft keys | once the MOS interrupt is gone (Edge, sentinel) | |
+| `&0A00` | printer buffer | survives BASIC exec, DFS loads, `VDU 22` (Paradroid) | inside a loader's tables — a byte parked here did not survive a program unpacking over `&0400-&1BFF` |
+| `&0C00-&0CFF` | user-defined characters | once the MOS is not printing | on the Master the real font is at `&8900` ([[hardware/master-overview]]), so Edge keeps player state here |
+| `&0D00-&0D5F` | NMI routine (DFS) | never while the disc is in use | |
+| `&0D9F+` | extended vector table; DFS 1.2's FILEV route into its ROM | after the last filing call | trample it and the next call crashes |
+| `&0DF0-&0DFF` | ROM private workspace | excluded | |
+| `&0E00-&10FF` | DFS shared workspace | dead from the last `*LOAD` on | nothing may be LOADED there |
+| `&1100-&18FF` | DFS random-access buffers, untouched by `*LOAD`/OSFILE | immediately; worth 2K below `PAGE = &1900` | `!BOOT`'s exec buffer, while the exec file is open |
+
+Measured: Paradroid Layers 3, 11e, 13 (August 2026), jsbeeb; Edge Layer 2 onward (September 2026), jsbeeb — [Paradroid CLAUDE.md](https://github.com/kieranhj/paradroid-beeb/blob/main/CLAUDE.md), [layer-11e-sound.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-11e-sound.md), [layer-13-compatibility.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-13-compatibility.md), [Edge CLAUDE.md](https://github.com/kieranhj/edge-beeb/blob/master/CLAUDE.md).
+
+- **The MOS plays your data as notes.** Hand IRQ1V back with a charset over `&0800-&08FF` and the MOS's 100 Hz sound driver finds its queue pointers and buffers full of bitmaps: a quiet, rising sequence that a game's own mute cannot touch (chip read CH0 attenuation 14, CH1 13, periods falling 401 → 146 → 95). Zeroing `&0800-&087F` stopped it instantly. **Sound suppression (`OSBYTE &D2`) does NOT stop it** — it gates new `SOUND` commands, not a draining queue. `OSBYTE &0F, X=0` (flush every buffer) BEFORE uninstalling the IRQ is the fix (Paradroid, 2026-08-26, jsbeeb). See [[os/sound]].
+- **The MOS's 100 Hz IRQ writes `&0800-&08FF` while it owns the machine**, so a compressed stream staged there at boot is corrupted mid-decode: one byte changed sends the depacker off a wrong offset (542 wrong bytes across a credits screen, found by diffing the depacked screen, not by looking at it). `&1100` is the safe staging address on a Model B (Paradroid, 2026-08-30, jsbeeb). See [[techniques/zx0-loading]].
+- **`VDU 22` clears `&3000-&7FFF`**, what the OS thinks is its screen, so data loaded above `&3000` is wiped before it can be read; it also re-enables R8 and the cursor (Paradroid Layer 3; Edge 2026-09-02). See [[os/vdu]].
 
 ---
 

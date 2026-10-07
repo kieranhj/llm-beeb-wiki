@@ -2,9 +2,9 @@
 title: Shadow RAM & ACCCON
 type: memory
 tags: [shadow-ram, acccon, hazel, double-buffer]
-sources: [naug-ch12-memory, master-arm, master-rm]
+sources: [naug-ch12-memory, master-arm, master-rm, beeb-port-kit-hardware-facts]
 machines: [BBC B+, Master 128, Master Compact]
-updated: 2026-05-16
+updated: 2026-09-07
 ---
 
 # Shadow RAM & ACCCON
@@ -130,6 +130,32 @@ Prefer the OSBYTEs over raw ACCCON writes — the MOS keeps an internal copy and
 ## HAZEL (Master)
 
 8 KB of RAM at `&C000-&DFFF` overlaying MOS VDU driver. Selected by ACCCON **Y**. Designed for filing-system workspace — DFS on Master can put its tables there instead of stealing pages from `&0E00`, raising PAGE for the user. Must be cleared before VDU output resumes.
+
+## Measured in practice — Edge Grinder on a Master 128 (2026)
+
+Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up. Edge Grinder is a shadow-RAM double buffer (a 16K play area in each of main and shadow at `&4000-&7FFF`, the display bit flipped in the VSync handler) that also takes HAZEL and ANDY for its music.
+
+### ACCCON and the display
+
+- **The shadow display bit (D, bit 0) flips cleanly inside the VSync handler**, so a main/shadow double buffer can be swapped in vertical blanking with the scroll address — the "double-buffered animation" above, done directly rather than through the OSBYTEs (2026-09-02, jsbeeb: 10 game frames in 20 fields with a two-field frame lock; [layer-2-display.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-2-display.md)).
+- **The display bank can be switched INSIDE a frame**, taking effect at the next character fetch: a VSync-synced delay loop flipping D put main RAM above the switch and shadow below it, with a step part way along the scanline the write landed in. Place the write in horizontal blanking, or in a row nobody fetches. **jsbeeb only; b-em has NOT been checked, and real hardware is untested** (2026-09-04; [layer-6e-titles.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-6e-titles.md)). [[techniques/parallax-bars]] relies on the same switch.
+- **The hardware wrap applies inside whichever bank is displayed.** With D = 1 and the wrap at 8K, a display crossing `&8000` lands on shadow `&6000`, not main. One ring per bank (2026-09-04, jsbeeb). See [[hardware/address-translation]].
+- **Nothing displayed may live below `&3000`.** jsbeeb displayed a panel at `&2000` under both shadow states; b-em showed garbage on alternate frames. The two emulators disagree about what the video fetches there with D set, and **real hardware is untested either way** (2026-09-02, jsbeeb and b-em; [decisions.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/decisions.md) 17). See [[tools/emulators]].
+- **The shadow screen is 20K of RAM nobody is looking at while main is displayed**, so with D = 0 and X = 1 (CPU sees shadow) it is a free staging area for compressed streams at boot (2026-09-04; [layer-9-loader.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-9-loader.md)). See [[techniques/zx0-loading]].
+
+### HAZEL
+
+- **HAZEL is the filing system's workspace. Take it, and BREAK must clear memory.** A soft BREAK out of the game gave `Acorn MOS` with no DFS banner and `*CAT` returned nothing. `OSBYTE 200, X=3` at the top of the program makes BREAK a power-on reset (bit 1) and disables ESCAPE (bit 0); afterwards BREAK gave a clean `Acorn 1770 DFS` and SHIFT+BREAK reloaded the game. Load HAZEL's contents LAST and touch the disc no more (2026-09-04, jsbeeb, before and after; [layer-7-music.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-7-music.md)). See [[os/break-intercept]].
+- **OSFILE cannot write into HAZEL** (the MOS would be overwriting its own workspace from underneath itself); stage in RAM and copy or unpack up with Y set (stated as the reason for the staging design).
+- **`&FFFE` on this Master reads `&E59E`**, above HAZEL's `&DFFF`, so paging HAZEL in cannot break interrupt dispatch (2026-09-04, jsbeeb, read out of the machine).
+- **Sideways bank `&BFFF` and HAZEL `&C000` are adjacent and both visible at once** (different registers, different windows), so a pointer walking off the end of a bank lands in HAZEL and a data stream can lie across the join. Two of Edge Grinder's eleven music streams do (2026-09-04, jsbeeb: SN76489 captures match the reference across the join).
+- ANDY (ROMSEL bit 7) is a separate mechanism, measured on [[memory/paged-rom]].
+
+### Low RAM reclaimed on the Master
+
+- **`&0C00` (the MOS user-font page) and `&0800-&0BFF` (sound, serial, soft keys) are yours once the MOS interrupt is gone; `&0400-&07BF` (language workspace) once `*RUN` has handed over.** Both verified by sentinel (Layer 2 onward, September 2026). The Master keeps its real font and soft keys in the second 32K ([[memory/os-workspace]]), which is why these pages are free here.
+
+A real Master 128 runs the Paradroid port (shadow RAM, a different `PAGE`, the 65C12 it does not use) — reported by KC 2026-09-06, the first time either port ran on hardware rather than an emulator.
 
 ---
 

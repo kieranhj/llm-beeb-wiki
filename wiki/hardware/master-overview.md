@@ -2,8 +2,8 @@
 title: BBC Master Series — Hardware Overview
 type: hardware
 tags: [master, m128, architecture, overview]
-sources: [master-arm, master-rm]
-updated: 2026-05-16
+sources: [master-arm, master-rm, beeb-port-kit-hardware-facts]
+updated: 2026-09-07
 ---
 
 # BBC Master Series — Hardware Overview
@@ -95,6 +95,10 @@ No speech on the Master — those signals are reclaimed for the 146818. Sound an
 - Screen display + CRTC multiplexer specifics: [[hardware/crtc-6845]], [[video/hardware-scrolling]].
 - Internal Tube vs external Tube: [[os/tube]].
 - B/B+/Master cross-model differences: [[synthesis/model-differences]].
+
+## Measured on a Master 128 (2026)
+
+[Edge Grinder](https://github.com/kieranhj/edge-beeb) is a C64 port built on the Master specifically (shadow-RAM double buffer, ANDY + HAZEL + four sideways banks for a 349-second tune, a VideoNuLA test build), and its measurements — all in jsbeeb through an MCP, real hardware only where stated — are filed where they belong: ACCCON, the in-frame display switch, HAZEL and BREAK on [[memory/shadow-ram]]; ANDY's true extent (4K, ROMSEL bit 7, overlaying only `&8000-&8FFF`, and why the test must be machine code) on [[memory/paged-rom]]; `&FFFE = &E59E` and the reclaimable low pages on [[os/interrupts]] and [[memory/os-workspace]]; the hardware-wrap sizes on [[hardware/system-via]]; the NuLA registers on [[hardware/video-ula]]; the measured internal key numbers on [[os/keyboard]]. Source: [[sources/beeb-port-kit-hardware-facts]]. A real Master 128 also runs the Model B [Paradroid](https://github.com/kieranhj/paradroid-beeb) port (reported by KC, 2026-09-06) — the first time either port ran on hardware rather than an emulator; real B, B+ and second processors remain untested.
 
 ---
 
