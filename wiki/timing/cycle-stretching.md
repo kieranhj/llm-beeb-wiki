@@ -2,9 +2,9 @@
 title: Cycle Stretching
 type: timing
 tags: [timing, cycle-stretching, 1mhz, slow-bus, performance, sheila]
-sources: [beebwiki-cycle-stretching, naug-ch11-hardware, naug-ch23-1mhz-bus, beeb-port-kit-hardware-facts]
+sources: [beebwiki-cycle-stretching, naug-ch11-hardware, naug-ch23-1mhz-bus, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact]
-updated: 2026-09-07
+updated: 2026-11-18
 ---
 
 # Cycle Stretching
@@ -38,7 +38,7 @@ Net effect: every `LDA &FE40` (System VIA), every `LDA &FE00` (CRTC), every `LDA
 
 (Source: [[sources/beebwiki-cycle-stretching]].)
 
-**The Video ULA, the Tube, the FDC, and the ROMSEL/ACCCON registers are NOT stretched** — surprising-but-true. Video ULA palette writes (`STA &FE21`) cost a flat 4 cycles; CRTC register writes (`STA &FE01`) cost 5-6.
+**The Video ULA, the Tube, the FDC, and the ROMSEL/ACCCON registers are NOT stretched** — surprising-but-true. Video ULA palette writes (`STA &FE21`) cost a flat 4 cycles; CRTC register writes (`STA &FE01`) cost 5-6. **Both measured on a Master in 2026-11** (below): `&FE21` and `&FE34` as 2 MHz on two real Masters, and a back-to-back `STA &FE01` as 6 cycles in jsbeeb.
 
 The Master cartridge slot via the `&FCFC-&FCFF` page-wide register can be switched to 2 MHz access (OSBYTE `&6B` X=1, or ACCCON `IFJ` bit) — see [[hardware/1mhz-bus]] Master cartridge section.
 
@@ -107,7 +107,20 @@ See [[hardware/1mhz-bus]] for the cartridge / FRED / JIM specifics, including th
 
 ## Note from the 2026 port measurements
 
-A stated (not measured) claim in [Edge Grinder](https://github.com/kieranhj/edge-beeb)'s title-page write-up disagrees with the Video ULA row above: it attributes the phase stability of a per-scanline loop that opens with `STA &FE21` to that write being "on the 1 MHz bus". This page, from [[sources/beebwiki-cycle-stretching]], says the Video ULA is a 2 MHz device and the write is a flat 4c. The port's pad constant was tuned by eye and the bus timing was never measured, so **this page's claim stands** and the disagreement is recorded on [[hardware/video-ula]] and in [[sources/beeb-port-kit-hardware-facts]] as something to measure directly. The cycle constants the ports did measure — 128 CPU cycles a scanline, 39,936 a field — are on [[timing/field-timing]].
+A stated (not measured) claim in [Edge Grinder](https://github.com/kieranhj/edge-beeb)'s title-page write-up disagreed with the Video ULA row above: it attributed the phase stability of a per-scanline loop that opens with `STA &FE21` to that write being "on the 1 MHz bus". This page, from [[sources/beebwiki-cycle-stretching]], said 2 MHz and a flat 4c, and the disagreement was left open to measure ([[sources/beeb-port-kit-hardware-facts]]). The cycle constants the ports did measure — 128 CPU cycles a scanline, 39,936 a field — are on [[timing/field-timing]].
+
+**Settled on real hardware, 2026-11** ([[sources/beeb-port-kit-hardware-facts-2026-11]] §1, §2, §4; phX, jsbeeb 2.10.2 Master and KC's two real Masters, hwtest cards 6 and A):
+
+| Access | Measured | Platform |
+|---|---|---|
+| `STA`/`STX &FE21` back to back | colour changes every **4 cycles** (stripes on the ticks' spacing); a write lands the same way at odd (C0 43) and even (C0 54) characters — **not stretched** | real Master ×2; jsbeeb agrees (`is1MHzAccess` makes `&FE20-&FE3F` 2 MHz) |
+| `LDA # : STA &FE21` | 6 cycles: ~21 independent palette writes in a 128-cycle line, 32 of preloaded values | jsbeeb |
+| `STA &FE34` (ACCCON D) | acts at the character written at an odd C0 (59) as at an even one (48) — a 2 MHz write | real Master ×2; jsbeeb |
+| `STA &FE01` back to back | **6 cycles**; every CRTC write lands at an even C0 (a 1 MHz boundary), and moving the code one cycle moves no write | jsbeeb 2.10.2 |
+
+So the Video ULA and ACCCON rows of the table stand, now measured, and the CRTC's stretch shows as writes quantised to 1 MHz slots. (Edge's loop is only as stable as its passes are equal; see [[hardware/video-ula]].) Where in the character a palette write lands is a separate, unresolved question, also on [[hardware/video-ula]].
+
+**A related trap that is not stretching**: a taken branch to another page, or an indexed read crossing one, costs a cycle, so moving code moves cycles with no instruction changed — which matters in a raster loop with timed writes ([[sources/beeb-port-kit-hardware-facts-2026-11]] §8; Edge's credit raster, Stryker's Run's 165 cycles a pass from an 824-byte slide).
 
 ---
 

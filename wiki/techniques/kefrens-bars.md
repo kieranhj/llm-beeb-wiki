@@ -2,8 +2,8 @@
 title: Kefrens Bars (single-scanline beam race)
 type: technique
 tags: [crtc, single-rasterline, beam-race, kefrens, alcatraz, mode-1, sine]
-sources: [twisted-brain]
-updated: 2026-05-16
+sources: [twisted-brain, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Kefrens Bars (Alcatraz Bars)
@@ -98,6 +98,8 @@ So that scanline runs as another 1-scanline cycle (display only 1 raster), then 
 This is precisely documented in the ACCC compendium as the R.L.A.L. ("rupture ligne à ligne" — line-to-line rupture) recipe (§12.2.1): on CRTC 0, exiting from a single-scanline-rupture-mode requires that R4 (or R9) be set to its new value **before C0=0 of the rebalance scanline**, not during it. The BBC scene's rebalance frame works around this without requiring the cycle-exact precision of the R.L.A.L. recipe.
 
 See [[hardware/crtc-internal-counters]] for the full counter model, and [[hardware/crtc-6845-advanced]] for the per-register write-window summary.
+
+**Later measurements (2026-11)** bear on this ([[sources/beeb-port-kit-hardware-facts-2026-11]] §1): jsbeeb latches "last line" at exactly C0 = 1 (its `video.js` credits Twisted Brain for that figure), and on two real Masters the latch has been taken by C0 54 — an R4 for the next frame written at C0 54 of the last line is safe (phX hwtest card 8). Both are consistent with the mechanism above: an R4 written in the loop body is too late for the line it was meant for. Entering one-line frames likewise has to happen in the previous frame's last line after C0 = 1 (phX, jsbeeb).
 
 **Knock-on effect**: subsequent effects (especially [[techniques/parallax-bars]]) see the wrong ACCCON-switch timing and exhibit single-pixel glitch rows. The drift pollutes the next effect's timing too.
 

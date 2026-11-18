@@ -2,8 +2,8 @@
 title: DFS and ADFS disc formats
 type: os
 tags: [dfs, adfs, filing-system, catalogue, fsm, sectors, disc-format]
-sources: [master-rm, naug-ch16-filing]
-updated: 2026-05-16
+sources: [master-rm, naug-ch16-filing, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # DFS and ADFS disc formats — sector-level layout
@@ -51,6 +51,15 @@ Files are **contiguous byte streams** starting at a sector boundary. The last se
 | 14 | bits 0-1: high 2 bits of start sector; bits 2-3: load addr high; bits 4-5: length high; bits 6-7: exec addr high |
 | 15 | low 8 bits of file 1 start sector |
 | ... | (repeat for up to 31 files) |
+
+### The 31-file limit binds before the sector count on a big program
+
+**Measured (1942, Master 128, 2026-09-24 to 10-15 — [[sources/beeb-port-kit-hardware-facts-2026-11]] §6):** 1942's release disc ran 758 of 800 sectors and **31 of 31 catalogue entries**. Pack per-level data as fixed-size chunks of ONE file (1942: a 7-sector chunk a stage) and put small fixed-address pieces inside another file at known offsets. With the Baron assembler, the count that binds is Baron's raw image, which writes a DFS file per section, not the final disc (1942 decisions 87, 116, 138, 161).
+
+- **A double-sided `.dsd` carries side 1 on from the cylinder where side 0's files end** in phX's layout, which reads both sides with its own 1770 driver (`phX/docs/decisions.md` 32, 58).
+- **Lay files out in boot access order**: jsbeeb steps the head a track at a time and reads ~8.8K a second, and re-laying Stryker's Run's files in load order cut its boot from 120 head steps to 32 (12.68 s → 12.38 s; jsbeeb 2.10.2, 2026-10-24).
+- **`*TYPE <file>` prints a text file at any prompt and needs no language ROM** (it is the filing system's own command, through OSASCI), so a build stamp kept as a disc file (`INFO`) can be read from the disc a week later; DFS 1.20 and the Master's 1770 DFS (kit, jsbeeb, 2026-09-11).
+- **Catalogue reads from your own driver**: 1942 and phX read the catalogue (track 0, sectors 0-1) once at boot into a cache and look files up there after `*FX 140` (see [[hardware/wd1770]]).
 
 ### File attributes
 

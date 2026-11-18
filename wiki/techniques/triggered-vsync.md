@@ -2,8 +2,8 @@
 title: Triggered VSync (R7=C4 mid-line)
 type: technique
 tags: [crtc, vsync, r7, raster, mid-line, blocked-vsync]
-sources: [accc-compendium]
-updated: 2026-05-16
+sources: [accc-compendium, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Triggered VSync (R7=C4 mid-line)
@@ -70,6 +70,10 @@ If you find your VSync mysteriously stopping for one frame, this is a candidate 
 A different VSync pathology, documented in ACCC §16.6: by combining `R7=0`, `R4=0`, `R3h=0` (or other configurations that produce `C4=R7` repeatedly without C4 ever changing), you can make the chip generate VSync continuously. The TV cannot lock. Don't do this unintentionally.
 
 CRTC 0 has both protection mechanisms (R7-during-VSync ignore + equality-change detection) so accidentally producing limitless VSync requires actively defeating both — possible but unlikely in normal code. CRTC 3/4 lack the second mechanism so they're easier to get into this state. Not directly relevant to BBC.
+
+## Measured on the BBC (2026-11)
+
+- **jsbeeb 2.10's 6845 starts VSync the instant C4 = R7** (its HD6845SP model, `video.js`), so in a frame of one-row cycles R7 = 0 may be written only once the last cycle is past its row 0 — in Isometrikum's case that left lines 310-311, the write landing at 310:39, "the riskiest item there for real hardware, not yet tried on one" ([[sources/beeb-port-kit-hardware-facts-2026-11]] §11; jsbeeb 2.10.2, 2026-11-07). Consistent with this page's "trigger" case; the real chip's behaviour is not measured.
 
 ## When to reach for this
 

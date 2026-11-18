@@ -2,8 +2,8 @@
 title: MOS Sound Interface
 type: os
 tags: [sound, osword, envelope, bell]
-sources: [naug-ch21-sound, beeb-port-kit-hardware-facts]
-updated: 2026-09-07
+sources: [naug-ch21-sound, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # MOS Sound Interface
@@ -125,6 +125,10 @@ Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kiera
 
 - **The MOS plays your data as notes.** Hand IRQ1V back with a character set over `&0800-&08FF` and the 100 Hz sound driver finds its queue pointers and channel buffers full of bitmaps: a quiet, rising sequence that a game's own mute cannot touch (chip read CH0 attenuation 14, CH1 13, periods falling 401 → 146 → 95). Zeroing `&0800-&087F` stopped it instantly. **`OSBYTE &D2` does NOT stop it** — it gates new `SOUND` commands, not a draining queue. **`OSBYTE &0F, X=0` (flush every buffer) BEFORE uninstalling the IRQ is the fix** (Paradroid, 2026-08-26, jsbeeb; [layer-11e-sound.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-11e-sound.md)). Layout of that page on [[memory/os-workspace]].
 - **The 100 Hz sound driver writes `&0800-&08FF` while the MOS owns the machine**, which corrupted a compressed stream staged there at boot (Paradroid, 2026-08-30). See [[techniques/zx0-loading]].
+- **The BREAK beep under a `*RUN` boot never ends on a Model B.** A `*RUN` boot (disc option 2) is entered with interrupts off (P = `&35` at the `!BOOT` stub, `B-DFS1.2` and `Master` alike); on the B, channel 0 still sounded after 400 frames, 523 Hz at attenuation 2. The debug build's `*EXEC` boot, which starts BASIC with interrupts on, left every channel at 15; the Master was silent either way. **Write attenuation 15 to all four channels yourself** (the kit's `install_irq`; Edge's `sn_write` sequence). **OSBYTE 126 does not stop it**: at the stub no ESCAPE is pending (`&FF` = `&00`, `&0276` = `&00`), and in OS 1.20 OSBYTE 126 at `&E65C` does nothing without one (`BIT &FF : BPL` returns X=0); only with an ESCAPE pending and `&0276` = 0 does it purge the buffers, and purging a sound buffer (`&E1AD` → `&ECA2` → `JSR &EB03`) is what silences a channel — so it silences sound only as an ESCAPE side effect (cf. [[os/escape]]). hexwab recommended OSBYTE 126 for the beep (paradroid-beeb #18); on this evidence it does nothing at that point in the boot (kit template, 2026-09-11, jsbeeb; code read from OS 1.20's `os.txt`; MOS 3.20 not disassembled — [[sources/beeb-port-kit-hardware-facts-2026-11]] §4). A real machine's beep under a `*RUN` boot is not measured.
+- **MOS 1.20 and MOS 3.20 write the same SN76489 bytes in the same ticks** for the same SOUND and ENVELOPE blocks (Stryker's Run's 8 effects, jsbeeb 2.10.2 `B-DFS1.2` and Master, 2026-10-25), so a capture made on one fits the other.
+- **What the MOS sound driver costs a game that keeps it** (MOS 3.20, Stryker's Run's original): sound queues and envelopes were 6.8% of all CPU cycles, inside a 100 Hz tick that takes ~16% in play; the tick re-enables interrupts (`CLI` at `&E720`) around its sound processing, so interrupts nest. Replacing it with the game's own 50 Hz driver took the whole interrupt budget from 10.6% to 2.2% (2026-10-16, jsbeeb 2.5.0; decision 25). See [[os/interrupts]].
+- **Filing-system calls and the MOS sound driver**: on a Master, an IRQ1V handler that chains to the MOS across a `*LOAD` hands the 100 Hz tick back, and the MOS wrote 35 bytes of `&0800-&08FF` during one 26-sector load — anything of yours parked there must be saved across the call (1942, 2026-09-13, jsbeeb). See [[os/interrupts]].
 - **A direct chip write from an IRQ coexists with a foreground keyboard poll** if it saves and restores DDRA and ORA around its strobe and touches only latch line 0 (Paradroid, 2026-08-21, 8,192 polls each way). See [[hardware/sn76489]], [[hardware/system-via]].
 
 ---

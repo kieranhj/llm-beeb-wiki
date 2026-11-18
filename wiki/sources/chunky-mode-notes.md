@@ -7,7 +7,7 @@ author: [Tom Seddon, Julian Brown]
 dates: [unknown, 2015-05-10]
 local: raw/notes/chunky-mode.txt
 tags: [chunky, video, mode-7, address-translation, ttxvdu, custom-modes]
-updated: 2026-05-16
+updated: 2026-11-18
 ---
 
 # Chunky Mode — Combined Notes
@@ -68,6 +68,10 @@ Caveats noted by Seddon himself:
 - The 8c/byte budget assumes `LDA abs, STA abs` with both operands known at assemble time. Indexed mode (`LDA abs,X`) costs 9c/byte → 360c/row → too tight.
 - The CRTC fetches `&7C00-&7FFF` then *wraps* to `&7C00`, so you need two routines: one to fill from the address that's about to be read past `&8000`, and one for `&7C00`. Or accept losing 13 150 bytes of RAM to alignment.
 - **Vertical rupture** ([[techniques/vertical-rupture]]) would be a way to avoid the wrap-bookkeeping.
+
+## Contradicted by (real Master, 2026-11)
+
+- **The Master's high-speed interleave is not "`XOR &40` or `XOR &80` depending on RA0".** Measured on KC's real Master (phX hwtest card J, MODE 1, R12/R13 `&2028`, MA11 clear; photographs read, 2026-11-15): alternate characters (one 1 MHz phase) fetch `&7C00 + (MA AND &3FF)` **`XOR &40` on one scanline and `XOR &C0` on the next** (MA6, then MA6 and MA7) — **never MA7 alone**; bits 8-9 never flip; which RA parity takes which was not read; and the flipped characters follow the 1 MHz clock, not C0. The fetch came from `&7C00` with MA11 clear. [[sources/beeb-port-kit-hardware-facts-2026-11]] §1; detail on [[hardware/address-translation]] and [[techniques/chunky-mode]]. The summary above is left as Julian Brown's report has it.
 
 ## Filed into
 

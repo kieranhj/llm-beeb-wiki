@@ -2,8 +2,8 @@
 title: Single-Rasterline Vertical Rupture
 type: technique
 tags: [crtc, vertical-rupture, raster, single-scanline, beam-race, demo]
-sources: [twisted-brain]
-updated: 2026-05-16
+sources: [twisted-brain, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Single-Rasterline Vertical Rupture
@@ -93,6 +93,9 @@ R12/R13 are latched at the start of each CRTC cycle (see [[hardware/crtc-6845]])
 - **Vertical Total R4 rewrites must land before C0=0 of the rebalance scanline**. The chip evaluates the "Last Line" condition (`C9=R9 AND C4=R4`) only when C0<2 ([[sources/accc-compendium]] §12.2.1, §13.2.1). R4 writes that land later are stored but cannot change the Last-Line state for that scanline. Symptom: R4 written during the would-be rebalance cycle's loop body takes effect one cycle late, frame becomes 313 lines. Fix via 311-line rebalance frame in next module's kill function — see [[techniques/kefrens-bars]] and [[hardware/crtc-internal-counters]].
 - **BeebEm and MAME are not cycle-accurate enough** for single-rasterline effects. Test on the currently-accurate emulators (**jsbeeb**, **b2**, **beebjit**) and ideally on real hardware. b-em was the historical gold standard (and is referenced as such in pre-2024 write-ups like [[sources/twisted-brain]]) but has not kept up with the latest findings as of 2026.
 - **Master vs Model B vs B+** — generally consistent for these effects (all use HD6845SP) but the address-translator differences ([[hardware/address-translation]]) can bite if you combine single-rasterline rupture with TTX VDU routing (see [[techniques/chunky-mode]]).
+
+- **Measured on a Master (2026-11, phX; [[sources/beeb-port-kit-hardware-facts-2026-11]] §1)**: one-scanline CRTC frames (R4 = 0, R9 = 0) with R12/R13 per line work for all 268 lines of a field, the address stepping one cell on 267 of 268 line changes, and **R12/R13 written anywhere from C0 96 to 126 take effect on the next CRTC line** (jsbeeb 2.10.2). **Entering one-line frames has to happen in the current frame's LAST line, after C0 = 1**: R4/R9 = 0 written one line early never ends the frame (C9 past R9, C4 to its 7-bit wrap, the one-line frames ~148 lines late), and R5 written during a vertical adjust does the same, so the tail around a one-line section has no adjust (jsbeeb). On real Masters the next frame's R4 written at C0 54 of the last line is safe (card 8). CRTC writes land on 1 MHz slots (even C0), 6 cycles back to back.
+- **jsbeeb's frame counter steps only when C4 = R6**: a part whose frames never reach R6 (display cut with R8) leaves `frameCount` still, and jsbeeb's web display, which decays its phosphor by that count, turns the picture white — while headless harnesses pass. End each field's display with one R6 match inside blanked lines (phX, jsbeeb 2.10.2 and 2.21.1). See [[timing/field-timing]].
 
 ## What it enables
 

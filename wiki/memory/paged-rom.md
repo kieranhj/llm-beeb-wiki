@@ -2,8 +2,8 @@
 title: Paged ROM / Sideways RAM
 type: memory
 tags: [paged-rom, sideways-rom, sideways-ram, andy]
-sources: [naug-ch12-memory, beebwiki-andy, master-arm, master-rm, beeb-port-kit-hardware-facts]
-updated: 2026-09-07
+sources: [naug-ch12-memory, beebwiki-andy, master-arm, master-rm, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Paged ROM / Sideways RAM
@@ -32,7 +32,8 @@ Per [[sources/master-arm]] Ch 3 page 32, the Master's 16 ROM slots are *not* six
 - **Slots 4-7** are paired into two 32 KB ROM positions on the board. The least significant bit of ROMSEL picks the upper vs lower 16 KB of each 32 KB ROM. (So slots 4+5 share a 32 KB chip; slots 6+7 share a 32 KB chip.)
 - **Slots 0-3** are similarly paired into two 32 KB positions on a "cartridge ROM" data path.
 - **Slots 8-15** live in a single 128 KB ROM on a separate data bus (this is where MOS, BASIC, the editor, and the on-board utilities live).
-- **Sideways RAM**: the Master 128 ships with **none**, but the four slots 4-7 can be link-selected to host 4 × 16 KB SWR instead of ROM (deselecting the corresponding ROM pair in 32 KB chunks). The Master Compact ships with 4 KB SWR (ANDY only).
+- **Sideways RAM**: on a **stock Master 128, slots 4-7 are 4 × 16 KB sideways RAM**; links can select ROM in their place (deselecting the corresponding RAM in 32 KB pairs). phX's boot checks banks 4-7 are RAM before it loads and runs on KC's two stock Master 128s (`phX/docs/design-backbone.md` "B3 built" boot table; `phX/docs/memory-map.md` "Measured": `*ROMS` shows 4-7 as the sideways RAM; [[sources/beeb-port-kit-hardware-facts-2026-11]] §4 "Real hardware"). The Paradroid port, which needs four 16K banks, ran on a real Master 128 in September 2026, and jsbeeb's Master model has RAM in 4-7. The Master Compact ships with 4 KB SWR (ANDY only).
+  > **Corrected 2026-11-18.** This line said "the Master 128 ships with **none**" (attributed to [[sources/master-arm]] Ch 3 p32); it is contradicted by every stock Master measured. Whether the ARM page says that or the transcription misread a link table has not been re-checked.
 
 You don't usually need to care about this from software — ROMSEL is uniform 0-15 — but the matrix matters if you're populating ROM sockets: certain ROM-slot combinations require physical link changes.
 
@@ -107,7 +108,7 @@ This lets you treat a contiguous 64 KB of SWR as a flat data store from BASIC or
 | Machine | Size | Range | Notes |
 |---|---|---|---|
 | B+ | 12 KB | `&8000-&AFFF` | Top of shadow RAM (above the 20 KB shadow screen). Bit 7 of `&FE30` selects. |
-| Master 128 / Compact | 4 KB | `&8000-&8FFF` | Reserved for MOS use (see AllMem `&8000-&8FFF` workspace breakdown). User writes are dangerous. |
+| Master 128 / Compact | 4 KB | `&8000-&8FFF` | MOS workspace (see AllMem `&8000-&8FFF` workspace breakdown) — but the MOS touches only three of its 16 pages, each on one particular event; **all 4K is usable** by a program that avoids those events after filling it (measured map below). |
 
 **Access methods** (from [[sources/beebwiki-andy]]):
 
@@ -131,20 +132,54 @@ Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kiera
 
 - **ANDY is 4K at `&8000-&8FFF`, selected by ROMSEL bit 7, and it overlays ONLY that 4K.** Writing `&AA` to `&8000` with bank 4 selected and `&55` to `&8000` with `&84` selected gives back `&55` under `&84` and `&AA` under `4`; `&9000` is the selected bank either way. **The test has to be machine code**: BASIC is itself the ROM at `&8000`, so paging ANDY in from a BASIC session removes the interpreter mid-statement and hangs (Edge, 2026-09-04, jsbeeb, from 6502 in main RAM; [layer-7-music.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-7-music.md)).
 - **The loader cannot write into ANDY while the filing system is running**; Edge Grinder loads the ANDY stream before its last file and unpacks it afterwards (Layer 7, 2026-09-04). Same rule as HAZEL on [[memory/shadow-ram]].
+- **What the MOS actually writes in ANDY (1942, 2026-09-11, jsbeeb Master 128, MOS 3.20, 1770 DFS — [[sources/beeb-port-kit-hardware-facts-2026-11]] §4; [1942-beeb docs/andy.md](https://github.com/kieranhj/1942-beeb/blob/master/docs/andy.md)).** Machine code in main RAM paged ANDY as the kit's `unpack_andy` does, filled it, and checked it around each event:
+
+  | Page | Written by | Free for a program that... |
+  |---|---|---|
+  | `&80` | the soft-key buffer: `*KEY 1 HELLO` put "HELLO" at `&8022` | never issues `*KEY` after filling it |
+  | `&81`-`&87` | nothing tried (1,792 bytes) | always |
+  | `&88` | **`&8800`-`&882F` on every mode change and every soft BREAK**: 48 bytes of MODE 1's colour patterns and pixel masks; `&8830`-`&88FF` untouched | fills ANDY after its last mode change and reloads after a BREAK |
+  | `&89`-`&8E` | nothing tried (1,536 bytes) | always |
+  | `&8F` | user-defined characters: `VDU 23,224,...` wrote 8 bytes | never defines a character after filling it |
+
+  **None of these wrote to ANDY:** 26 OSFILE loads, `*CAT`, a second of MOS sound (`SOUND 1,-15,100,20`), PRINT, half a second idle. So **all 4K is usable** by a program that fills ANDY after its one mode change, never calls `*KEY` or `VDU 23` afterwards, and reloads after a BREAK; 1942 loads its text code at `&8000` on that basis. One that changes mode in play or keeps the MOS's VDU running has `&81`-`&87` and `&89`-`&8E` (3,328 bytes), plus `&8830` up and `&8F` if it defines no characters. **Not measured:** real hardware, MOS 3.5, ADFS/MMFS, other user-defined characters, the key buffer's full length. Measurement trap: a fill over `&80` corrupts the key buffer, so a later `*KEY` fails "Bad key".
+  > **Contradiction:** the ANDY table above (from the AllMem breakdown / ARM) calls ANDY "reserved for MOS use, user writes dangerous" and lists `&8000-&83FF` as a soft-key buffer "not available for any other use" and `&8900-&8FFF` as soft character definitions. The measurement agrees on *which* MOS features live there but shows they write only when used — the reservation is real only for a program that keeps using those features.
+- **A map of what the MOS leaves is not a map of what is free**: once ANDY was measured free, a 116-byte routine moved in and its first `jsr` ran into 1942's own text tables (first byte `&00`: BRK, "Mistake") — read what the *port* already put there (1942 BUGS #24, #29; kit gotchas class 3).
+- **Code that reads ANDY lives in main RAM**: with ANDY paged, the first 4K of the paged bank is hidden. An IRQ that pages anything must save and restore ROMSEL with the ANDY bit included (1942, 2026-09-11).
+- **ROMSEL with bit 7 set from a stale copy pages ANDY over the DFS**: on the Master under a `*RUN` boot, `&028C` read `&FF`, and restoring ROMSEL from it did exactly that. Save ROMSHAD (`&F4`) instead (phX, 2026-11-14, jsbeeb Master MOS 3.20; `phX/docs/hwtest.md` "Traps found on the way"). See [[memory/os-workspace]].
 
 ### Model B sideways RAM: probe, do not assume
 
 - **Do not assume banks 4-7** (see the note under "Sideways RAM" above). On a machine that has 4-7 (jsbeeb, the development desk) the assumption is right by coincidence (2026-08-29, KC's emulator configuration; [intro.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/intro.md)).
 - **Probe at boot, with stnicc-beeb's method**: sixteen DISTINCT values, because a board decoding three select bits answers for N and N+8 with the same RAM (bank aliasing); a second, latched pass for Solidisk boards, which want the index in the User VIA and `&FE32` too, run only when the first pass found fewer than four. **Probe only banks the MOS found no ROM in** (`&02A1`, the ROM type table): the probe writes a byte at `&8008`, and doing that to a live utility ROM or a sideways-RAM filing system hangs a working machine. Select the bank (`STY ROMSEL`) before reading the byte you save, or the restore stage puts bank 0's byte into every RAM bank (built and measured 2026-08-29, jsbeeb `B-DFS1.2` with eight RAM banks, and a Master; [layer-13-compatibility.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-13-compatibility.md)).
 - **Take the four highest-numbered RAM banks**: the banks that matter to other people sit low, and on a machine with exactly 4-7 the answer is unchanged (decided 2026-08-29, KC).
+- **ROMSEL (`&FE30`) is write-only on a Model B: read ROMSHAD (`&F4`) instead.** Reading `&FE30` back gave `&FE` on jsbeeb's `B-DFS1.2` and the right bank (4) on its Master, which has a readable copy. ROMSHAD is the byte an IRQ saves and restores anyway (kit, 2026-09-11, jsbeeb — [[sources/beeb-port-kit-hardware-facts-2026-11]] §5).
+- **A ROM image in sideways RAM can be the fourth bank if the game fills it last.** ZMMFS copies MMFS into the highest free RAM bank and marks it in `&02A1`; with exactly three clean banks the kit's probe takes the highest marked bank that passes MMFS's own RAM test (flip `&8006`, read back, flip back). The game then owes two things: fill that bank after its last filing-system call, and zero its `&02A1` byte first (Paradroid, 2026-09-10, issue #18 item 9).
+- **The kit's probe results** (`lib/test/probe_test.6502`, fresh jsbeeb machine each, 2026-09-11):
+
+  | Machine | Printed | Handover at `&0A00` |
+  |---|---|---|
+  | `B-DFS1.2` | `Sideways RAM found: 7 6 5 4 3 2 1 0` / `Using banks: 4 5 6 7` | `A5 04 05 06 07` |
+  | `Master` | `found: 7 6 5 4` / `Using banks: 4 5 6 7` | `A5 04 05 06 07` |
+  | `Master`, bank 7 marked as a ROM image | as above, plus "(The last holds a ROM image, which will be overwritten)" | `A5 04 05 06 07`; bank 7's `&8006` put back (`&82`); its `&02A8` byte left for the game to zero |
+  | `Master`, banks 6 and 7 marked | `found: 5 4` / `...found 2` / `(Set LK18 and LK19 west?)` | untouched (`00`) |
+
+  **A test ROM image needs a service entry that returns**: a marked `&02A1` byte makes the MOS call that bank's `&8003` with every service call, and a bank of zeros BRKs there and loops. `RTS` at `&8003` and a type byte at `&8006` suffice. The Solidisk refusal and a real ZMMFS machine are not tested.
 - **A bank-number handover at `&0A00` (the printer buffer) survives BASIC dispatching the next exec line, DFS loading over `&1100-&2FFF`, and MODE 1's clear of `&3000-&7FFF`.** It does NOT survive a program that unpacks tables over `&0400-&1BFF`; that is how the 4-7 assumption crept back in (2026-08-29, jsbeeb; `&0A00` reads `FF` after both refusal paths).
 
 ### Paging discipline
 
-- **Only one bank is visible at a time, and the IRQ fires with whatever the foreground has paged.** An IRQ that needs a bank must save the ROMSEL shadow (`&F4`), page, and restore both; writing the shadow first is what keeps the claim consistent (Paradroid's sound tick, 2026-08-21, jsbeeb; ~60-80 cycles of overhead; [layer-11e-sound.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-11e-sound.md)). This is the practical form of "**DO NOT** write `&FE30` directly" above for a program that has taken IRQ1V and owns the machine.
+- **Only one bank is visible at a time, and the IRQ fires with whatever the foreground has paged.** An IRQ that needs a bank must save the ROMSEL shadow (`&F4`), page, and restore both; writing the shadow first is what keeps the claim consistent (Paradroid's sound tick, 2026-08-21, jsbeeb; [layer-11e-sound.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-11e-sound.md)). **The paging itself costs +16 cycles**: phX's music tick (save `&F4`, page bank 4 into ROMSEL and `&F4`, restore both) went from a mean of 152 to 168 cycles, worst 524 to 540, 1,299 of 1,299 ticks identical (November 2026, jsbeeb Master, `verify_music.mjs`; `phX/docs/memory-map.md` — [[sources/beeb-port-kit-hardware-facts-2026-11]] §5). *(Corrected 2026-11-18: this entry said "~60-80 cycles of overhead", Paradroid's estimate for the whole tick's overhead, not a measurement of the paging.)* This is the practical form of "**DO NOT** write `&FE30` directly" above for a program that has taken IRQ1V and owns the machine.
 - **Bank code may call main RAM freely; main RAM may call into a bank only with that bank paged**, and a bank routine may not call main-RAM code that pages a different bank and restores somebody else's. Both ports broke the second rule within a day of writing it down (Paradroid's resident depacker, 2026-08-29; Edge's `bank_call`, 2026-09-06; [layer-9h-keyredef.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-9h-keyredef.md)).
 - **The DFS ROM is paged in at `&8000` during a filing-system call**, so a bank cannot be loaded at `&8000` even uncompressed; stage below and copy or unpack (Paradroid Layer 13d, jsbeeb). See [[techniques/zx0-loading]].
 - **jsbeeb's `B-DFS1.2` model has eight sideways RAM banks; a Master model has 4-7** ([[tools/emulators]]).
+- **Move the banks to find the bugs that depend on where they are.** Stryker's Run's game banks moved from 4-7 to 0-3 (jsbeeb `B-DFS1.2`'s eight banks, `SWR_POKE`) exposed a scroll path that had paged bank 0 for seven days — harmless while bank 0 was empty — and a table walk that ran off its table into the bank numbers (Stryker's Run BUGS #16, #17, 2026-10-24/25, jsbeeb 2.10.2; kit gotchas class 6).
+- **With code in two sideways banks at `&8000`, an emulator address hook fires in both**, and on the Master before boot it fires in a ROM — gate every hook on ROMSEL (Isometrikum, Stryker's Run; kit gotchas class 5). See [[tools/emulators]].
+
+### Paging on the Master (1942, Stryker's Run, phX — 2026)
+
+- **HAZEL can stay paged for the whole of play**: put ACCCON Y into the base every run-time ACCCON write ORs in, and HAZEL code and data need no paging and no mask (1942, played on a real Master; phX the same). See [[memory/shadow-ram]].
+- **ANDY and HAZEL paged through play, plus four sideways banks** is 1942's shipped configuration on a real Master 128 (Gotek 2026-09-28, real drive 2026-10-12, KC).
 
 ---
 

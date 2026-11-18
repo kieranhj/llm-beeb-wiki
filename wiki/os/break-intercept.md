@@ -2,8 +2,8 @@
 title: BREAK Intercept & Reset Handling
 type: os
 tags: [break, reset, intercept, osbyte, startup]
-sources: [naug-ch24-misc, bbc-service-manual, beeb-port-kit-hardware-facts]
-updated: 2026-09-07
+sources: [naug-ch24-misc, bbc-service-manual, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # BREAK Intercept & Reset Handling
@@ -35,7 +35,7 @@ You cannot easily "fake" a cold-start from software — the only reliable softwa
 
 ## OSBYTE `&F7-&F9` — install a BREAK intercept
 
-These three bytes hold a **JMP instruction** that MOS calls during every reset. By default they're `00 00 00` (no JMP, no intercept). Install:
+These three bytes hold a **JMP instruction** that MOS calls during every reset. By default they're `00 00 00` (no JMP, no intercept). They live at **`&0287-&0289`** in page 2 (the OSBYTE-variable formula on [[memory/os-workspace]]; the kit's 1942 and phX entries name the address — [[sources/beeb-port-kit-hardware-facts-2026-11]] §6), so anything a program keeps or copies into page 2 must lay itself around them. Install:
 
 ```asm
 ; Install a JMP to my_handler at &F7-&F9
@@ -96,7 +96,19 @@ bits 1-7: 0 = preserve memory on BREAK,  non-zero = clear memory on BREAK
 
 `*FX 200,1` = "ESCAPE disabled, memory preserved on soft BREAK" — the canonical game-launcher setting.
 
-**Caveat, measured (Edge Grinder, Master 128, jsbeeb, 2026-09-04 — [[sources/beeb-port-kit-hardware-facts]] §4):** `*FX 200,1` is the right default *unless the program has taken HAZEL* (`&C000-&DFFF`, ACCCON Y — the filing system's workspace on the Master). Then BREAK must clear memory: a soft BREAK out of a game that had loaded its music into HAZEL gave `Acorn MOS` with no DFS banner and `*CAT` returned nothing. `OSBYTE 200, X=3` (ESCAPE disabled **and** memory cleared, making BREAK a power-on reset) at the top of the program fixed it — afterwards BREAK gave a clean `Acorn 1770 DFS` and SHIFT+BREAK reloaded the game ([Edge layer-7-music.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-7-music.md)). See [[memory/shadow-ram]].
+**Caveat, measured (Edge Grinder, Master 128, jsbeeb, 2026-09-04 — [[sources/beeb-port-kit-hardware-facts]] §4):** `*FX 200,1` is the right default *unless the program has taken HAZEL* (`&C000-&DFFF`, ACCCON Y — the filing system's workspace on the Master). Then BREAK must clear memory: a soft BREAK out of a game that had loaded its music into HAZEL gave `Acorn MOS` with no DFS banner and `*CAT` returned nothing. `OSBYTE 200, X=3` (ESCAPE disabled **and** memory cleared, making BREAK a power-on reset) at the top of the program fixed it — afterwards BREAK gave a clean `Acorn 1770 DFS` and SHIFT+BREAK reloaded the game ([Edge layer-7-music.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-7-music.md)). See [[memory/shadow-ram]]. **Later measurements narrow this:** on MOS 3.20 the memory-clear setting is honoured only when the System VIA's IER is 0 or `&0258` still holds it, so a game running with VIA interrupts enabled needs the BREAK intercept — next section.
+
+### BREAK that clears RAM on a Master: `*FX 200,2` is not enough (MOS 3.20, measured 2026)
+
+From [[sources/beeb-port-kit-hardware-facts-2026-11]] §6 "BREAK that clears RAM", 1942 and phX (both Master 128):
+
+- **MOS 3.20's reset clears `&0000-&DFFF`, HAZEL and shadow only if the System VIA's IER reads 0 or `&0258` is 2 or 3** (read off `&8046`: IER = 0 or `(&0258 >> 1) = 1`). **In play the IER is not 0** (`&C2` in 1942), and a game that reuses `&0258` (the MOS's low RAM is fair game once the IRQ is yours) loses the setting too. So a game that runs with VIA interrupts enabled cannot rely on `*FX 200,2`; a tune or title that runs with IER 0 clears anyway (1942, jsbeeb Master 2026-10-18/19 — a soft BREAK in `tools/measure_break.mjs` became a hard one — **and KC's real Master**, rc4). Re-measured by the kit 2026-10-25, jsbeeb 2.10.2 Master, IER `&53` (`lib/break.6502`, `lib/test/break_test.mjs`): no `*FX 200` keeps RAM; `*FX 200,2` clears it; `*FX 200,2` then `&0258` = 0 keeps it; the intercept below then `&0258` = 0 clears it again. The `&8046` reading was not re-disassembled; the rule is confirmed by behaviour.
+- **The intercept is the reliable form for a program that owns the IRQs and low RAM.** 1942's: `*FX 247` arms a `JMP` at `&0287-&0289` pointing at seven bytes that store 2 at `&0258` and `JMP (&FFFC)`, so the second reset pass clears. phX's (its decision 59) drops `*FX 200,2` altogether: `*FX 247-249` point the intercept at 8 bytes at `&0D20` that clear the System VIA's IER and restart the reset, so the MOS takes every BREAK for a power-on. (Without it a soft BREAK needed the MOS's HAZEL workspace `&DE00-&DFFF`, the DFS's, page `&0D` and `&0258` back — measured in jsbeeb by restoring regions from a cold machine.)
+- **The clear zeroes `&0287`**, so the intercept must be re-armed by the next boot (kit, 2026-10-25).
+- **Keep `&0287-&0289` free.** 1942 put two variables at `&0288` and the intercept read `JMP &005D` in play (1942 BUGS #92, found on real hardware at rc4). phX lost it the same way: one of its overlays, copied into page 2, overwrote the `JMP` 196 fields in, so every later BREAK was soft, and **on KC's Master the DFS could not be selected afterwards** (2026-11-15/16, `phX/docs/decisions.md` 59, `phX/docs/hwtest.md` "B7").
+- **Test a PLAIN BREAK, at many points of the run.** phX's SHIFT+BREAK check passed throughout, because SHIFT+BREAK reboots the disc either way. Its `tools/verify_break_plain.mjs` presses BREAK at eight points and requires the banner and a working `*CAT` after each.
+- **A real Master's RAM powers up with junk, and the junk survives BREAK** — "nothing may read RAM it did not write"; phX's harnesses take `JUNK=seed` (every RAM junk, a soft BREAK, then the boot). See [[tools/emulators]].
+- **A `*RUN` boot (disc option 2) is entered with interrupts OFF**, before any language starts: P = `&35` (I set) at the release `!BOOT` stub on `B-DFS1.2` and `Master` alike (kit template, jsbeeb, 2026-09-11). On the Model B the BREAK beep then never ends (channel 0 still at 523 Hz, attenuation 2, after 400 frames) — write attenuation 15 to all four channels yourself; OSBYTE 126 does nothing here (no ESCAPE is pending). A boot program that waits for a key in OSRDCH waits for ever until it does `CLI` (phX hardware-test menu, jsbeeb Master). See [[os/sound]].
 
 ### `OSBYTE &D7` — message suppression
 

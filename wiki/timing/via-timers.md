@@ -2,8 +2,8 @@
 title: VIA Timers (T1, T2)
 type: timing
 tags: [via, t1, t2, timer, raster, vsync]
-sources: [naug-ch22-vias, via-timer-chip-level-refs, beeb-port-kit-hardware-facts]
-updated: 2026-09-07
+sources: [naug-ch22-vias, via-timer-chip-level-refs, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # VIA Timers (T1, T2)
@@ -142,6 +142,20 @@ Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kiera
 - **A `&FE44` read at a fixed point in a VSync-locked loop is not a random seed** (see the flag above); nor is **User VIA T1C-L unless it is free-running** — code that had retuned it to continuous mode with a `&00FF` latch handed the game a counter spanning 0-255 every 257 µs, phase-locked to a deterministic boot: the same value every time (Paradroid, 2026-08-30, jsbeeb).
 - **A T1 difference used as a stopwatch is only modular while the counter does not pass zero between the reads.** When it does, that sample gains ~65,536 ticks (131,000 cycles), and because the reload point drifts slowly the bad readings come in consecutive runs. Paradroid's `DEBUG_TIME` reported 2,903 cycles for code measured at 1,009 by breakpoints (2026-08-26, jsbeeb).
 - **T2's two bytes are read one after the other and the counter can roll between them**, so an elapsed reading can come out 256 µs smaller than the mark before it; an unsigned maximum then stores a ~65,000 µs junk value. A frame longer than 65.5 ms wraps the counter outright. Reject a sample whose subtraction borrows (Edge, 2026-09-04, jsbeeb; three readings of three were junk before the fix; [performance.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/performance.md)).
+
+## Measured in practice — later projects (1942, Stryker's Run, Isometrikum, Square Roots, phX — 2026)
+
+From [[sources/beeb-port-kit-hardware-facts-2026-11]] §3, §8 (all jsbeeb unless stated; the CPC demos are emulator-only so far):
+
+- **Re-arming T1 from a constant drifts; chaining its latch does not.** Square Roots restarted T1 at its first fire each field from a constant and drifted 70 µs a field — and one late entry shifts it against the CRTC for good. Lock T1 once at install and have each fire load the latch for the interval to the next: it held (2026-11-08; `square-roots/docs/layer-3-display.md`; kit gotchas class 10). Same principle as "set intervals one fire ahead" above.
+- **One T1 chain, two latches, a 0-14-cycle slide, for a 10-minute demo** (phX, Master): its draw is entered at the same beam position (C0 0) every one of 16,302 fields, every field 39,936 cycles, VSync once a field; only fields with disc NMIs enter late (0-35 cycles behind the loading card, 0-67 across all four load windows), because an NMI can delay the IRQ beyond what the slide absorbs (2026-11-15, `verify_frame.mjs`; `phX/docs/design-backbone.md`).
+- **A fire's first CRTC write lands ~4 lines after its nominal line** with no correction (the CA1 flag's timing, the IRQ path, the slide): Isometrikum's `T1_SYNC_TUNE = -3*SL`, applied to the next field, puts every write 1 line + 5 characters after its line — fire 0's R4 at 3:9 in 6,384 of 6,399 fields; the rest up to 54 characters late, each because a bass interrupt was already running (MODE 2, R1 = 96, 2026-11-07). Consistent with the ~4-scanline CA1 latency above.
+- **A stable-raster NOP slide of 80 µs held one write position in 2,994 of 2,999 fields; 64 µs split the writes between two positions 2 cycles apart.** Page-aligned (`ASSERT HI(slide) = HI(slide_end)`), entered by a self-modified low byte from `loaded - T1CL`. Only worth it where a write window is narrow: Square Roots' windows were whole 512 µs rows and its slide was removed (Isometrikum 2026-11-07, Square Roots 2026-11-08). See [[techniques/hexwab-stable-raster]].
+- **A frame need not be 312 lines.** Square Roots' CPC frame is 304 (51.4 Hz), so the BBC runs a T1 field of 19,456 µs (304 × 64) with R4 = 37 — 312 would make the demo 2.7% slower. A harness that counts jsbeeb's 312-line frames drifts against it and must sample at the port's own tick (`verify_music` differed every 39th tick until it did) (2026-11-08; kit gotchas class 5).
+- **A User VIA T1 software-bass toggle is only as punctual as the interrupts in front of it**: Isometrikum's bass, 1.95 interrupts a field at 152 cycles, toggled within 8 cycles of its period 85.5% of the time with two raster fires a field, 77.5% with five (worst ±4,700 cycles). Nesting the bass (CLI after each fire's CRTC writes) is the unbuilt cure. See [[hardware/sn76489]].
+- **A User VIA T1 palette split chained to the MOS cost 1,165 cycles a field** in service call 5 (every paged ROM offered the interrupt) before IRQ2V. Service your own timers and `RTI` yourself (Stryker's Run decision 15, 2026-10-16, Master MOS 3.20). See [[os/interrupts]].
+- **A one-row CRTC frame driven by User VIA T1 firing three times a field, each fire re-armed from T2's count** is how Stryker's Run splits its HUD from the scrolling frame (2026-10-23, jsbeeb 2.10.2; seen right on b2). The CRTC side is on [[techniques/vertical-rupture]].
+- **The MOS's tick is not one interrupt entry per T1 flag**: counting IRQ entries with System VIA T1's flag up gave 3,192 for 1,176 ticks from BASIC (nesting, re-entry). Place ticks on a 20,000-cycle grid (kit `sfxcapture.mjs`, 2026-10-25).
 
 ---
 

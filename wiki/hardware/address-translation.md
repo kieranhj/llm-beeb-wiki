@@ -2,9 +2,9 @@
 title: Address Translation
 type: hardware
 tags: [memory, dram, address-translation, video, scrolling]
-sources: [beebwiki-address-translation, naug-ch12-memory, naug-ch13-video, bbc-service-manual, beeb-port-kit-hardware-facts]
-machines: [BBC Model A, BBC Model B, BBC B+]
-updated: 2026-09-07
+sources: [beebwiki-address-translation, naug-ch12-memory, naug-ch13-video, bbc-service-manual, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
+machines: [BBC Model A, BBC Model B, BBC B+, Master 128]
+updated: 2026-11-18
 ---
 
 # Address Translation
@@ -49,7 +49,19 @@ Trivial. `A0-A14` map straight to `DA0-DA14`.
 
 MOS programs MODE 7 such that `MA11 = 1, MA12 = 0`, which forces `AA3 = 1` always. The XOR of `MA6` with the 1 MHz clock fetches *two distinct bytes per microsecond* — IC 15 routes one to the SAA 5050 and discards the other. Side effect: **all 128 DRAM rows are refreshed every scanline**, giving a worst-case refresh interval of **88 µs** (well within DRAM spec). Without the XOR trick the worst case would be 1.96 ms — out of spec.
 
-**Exploitable**: if you force TTX VDU mapping in a *graphics* mode (by setting R12/R13 to the teletext base while keeping the Video ULA in modes 0/1/2), the Video ULA sees **both** bytes per µs. Every other byte arrives from `addr XOR &40`. This isn't a bug — it's the foundation of [[techniques/chunky-mode]], a 1 KB chunky display with the EOR-64 interleave baked into the back-buffer layout. The Master adds an extra layer (MA6 vs MA7 toggle depending on RA0).
+**Exploitable**: if you force TTX VDU mapping in a *graphics* mode (by setting R12/R13 to the teletext base while keeping the Video ULA in modes 0/1/2), the Video ULA sees **both** bytes per µs. Every other byte arrives from `addr XOR &40`. This isn't a bug — it's the foundation of [[techniques/chunky-mode]], a 1 KB chunky display with the EOR-64 interleave baked into the back-buffer layout. The Master adds a second layer: `XOR &40` on one scanline and `XOR &C0` on the next (measured; see "MA13 on the Master" below).
+
+### MA13 on the Master (measured)
+
+**Measured on a real Master (2026-11-15)** — [[sources/beeb-port-kit-hardware-facts-2026-11]] §1 "MA13 (teletext) addressing in a 2 MHz mode"; KC's Master (Sony RGB), phX hwtest card J, photographs read; `phX/docs/hwtest.md` "Results: tests I-L", `phX/docs/part-bobs.md`:
+
+- **MODE 1 with MA13 set** (R12/R13 `&2028`, MA11 clear) reads the 1K at **`&7C00`**, RA ignored. (On a Model B the translator formula above would put MA11 = 0 at `&3C00`; on the Master the fetch came from `&7C00` — the `&3C00` block, and with it the `&2400` 2K-linear trick below, are Model B behaviour.)
+- **Alternate characters fetch another byte.** The characters of one 1 MHz phase read `&7C00 + (MA AND &3FF)`; the others the same with **MA6 flipped on one scanline and MA6 and MA7 flipped on the next** — `XOR &40` / `XOR &C0`, **never MA7 alone**. Bits 8-9 never flip. Which RA parity takes which was not read (phX's second test disc, card M, asks; no result yet).
+- **The flip follows the 1 MHz clock, not C0.** After phX's VSync lock the even characters flip; one 127-character line swapped them for good. **Every odd-length line since the boot moves the phase**, so a part that depends on it keeps every line even. "Mostly" the same at each power-on (KC) — to confirm over more power-ups.
+- BeebWiki's *Address translation* has the MA6 half (the refresh fetch, above); the MA7 half on alternate scanlines is the Master's own (more DRAM rows to refresh, per phX's reading).
+- **Emulators**: beebjit models MA6 only (on even ticks); jsbeeb 2.10.x and b2 model neither; jsbeeb main 2.22.0 (#1859) models the flip — phX's Bobs, laid out for it, read 640 of 640 there and 0 of 640 on jsbeeb 2.10.2.
+
+*Superseded:* this page said "The Master adds an extra layer (MA6 vs MA7 toggle depending on RA0)", from [[sources/chunky-mode-notes]]' second-hand summary (Julian Brown, stardot 2015). The measured pattern is MA6 on one scanline and MA6+MA7 on the next.
 
 This is why MODE 7 is special at the hardware level. The SAA 5050 only needs the same character cell address held across all 20 scanlines of a teletext row; the chip handles internal pixel generation. So `RA` is ignored; `MA` repeats per scanline.
 
@@ -117,7 +129,7 @@ phys_addr = ((MA & 0x800) << 3) | 0x3C00 | (MA & 0x3FF)
 - 6845 is programmed with start address `&2000-&23FF` (displays `&3C00-&3FFF`) or `&2800-&2BFF` (displays `&7C00-&7FFF`).
 - 1K wrap by ignoring the `0x400` bit of `MA`.
 - `RA` is ignored — same `MA` is held across all 20 scanlines of a teletext character row.
-- **Special trick:** programming start address `&2400` gives a 2K linear stream `&3C00-&3FFF` then `&7C00-&7FFF` — useful for double-buffered teletext.
+- **Special trick (Model B):** programming start address `&2400` gives a 2K linear stream `&3C00-&3FFF` then `&7C00-&7FFF` — useful for double-buffered teletext. On a Master MA13 fetches were measured from `&7C00` with MA11 clear (above), so the `&3C00` half does not apply there ([[sources/beeb-port-kit-hardware-facts-2026-11]] §1).
 
 This is also the mechanism behind R12/R13's "XOR `&54`" rule documented on [[hardware/crtc-6845]]: writing the desired physical-RAM-address-divided-by-8 directly would land in the wrong region of the DRAM map; XORing flips the bits that drive `MA11` and the upper translator inputs into the `&2000-&2FFF` window the translator interprets as Teletext mode.
 
@@ -125,7 +137,7 @@ This is also the mechanism behind R12/R13's "XOR `&54`" rule documented on [[har
 
 - **Hardware scrolling**: pick R12/R13 wisely — moves of one character row (40 or 80 bytes) cost a single 6845 write and the translator handles the wrap. See [[video/hardware-scrolling]].
 - **DRAM refresh**: the CPU-only mode does not refresh. If you ever stop video fetches (very unusual — MODE 7 with `MA12=0`?), you must refresh manually.
-- **MODE 7 buffering**: the `&2400`-start trick gives you a 2 KB linear teletext buffer if you want to double-buffer.
+- **MODE 7 buffering**: on a Model B the `&2400`-start trick gives you a 2 KB linear teletext buffer if you want to double-buffer (not on the Master — above).
 - **Custom modes**: if you change R12/R13 to a value that makes the hardware-scroll wraparound point at the wrong address (e.g. you set up a 16K mode via R6 but keep the 20K wraparound bits in the addressable latch), the bottom of the screen will display garbage from the wrong RAM region. Set the addressable latch via OSBYTE `&D5/&D6/&D7` or the 50/51/52 bits of System VIA Port B before reprogramming the 6845.
 
 ## See also
@@ -145,6 +157,7 @@ Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kiera
 - **The subtraction happens once and does not iterate**, so a displayed window must fit inside one wrap span. A window larger than the span fetches from `&8000` upward (ROM) at some scroll positions and shows garbage on its last rows; with the 10K wrap and 80-unit rows the usable strip is exactly 16 rows (Paradroid Layer 3, jsbeeb — the model predicted garbage from unit 5 of the bottom row at scroll offset 10200 and that is where it started).
 - **On the Master the wrap applies inside whichever bank is displayed.** With ACCCON D = 1 and the wrap at 8K, a display crossing `&8000` lands on *shadow* `&6000`, not main; Edge Grinder's title page runs one 8K ring in each bank (2026-09-04, jsbeeb only; no real-hardware confirmation). The `machines:` list above stops at the B+, but the same table was measured on the Master. See [[memory/shadow-ram]].
 - A 16K buffer with 640-byte rows wraps mid-row (16,384 / 640 = 25.6), so a sprite's 8-byte column stride breaks across `&8000` (Edge, 2026-09-03).
+- **With ACCCON D set, a CRTC address below `&3000` reads ANDY (`&8000-&8FFF`) and HAZEL, not main RAM** — jsbeeb 2.10 models it (`videoRead` ORs `&8000` into the address), Stryker's Run's HUD showed ANDY's bytes on every shadow field until D was cleared for its rows (2026-10-23), and **a real Master reads HAZEL there** (phX hwtest card I, 2026-11-15: lines over `&1800-&1AFF` showed HAZEL's green, not main RAM's blue). b-em's alternate-frame garbage was b-em's. Rule: D = 0 over any row below `&3000` ([[sources/beeb-port-kit-hardware-facts-2026-11]] §4; [[memory/shadow-ram]]). The wrap-inside-bank behaviour above is still jsbeeb-only.
 
 ---
 

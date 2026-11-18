@@ -2,8 +2,8 @@
 title: OS Workspace (Pages 1, 2, 3)
 type: memory
 tags: [workspace, mos, vectors, page-two, page-three]
-sources: [naug-ch06-os-introduction, naug-ch13-video, allmem-ripley-harston, master-arm, master-rm, beeb-port-kit-hardware-facts]
-updated: 2026-09-07
+sources: [naug-ch06-os-introduction, naug-ch13-video, allmem-ripley-harston, master-arm, master-rm, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # OS Workspace — Pages 1, 2, 3
@@ -91,10 +91,10 @@ The OSBYTE-variable address is `&0236 + (osbyte_number - &A6)`. So `&D2` (sound 
 | `&0279` | System VIA IRQ mask | `&E9` (fx233) |
 | `&027C` | Output stream destination (FX3) | `&EC` (fx236) |
 | `&027D` | Cursor key status (FX4) | `&ED` (fx237) |
-| `&028C` | Current language ROM | `&FC` (fx252) |
+| `&028C` | Current language ROM (but see the Master caveat below) | `&FC` (fx252) |
 | `&028D` | Last BREAK type | `&FD` (fx253) |
 
-Exact addresses are stable across BBC/B+/Master — the formula above always holds. Reading directly is **faster** than calling OSBYTE (saves the dispatch overhead). For full table see [[sources/allmem-ripley-harston]] lines 179-287, or query `OSBYTE &A6/&A7` to get the base address dynamically (in case a future MOS shifts it).
+The addresses are stable across BBC/B+/Master — the formula above always holds — **but a byte's contents need not mean the same thing at every moment on every machine.** **On the Master, `&028C` is not a safe "current language ROM" under a `*RUN` boot: it read `&FF`**, and restoring ROMSEL from it paged ANDY (bit 7) over the DFS. Save **ROMSHAD (`&F4`)** to restore paging instead (phX, 2026-11-14, jsbeeb Master MOS 3.20; `phX/docs/hwtest.md` "Traps found on the way" — [[sources/beeb-port-kit-hardware-facts-2026-11]] §4). Whether `&028C` holds `&FF` at other moments is not measured. *(Until 2026-11-18 this paragraph said only "exact addresses are stable across BBC/B+/Master".)* Reading directly is **faster** than calling OSBYTE (saves the dispatch overhead). For full table see [[sources/allmem-ripley-harston]] lines 179-287, or query `OSBYTE &A6/&A7` to get the base address dynamically (in case a future MOS shifts it).
 
 ## Page 3 (`&0300-&03FF`) — VDU workspace + filing buffers
 
@@ -202,16 +202,46 @@ Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kiera
 | `&0A00` | printer buffer | survives BASIC exec, DFS loads, `VDU 22` (Paradroid) | inside a loader's tables — a byte parked here did not survive a program unpacking over `&0400-&1BFF` |
 | `&0C00-&0CFF` | user-defined characters | once the MOS is not printing | on the Master the real font is at `&8900` ([[hardware/master-overview]]), so Edge keeps player state here |
 | `&0D00-&0D5F` | NMI routine (DFS) | never while the disc is in use | |
-| `&0D9F+` | extended vector table; DFS 1.2's FILEV route into its ROM | after the last filing call | trample it and the next call crashes |
-| `&0DF0-&0DFF` | ROM private workspace | excluded | |
-| `&0E00-&10FF` | DFS shared workspace | dead from the last `*LOAD` on | nothing may be LOADED there |
-| `&1100-&18FF` | DFS random-access buffers, untouched by `*LOAD`/OSFILE | immediately; worth 2K below `PAGE = &1900` | `!BOOT`'s exec buffer, while the exec file is open |
+| `&0D9F+` | extended vector table: the route ANY sideways ROM takes when it claims a vector, filing system or not | never safely, if you make OS calls afterwards | `OSBYTE 140` does NOT make it yours — it is the MOS's, not the filing system's. Paradroid buries it and carries the question open (#18) |
+| `&0DF0-&0DFF` | ROM private workspace | excluded | on a Master front end the MOS still runs, paged ROMs 9 and 13 read it (Stryker's Run) |
+| `&0E00-&10FF` | DFS shared workspace | after `OSBYTE 140`, or while you own the machine outright | nothing may be LOADED there; and it need not end where Acorn DFS's does — OSHWM is the only thing that says where this machine's filing system stops |
+| `&1100-&18FF` | DFS random-access buffers, untouched by `*LOAD`/OSFILE | immediately — Paradroid RUNS here; worth 2K below `PAGE = &1900` | **`*EXEC` writes here, and so does closing an exec file**: a game living here must boot by `*RUN`. Acorn-DFS-specific either way |
 
-Measured: Paradroid Layers 3, 11e, 13 (August 2026), jsbeeb; Edge Layer 2 onward (September 2026), jsbeeb — [Paradroid CLAUDE.md](https://github.com/kieranhj/paradroid-beeb/blob/main/CLAUDE.md), [layer-11e-sound.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-11e-sound.md), [layer-13-compatibility.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-13-compatibility.md), [Edge CLAUDE.md](https://github.com/kieranhj/edge-beeb/blob/master/CLAUDE.md).
+Measured: Paradroid Layers 3, 11e, 13 (August 2026), jsbeeb; Edge Layer 2 onward (September 2026), jsbeeb — [Paradroid CLAUDE.md](https://github.com/kieranhj/paradroid-beeb/blob/main/CLAUDE.md), [layer-11e-sound.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-11e-sound.md), [layer-13-compatibility.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/layer-13-compatibility.md), [Edge CLAUDE.md](https://github.com/kieranhj/edge-beeb/blob/master/CLAUDE.md). The table's last four rows were revised 2026-11-18 from the kit's later version ([[sources/beeb-port-kit-hardware-facts-2026-11]] §6, after hexwab on paradroid-beeb #18).
+
+### Two ways to take the filing system's workspace (hexwab, paradroid-beeb #18, 2026-09-13)
+
+Most of the table is workspace the filing system still owns. The kit's rule ([[sources/beeb-port-kit-hardware-facts-2026-11]] §6):
+
+- **A loader**, which still has to load, cannot shut the filing system down. It borrows the workspace and must **own the machine** while it does: claim the NMI (`OSBYTE 143,12,255`, `RTI` at `&0D00`) and let **no OS code run at all** — no OS call, no MOS interrupt handler.
+- **A game that has finished loading** calls **`OSBYTE 140`** (what `*TAPE` ends up calling) while the workspace is still intact. The filing system detaches every hook and stops its hardware raising NMIs; only then is the workspace yours (zero page `&B0-&CF` included) and an OS call safe afterwards. The price: nothing may load again — 140 selects the tape FS and there is no safe way back.
+- **A third answer, on a Master: `OSBYTE 140` after the boot's last load, then drive the 1770 yourself** (1942, phX) — see [[hardware/wd1770]].
+- A filing system is **entitled** to hook OSBYTE, OSWORD and the vectors and find its workspace intact. Acorn's DFS hooks none, which is the only reason a game that skips 140 appears to work: Paradroid (workspace buried, `OSBYTE 229`/`&0F`/`19` called, no 140) **hung on an Opus 1770 with DDOS 3.45** on real hardware (hexwab, 2026-09-13).
+- **Nothing guarantees FS workspace stops at `&1900`.** Another filing system's OSHWM can be higher, and MMFS in sideways RAM puts it *lower*, at `&0E00`. Put code as high as you can and read OSHWM (hexwab; not measured).
+- **`*EXEC` hangs a game at `&1100` once OSBYTE 140 is in the boot**: Paradroid's `*EXEC`-booted dev disc went black inside the DNFS ROM at `&ACB1`, ROMSEL 14, while the `*RUN` disc was fine; `OSBYTE 119` (close the exec file) hung identically, because the close is itself a write there (jsbeeb `B-DFS1.2`, 2026-09-13). **Boot by `*RUN`.**
+
+### MOS low RAM on a Master, measured through a whole game (MOS 3.20)
+
+1942, 2026-10-07, jsbeeb Master (`tools/measure_lowram.mjs`, `tools/measure_break.mjs`, decision 141 L2) — a game that owns IRQ1V and the NMI ([[sources/beeb-port-kit-hardware-facts-2026-11]] §6):
+
+| Free (unwritten through a whole driven game, not read by soft BREAK) | Read by BREAK — leave alone |
+|---|---|
+| `&0100-&01BF` (stack peaked 41 bytes deep, at `&01D7`) | `&0218-&021F` |
+| `&0200-&0217` except IRQ1V | `&0280-&0287` (and `&0287-&0289` if you arm the BREAK intercept) |
+| `&0220-&027F`, `&028A-&029F`, `&02B0-&03FF` | `&02A0-&02AF` |
+| `&0D9F-&0DFF`; zero page `&A0-&A7` once `OSBYTE 140` has given you the NMI | |
+
+"Read by BREAK" was found by filling each block with four patterns, pressing BREAK and requiring the MOS banner and `*FX 0`'s `OS 3.20`. **Until IRQ1V is yours the MOS's 100 Hz IRQ writes `&02B1-&02BE`** (unpack into those after the takeover); **while the MOS still owns IRQ1V it writes 27 bytes in `&0240-&02CD`** under a program that only spins (kit, 2026-10-25, jsbeeb 2.10.2, `lib/test/range_free.mjs`). Stryker's Run also measured **`&0982-&0CFF`** (a `!BOOT` and loader's pages) free in play, by watches over every phase. Not measured on hardware or MOS 3.5.
+
+**phX's use, played on KC's real Master** (after `*FX 140`, its own NMI and IRQ): the zero page all its own except `&A0` (its 1770 NMI's), `&F4` (ROMSHAD, written with ROMSEL always) and `&FC` (the IRQ's saved A) — the MOS's `&E0-&FF` included; `&0D40-&0D9E` of the NMI page for overlay code (its NMI routine at `&0D00`, its BREAK intercept at `&0D20`) (`phX/docs/memory-map.md`, `phX/CLAUDE.md`). See [[memory/zero-page]].
+
+**The OS's hooks are regions too.** The BREAK intercept's `JMP` at `&0287-&0289` is three bytes a page-2 overlay can take: phX's did, 196 fields in, and 1942 put two variables at `&0288`. See [[os/break-intercept]].
 
 - **The MOS plays your data as notes.** Hand IRQ1V back with a charset over `&0800-&08FF` and the MOS's 100 Hz sound driver finds its queue pointers and buffers full of bitmaps: a quiet, rising sequence that a game's own mute cannot touch (chip read CH0 attenuation 14, CH1 13, periods falling 401 → 146 → 95). Zeroing `&0800-&087F` stopped it instantly. **Sound suppression (`OSBYTE &D2`) does NOT stop it** — it gates new `SOUND` commands, not a draining queue. `OSBYTE &0F, X=0` (flush every buffer) BEFORE uninstalling the IRQ is the fix (Paradroid, 2026-08-26, jsbeeb). See [[os/sound]].
 - **The MOS's 100 Hz IRQ writes `&0800-&08FF` while it owns the machine**, so a compressed stream staged there at boot is corrupted mid-decode: one byte changed sends the depacker off a wrong offset (542 wrong bytes across a credits screen, found by diffing the depacked screen, not by looking at it). `&1100` is the safe staging address on a Model B (Paradroid, 2026-08-30, jsbeeb). See [[techniques/zx0-loading]].
-- **`VDU 22` clears `&3000-&7FFF`**, what the OS thinks is its screen, so data loaded above `&3000` is wiped before it can be read; it also re-enables R8 and the cursor (Paradroid Layer 3; Edge 2026-09-02). See [[os/vdu]].
+- **`VDU 22` clears `&3000-&7FFF`**, what the OS thinks is its screen, so data loaded above `&3000` is wiped before it can be read; it also re-enables R8 and the cursor (Paradroid Layer 3; Edge 2026-09-02). See [[os/vdu]]. **The same goes for code**: a `*RUN` image loaded before the boot's mode change loses everything at or above `&3000` before it runs, so the code ceiling is `&3000` even where the screen ends up in shadow; 1942 found it by not booting, with no diagnostic (BUGS #17). On a Master the mode change also lights the display for ~5 fields with whatever main RAM held: zero `&3000-&7FFF` first ([[sources/beeb-port-kit-hardware-facts-2026-11]] §6).
+- **The MOS keeps a copy of the ULA control register at `&0248`** (`MOS_ULA_COPY`), and its flash timer EORs the flash bit into it and writes `&FE20` from it; a program that writes `&FE20` itself while the MOS IRQ still runs (a loader, a title screen) must write `&0248` too, or the next flash tick puts the old mode's byte back (1942 `src/lib/beeb.h.6502`, 2026-09, a Master port). See [[hardware/video-ula]].
+- **Zeroing `&0242` (the keyboard polling byte, OSBYTE `&B2`) stops the 100 Hz tick's key scan**; clearing bit 1 of `&0279` (System VIA IRQ mask, OSBYTE `&E9`) stops the MOS taking VSync (Stryker's Run, 2026-10-16). See [[os/interrupts]].
 
 ---
 

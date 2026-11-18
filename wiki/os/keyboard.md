@@ -2,8 +2,8 @@
 title: Keyboard
 type: os
 tags: [keyboard, ascii, inkey, ikn, soft-keys, scan]
-sources: [naug-ch14-keyboard, master-arm, bbc-user-guide, beeb-port-kit-hardware-facts]
-updated: 2026-09-07
+sources: [naug-ch14-keyboard, master-arm, bbc-user-guide, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Keyboard
@@ -255,7 +255,7 @@ After writing the status byte directly, call `OSBYTE &76` to update the keyboard
 
 | OSBYTE | Function |
 |---|---|
-| `&B2` (178) | Keyboard semaphore — 0 = ignore IRQs, `&FF` = normal |
+| `&B2` (178) | Keyboard semaphore — 0 = ignore IRQs, `&FF` = normal (its variable is `&0242`) |
 | `&C9` (201) | Keyboard disable — non-zero = ignore all except BREAK (Econet use only) |
 | `&76` (118) | Refresh CAPS/SHIFT LOCK LEDs |
 
@@ -275,6 +275,9 @@ After writing the status byte directly, call `OSBYTE &76` to update the keyboard
 - **While `!BOOT` is being EXECed, `INKEY` and OSRDCH read the exec stream, not the keyboard.** An intro's `INKEY(0)` consumed the `*` of the next `*RUN` line. Use the `OSBYTE &7A` scan for "any key" (Paradroid, 2026-08-26 and 2026-08-29). See [[os/filing-systems]].
 - **Testing one named key direct** costs **~55-70 cycles** — see [[#test-one-known-key--the-useful-one]]. A control loop polling a dozen keys a frame saves ~2,000 cycles by going direct, which is a couple of percent of a 50 Hz frame.
 - **A full direct scan** of every key is a different (and much rarer) job; budget per key tested, ~3 µs each.
+- **What the MOS's key scan costs a game that keeps the MOS (MOS 3.20)**: while any key is held, the 100 Hz tick does a full keyboard-matrix scan every tick — **6.3% of all CPU cycles** in Stryker's Run's original, inside a tick that takes ~16% in play. **Zeroing the keyboard polling byte `&0242` (OSBYTE `&B2`) stops the tick's key scan**; a game reading keys direct loses nothing by it (Stryker's Run, 2026-10-16, jsbeeb 2.5.0, Master, `tools/irqprofile.mjs`; decision 14 — [[sources/beeb-port-kit-hardware-facts-2026-11]] §3, §6).
+- **A routine's first bytes are an entry point too**: Stryker's Run's optimiser dropped `keydown_int`'s leading `TXA`, and observer mode's `JSR keydown_int + 1` then landed in an operand — no key worked there. Search for `label+n` callers before changing an entry (BUGS #11; kit gotchas class 4).
+- **Emulator key names changed under the harnesses**: jsbeeb 2.0 changed `keyDown` from a numeric browser key code to a `KeyboardEvent.code` string (silently pressing nothing until 2.3.1 made it throw), and jsbeeb-mcp 4.0.0 renamed its key names — the internal and INKEY numbers did not move. See [[tools/emulators]].
 - **Disabling auto-repeat** (`*FX 11,0`) is mandatory for any game that distinguishes "key down" from "auto-repeated".
 - The keyboard buffer (ID 0) carries the type-ahead — purge with `OSBYTE &15, X=0` if you want a clean slate ([[os/buffers]]).
 

@@ -2,8 +2,8 @@
 title: Hardware Scrolling
 type: video
 tags: [scrolling, crtc, raster, vsync]
-sources: [naug-ch13-video, beeb-port-kit-hardware-facts]
-updated: 2026-09-07
+sources: [naug-ch13-video, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Hardware Scrolling
@@ -98,6 +98,8 @@ The OS keeps the screen-start copy at `&350/&351` (page 3 — see [[memory/os-wo
 OSBYTE `&A0` with X=&50 will read these back if you need to recover the current value (R12/R13 are write-only on the chip).
 
 ## Measured in practice — two C64 → BBC ports (2026)
+
+*Later addition (2026-11):* one CRTC character is one byte on the BBC (two on the Amstrad CPC), so a MODE 2 horizontal scroll steps one byte (2 pixels) natively with R12/R13 — the CPC needs an R3 half-step for the same; Isometrikum's port (MODE 2, R1 = 96) relies on it ([[sources/beeb-port-kit-hardware-facts-2026-11]] §2). For the R5 single-scanline vertical scroll, see the displayed-adjust facts on [[techniques/vertical-rupture]].
 
 Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up. Paradroid scrolls a 10K MODE 1 strip in both axes; Edge Grinder scrolls a 16K MODE 2 play area 1 px a frame by alternating two shadow banks half a byte out of phase.
 

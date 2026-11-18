@@ -2,8 +2,8 @@
 title: Raster Splits (overview)
 type: technique
 tags: [raster, crtc, video-ula, palette, mode-split, vertical-rupture, single-rasterline]
-sources: [naug-ch13-video, twisted-brain]
-updated: 2026-05-16
+sources: [naug-ch13-video, twisted-brain, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Raster Splits
@@ -18,12 +18,21 @@ Five things can be changed mid-frame, each with its own latency and visible cost
 
 | Lever | Where to write | Latency | Visible cost | Typical use |
 |---|---|---|---|---|
-| **Palette colour** | Video ULA `&FE21` | 4c (stretched) | 1 entry per write; in MODE 1 you must write 4 entries to fully change a colour ([[hardware/video-ula]]) | Per-raster hue rotation, copper bars |
-| **ULA flash bit** | `&FE20` bit 0 | 4c (stretched) | 1 cycle | Per-raster colour inversion of all flash-coded palette entries — see [[techniques/checkerboard-zoom]] |
-| **ULA mode bits** | `&FE20` bits 2-4 | 4c (stretched) | One char of horizontal smear at the transition | Mid-frame MODE width change (rarely worth it on real hardware) |
-| **CRTC screen start** | `&FE00`/`&FE01` R12/R13 | 8c per byte | Pre-latched, applies to *next* CRTC cycle | Hardware-scroll position, per-cycle screen-address selection in [[techniques/single-rasterline-rupture]] |
-| **CRTC cycle shape** | `&FE00`/`&FE01` R4/R6/R7/R5 | 4c each | Read on the cycle they govern (R4/R6/R7) or applied at cycle end (R5) | Vertical rupture, smooth vertical scroll |
-| **ACCCON video source** | `&FE34` bit `D` | 4c (stretched) | Immediate — affects the *next* CRTC fetch | Mid-frame main↔SHADOW swap in [[techniques/parallax-bars]] |
+| **Palette colour** | Video ULA `&FE21` | 4c (2 MHz, not stretched) | 1 entry per write; in MODE 1 you must write 4 entries to fully change a colour ([[hardware/video-ula]]). Lands **early** on a real Master (see below) | Per-raster hue rotation, copper bars |
+| **ULA flash bit** | `&FE20` bit 0 | 4c (2 MHz, not stretched) | 1 cycle | Per-raster colour inversion of all flash-coded palette entries — see [[techniques/checkerboard-zoom]] |
+| **ULA mode bits** | `&FE20` bits 2-4 | 4c (2 MHz, not stretched) | Clean on a real Master: the change lands a little left of the write's character, no smear (phX card B) | Mid-frame MODE width change |
+| **CRTC screen start** | `&FE00`/`&FE01` R12/R13 | 6c per write back to back; lands on an even C0 (1 MHz slot) | Pre-latched, applies to *next* CRTC cycle | Hardware-scroll position, per-cycle screen-address selection in [[techniques/single-rasterline-rupture]] |
+| **CRTC cycle shape** | `&FE00`/`&FE01` R4/R6/R7/R5 | 6c per write back to back; lands on an even C0 | Read on the cycle they govern (R4/R6/R7) or applied at cycle end (R5) | Vertical rupture, smooth vertical scroll |
+| **ACCCON video source** | `&FE34` bit `D` | 4c (2 MHz, not stretched) | At the character written, odd or even C0, no glitch character (real Master ×2) | Mid-frame main↔SHADOW swap in [[techniques/parallax-bars]] |
+
+**Measured 2026-11** ([[sources/beeb-port-kit-hardware-facts-2026-11]] §1, §2, §4; phX, jsbeeb 2.10.2 Master and KC's two real Masters, hwtest cards 6, A, B):
+
+- **`&FE21`, `&FE20` and `&FE34` are 2 MHz accesses**: a back-to-back `STA`/`STX &FE21` run changed colour every 4 cycles on both real Masters (card 6 band C), and palette and ACCCON writes landed the same way at odd and even C0. About 21 independent palette writes fit a 128-cycle line, 32 of preloaded values (jsbeeb: `STA &FE21` 4c, `LDA # : STA` 6c).
+- **CRTC writes land on 1 MHz boundaries** (every one at an even C0; moving the code a cycle moves no write) and **a back-to-back `STA &FE01` costs 6 cycles** (jsbeeb).
+- **A mid-line `&FE20` mode change is clean** on a real Master: it lands a little left of the tick, as beebjit shows it — the same early landing as the palette (card B).
+- **Palette and `&FE20` writes land early on a real Master**, by an amount two measurements disagree on (KC's eye ~one MODE 2 pixel; jsbeeb main 2.22.1 a whole MODE 2 character) — recorded on [[hardware/video-ula]]. Either way, a write meant for the blanking just after the display can recolour the last displayed character: start it a character or two later.
+
+*Superseded:* this table previously gave `&FE21`, `&FE20` and ACCCON as "4c (stretched)", a mid-line mode change as "one char of horizontal smear", and CRTC writes as "8c per byte" / "4c each"; none had a cited measurement. (The `&FE21` = 2 MHz reading agreed with [[timing/cycle-stretching]] all along.)
 
 The CRTC's R12/R13 latch and R4/R6/R7 sample timing are documented on [[hardware/crtc-6845-advanced]].
 
@@ -70,7 +79,7 @@ ACCCON `D` bit toggle on the boundary between CRTC cycles.
 
 All raster splits depend on knowing what raster the beam is on, accurate to within a few cycles. Three approaches:
 
-1. **System VIA T1 free-run** in continuous mode, polled with `BIT &FE4D` (~8c jitter due to cycle stretching). Used by [[techniques/fx-framework]] / Twisted Brain.
+1. **System VIA T1 free-run** in continuous mode, polled with `BIT &FE4D` (~8c jitter due to cycle stretching — the VIAs *are* 1 MHz devices). Used by [[techniques/fx-framework]] / Twisted Brain.
 2. **CRTC vsync interrupt** via IRQ1V — same jitter problem as 1, plus IRQ entry latency variability.
 3. **hexwab's stable raster** — initial narrowing-loop sync + T1 free-run + per-IRQ jitter compensation via latch read. 2-cycle precision. See [[techniques/hexwab-stable-raster]].
 

@@ -2,10 +2,10 @@
 title: Acorn Video ULA
 type: hardware
 tags: [video, ula, palette, sheila]
-sources: [naug-ch13-video, beebwiki-video-ula, master-arm, beeb-port-kit-hardware-facts]
+sources: [naug-ch13-video, beebwiki-video-ula, master-arm, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
 sheila: ["&FE20", "&FE21"]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact]
-updated: 2026-09-07
+updated: 2026-11-18
 ---
 
 # Acorn Video ULA
@@ -115,6 +115,8 @@ Only the **significant** logical-colour bits are compared against the screen pix
 | 4-colour (1, 5) | Bits 7 & 5 — must write 4 palette entries (bits 4 & 6 = all combos) |
 | 16-colour (2) | Bits 7, 5, 3, 1 — every byte indexes uniquely (16 entries, one each) |
 
+**Why, measured** ([[sources/beeb-port-kit-hardware-facts-2026-11]] §2; KC's real Master, phX hwtest card K, no wrong pixel; and jsbeeb's `table4bpp`, 2026-11-15): **the ULA indexes the 16-entry palette with bits 7, 5, 3, 1 of the byte as it shifts out, and shifts in 1s.** So in MODE 1 a byte's 2nd-4th pixels look up entries other than a naive reading of their two bits gives — which is why all four entries of a colour must be set. A program can use it: phX's MODE 1 Bobs encode their colours in it (cell bytes `&0F`, `&AF`, `&07`, `&2F`, with pens on entries 3/7 and 1/15).
+
 (For a 16-colour mode at the 1 MHz LF clock — the community-named "MODE 8" — see [[synthesis/mode-8-16colour-lf]].)
 
 Using `VDU 19` or `OSWORD &0C` from the OS handles this expansion automatically — only relevant if you write `&FE21` directly via OSBYTE `&9B`.
@@ -156,7 +158,7 @@ For when you bypass `VDU 19` / OSBYTE `&9B` and write `&FE21` directly. From [[s
 
 - The palette is the cheapest way to "change colours" mid-frame: a single write to `&FE21` retints all pixels of the affected logical entry going forward. Timed against the raster (via System VIA CA1 = vsync, or T1 timer for line-rate splits), this is the basis of **raster colour splits** beyond the 2/4/16-colour limit.
 - Switching the chars-per-line bits (bits 2-3) mid-frame at the right horizontal time changes MODE width without a full mode reset — used for split-mode tricks.
-- Direct `&FE20`/`&FE21` writes are 4 cycles (STA abs); OSBYTE round-trip costs hundreds of cycles. For raster-tight work, save the OS copy yourself and use direct STA inside an SEI/CLI window — but only when you control the whole machine state (no Tube).
+- Direct `&FE20`/`&FE21` writes are 4 cycles (STA abs) — **measured on real Masters 2026-11, see below**; OSBYTE round-trip costs hundreds of cycles. For raster-tight work, save the OS copy yourself and use direct STA inside an SEI/CLI window — but only when you control the whole machine state (no Tube).
 
 The user-level palette workflow (VDU 19, OSWORD `&0C`, expansion rules) is fully captured on this page above. For mid-frame palette change techniques, see [[techniques/raster-splits]].
 
@@ -177,7 +179,26 @@ Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kiera
 - **The MOS's default MODE 2 palette is logical n → physical n for all sixteen**, and `(n << 4) OR (n EOR 7)` reproduces it exactly (the `F8 E9 … 07` sequence above). Logical 8-15 can be mapped back onto 0-7 *without* the flash bit, giving a second black that a sprite engine using logical 0 as its transparency key can use (Edge, 2026-09-05, jsbeeb; [layer-8b-nula.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-8b-nula.md)).
 - **A `&FE21` write from main-loop code lands wherever the raster is.** If a panel has its own palette applied at VSync, a mid-frame write leaves the panel in the wrong palette for the rest of the field: a one-frame flash, about one transition in three in Paradroid (2026-08-31, jsbeeb, stepping a field at a time).
 - A palette write can glitch a few displayed pixels at the beam position on the write line (short dashes at flash peaks, over black) — *stated* in Paradroid's intro write-up as real-hardware behaviour shared with every mid-frame palette split; not separately measured (unverified — [[sources/beeb-port-kit-hardware-facts]] §2).
-- **Disagreement, flagged:** Edge Grinder's title-page write-up says a per-scanline loop that *opens* with a write to `&FE21` is phase-stable because the write is "on the 1 MHz bus" and stalls the CPU to the same phase each iteration. This wiki's [[timing/cycle-stretching]] (from BeebWiki) says the Video ULA is a **2 MHz** device and `STA &FE21` is a flat, unstretched 4c. The port's statement is a stated rationale, not a measurement — its pad constant was tuned by looking at the screen — so the wiki's claim stands; the loop's stability presumably comes from elsewhere. Worth a direct measurement ([[sources/beeb-port-kit-hardware-facts]] §2, §12).
+- **Settled 2026-11 — `&FE21` is a 2 MHz access.** Edge Grinder's title-page write-up had said a per-scanline loop that *opens* with a write to `&FE21` is phase-stable because the write is "on the 1 MHz bus"; this wiki (from BeebWiki, [[timing/cycle-stretching]]) said 2 MHz, unstretched, 4c, and flagged it to measure ([[sources/beeb-port-kit-hardware-facts]] §2, §12). Measured now: **on both of KC's real Masters a back-to-back `STA`/`STX &FE21` run changed colour every 4 cycles** (stripes on the ticks' spacing, phX hwtest card 6 band C), and a palette write landed the same way at an odd (C0 43) and an even (C0 54) character (bands B, B') — not stretched to a 1 MHz cycle. jsbeeb agrees (its `is1MHzAccess` makes `&FE20-&FE3F` 2 MHz on the Master too; `STA &FE21` 4c, `LDA # : STA` 6c). So about 21 independent palette writes fit a 128-cycle line, 32 of preloaded values. Edge's loop is only as stable as its passes are equal: a pass a cycle longer (an indexed load crossing a page) carries into every later write on the line; Edge's comment was corrected (`7363c8b`). ([[sources/beeb-port-kit-hardware-facts-2026-11]] §2.)
+
+### Where a mid-line palette or `&FE20` write lands (open disagreement)
+
+**A palette (`&FE21`) or ULA control (`&FE20`) write takes effect EARLY on a real Master**, and the two measurements of how early disagree. Recorded both, per [[sources/beeb-port-kit-hardware-facts-2026-11]] §2:
+
+| Measurement | How early | Source |
+|---|---|---|
+| **KC's eye**, both real Masters, 2026-11-14 | about **one MODE 2 pixel (0.25 µs, half a character)** before the character it is written in, the same at odd and even C0; `&FE20` the same (card B: the mode change a little left of the tick, as beebjit shows it) | phX hwtest cards 6 (B, B'), B |
+| **jsbeeb main 2.22.1** (#1868, from the jsbeeb maintainer's own Master) | `4 - p` texels (1/16 µs) into the character BEFORE the one written, p the pixel width — **MODE 2 a whole character, MODE 1 three pixels, MODE 0 five texels**. phX's sine scrollers calibrate to it: their expected pictures shifted 3 MODE 1 pixels give 632 of 632 fields on 2.22.1 | phX `BUGS.md` #1, #2, #7 |
+| jsbeeb 2.10.2 and 2.21.1 (the pinned versions) | offset 0: at the character written | phX probe test 4 |
+
+**Unresolved**: phX's second hardware-test disc (card N) was built to settle it and has no recorded result. Either way, **a write meant for the blanking just after the display can recolour the last displayed character**: start such writes a character or two later (phX's logo moved its writes from C0 100 to 102: 0 of 400 fields right on 2.22.1 before, 400 of 400 after), or write an entry that character cannot show.
+
+By contrast **ACCCON's D bit (`&FE34` bit 0) mid-line acts AT the character written**, odd or even C0, cleanly, on both real Masters and in jsbeeb (card A) — it changes which memory the fetch reads, so it is character-aligned ([[memory/shadow-ram]]).
+
+### Other 2026-11 additions
+
+- **The teletext bit (`&FE20` bit 1, e.g. `&F6`) delays display enable by 2 characters while it is on** (jsbeeb, phX) — usable as a short blank, e.g. to hide RVI strays ([[techniques/rvi]]).
+- **The MOS keeps its copy of the control register at `&0248`, and its flash timer EORs the flash bit into it and writes `&FE20` from it.** A program that writes `&FE20` itself while the MOS's IRQ still runs (a loader, a title screen) must write `&0248` too, or the next flash tick puts the old mode's byte back (1942-beeb, 2026-09; [[sources/beeb-port-kit-hardware-facts-2026-11]] §2).
 
 ### Byte layouts (as exported and plotted)
 
@@ -189,6 +210,14 @@ Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kiera
 - **By default the NuLA composes both tables**: logical → `&FE21` → physical → `&FE23` → 12-bit RGB. **`&FE22 = &11`** (control 1, parameter 1) selects logical colour mapping and makes `&FE21` ignored. Without it a title screen's per-scanline `&FE21` pulses wrecked the game's colours (a blue background instead of black). Measured 2026-09-05 on **real hardware first** (KC), then jsbeeb; encoding cross-checked against the VideoNuLA User Guide's worked example ([layer-8b-nula.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-8b-nula.md)).
 - **Palette entries go to `&FE23` as two bytes each, `[index<<4 | red]` then `[green<<4 | blue]`, in that order**; `&FE22 = &40` resets the extended features first (2026-09-05, jsbeeb, against the reference library's default table byte for byte).
 - **jsbeeb emulates the NuLA palette** (`?&FE23=&78 : ?&FE23=&88` gives mid grey; sixteen distinct entries come back under logical mapping) but **not its scrolling or attribute modes**. See [[tools/emulators]].
+
+### VideoNuLA for an Amstrad CPC original (2026-11, emulator only)
+
+From Isometrikum's port ([[sources/beeb-port-kit-hardware-facts-2026-11]] §2; jsbeeb 2.10.2, 2026-11-07/08; **no real NuLA has seen any of this**):
+
+- **Palette mode 1 shows a CPC mode 0 screen byte for byte.** `&FE22 = &40` (reset, which also resets the two-write protocol), then `&FE22 = &11`, then 16 entries to `&FE23`: entry L = the CPC colour of pen `swap03(L)` (bits 0 and 3 swapped — CPC mode 0 and MODE 2 order a pixel's bits differently), CPC levels 0/1/2 as NuLA 0, 8, 15. Disable interrupts between an entry's two bytes if an IRQ also writes the palette.
+- **CPC mode 0 is MODE 2's pixel format** (same pixel clock and shape, left pixel in bits 7, 5, 3, 1; masks `&AA`/`&55` carry over); one CRTC character is 2 bytes on the CPC and 1 on the BBC.
+- **Detecting a NuLA by timing.** A stock ULA decodes only A0, so `&FE22` is `&FE20`. Count MODE 7 fields with ULA control `&10`, write `&44` to `&FE22`, count again: a NuLA takes it as a reset and the rate holds; a stock ULA takes `&44` as control with the clock bit clear and runs at half rate (jsbeeb: stock 9,452 then 18,909 loops; `video_nula` 9,453 then 9,452). Decide NuLA when 4E ≥ 3G. **Interrupts off, polling the CA1 flag** — with the MOS running, its own `&FE20` writes made a NuLA read 29/57.
 
 ---
 
