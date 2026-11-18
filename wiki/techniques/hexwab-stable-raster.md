@@ -2,8 +2,8 @@
 title: Stable Raster (hexwab's cycle-exact sync)
 type: technique
 tags: [stable-raster, raster, timing, vsync, irq, t1, jitter, sync]
-sources: [hexwab-stable-raster]
-updated: 2026-05-16
+sources: [hexwab-stable-raster, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Stable Raster
@@ -121,10 +121,14 @@ The narrow window (only 4 valid latch values = 8 cycles of acceptable entry jitt
 - **Music players don't compose with this technique** without care — variable-length music player calls steal IRQ-handler budget. Twisted Brain's solution was to abandon stable raster and accept jitter; an alternative is to time the music player into its own cycle-counted slot.
 - **The frame-period constant** (`312*64 - 2 = &4DFE`) is for a 312-line PAL signal. Customised CRTC configurations producing different total raster counts need the constant recomputed.
 
+## A whole demo on one cadence (phX, 2026-11)
+
+A later, different chassis to compare ([[sources/beeb-port-kit-hardware-facts-2026-11]] §8; `phX/docs/design-backbone.md`): phX runs **one T1 chain with two latches and a 0-14-cycle slide** for a 10-minute Master demo — its draw is entered at the same beam position (C0 0) every field of 16,302, every field 39,936 cycles, VSync once a field. Only fields with disc NMIs enter late (0-67 cycles), because an NMI (35 cycles a byte) can delay the IRQ beyond what the slide absorbs — so a line-exact part must not run while the disc loads. Its boot locks the 6845 to the 1 MHz clock with R0 = 0 ([[techniques/crtc-counter-freeze]]). Isometrikum measured a NOP slide of 80 µs holding one write position in 2,994 of 2,999 fields where 64 µs split the writes between two positions 2 cycles apart; Square Roots removed its slide because its write windows were whole 512 µs rows (jsbeeb, 2026-11-07/08). See [[timing/field-timing]].
+
 ## When to reach for this
 
 - Per-raster palette/colour changes where the change point must hit the same horizontal pixel column on every line — e.g. high-precision raster bars, pixel-aligned colour gradients.
-- Demos with vertical-rupture cycle splits where the cycle boundary must land within a known horizontal slot of the displayed line (cycle-stretched ACCCON writes in [[techniques/parallax-bars]] need this kind of precision to avoid single-pixel "glitch" rows).
+- Demos with vertical-rupture cycle splits where the cycle boundary must land within a known horizontal slot of the displayed line (the ACCCON writes in [[techniques/parallax-bars]] need this kind of precision to avoid single-pixel "glitch" rows — ACCCON is a 2 MHz register, not stretched: a D-bit write acts at the character written at odd or even C0 on two real Masters, [[sources/beeb-port-kit-hardware-facts-2026-11]] §4; *superseded:* this line said "cycle-stretched ACCCON writes").
 - Any effect where the FX-framework jitter manifests visibly. If you can't see it: don't bother, [[techniques/fx-framework]] is simpler and cheaper.
 
 ## Builds on / used by

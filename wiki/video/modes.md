@@ -2,8 +2,8 @@
 title: Screen Modes
 type: video
 tags: [modes, screen-memory, pixel-format]
-sources: [naug-ch13-video, master-arm, beeb-port-kit-hardware-facts]
-updated: 2026-09-07
+sources: [naug-ch13-video, master-arm, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Screen Modes
@@ -133,6 +133,8 @@ Where `bytes_per_row` is the screen width in bytes (640 for 80-col modes, 320 fo
 This 2D-into-1D layout is unusual — the screen is **column-major within a row of cells, row-major over rows**. Per-pixel plotting touches 8 bytes for the cell. See [[techniques/pixel-plot]] (planned).
 
 ## Measured in practice — two C64 → BBC ports (2026)
+
+*Later additions (2026-11, [[sources/beeb-port-kit-hardware-facts-2026-11]] §2):* **the ULA looks the palette up with bits 7, 5, 3, 1 of the byte as it shifts out, shifting in 1s**, so in MODE 1 a byte's 2nd-4th pixels hit other palette entries than their two bits suggest — set all four entries of a colour (KC's real Master, phX hwtest card K; jsbeeb `table4bpp`; detail on [[hardware/video-ula]]). **Amstrad CPC mode 0 is MODE 2's pixel format** (same pixel clock and shape, left pixel in bits 7, 5, 3, 1, masks `&AA`/`&55`), but a CPC CRTC character is 2 bytes and a BBC one 1 (Isometrikum, checked byte for byte).
 
 Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kieran Connell's two C64 → BBC ports, [Paradroid](https://github.com/kieranhj/paradroid-beeb) (BBC Model B, August 2026) and [Edge Grinder](https://github.com/kieranhj/edge-beeb) (BBC Master 128, September 2026). Instrument is jsbeeb driven through an MCP unless the entry says otherwise; b-em and b2 were the cross-checks. Each entry gives the date (or the port's layer where the write-up carries no date), the emulator or hardware, and the port's own write-up.
 

@@ -2,8 +2,8 @@
 title: Chunky Graphics Mode
 type: technique
 tags: [chunky, video, mode-7, custom-modes, address-translation, ttxvdu, raster]
-sources: [chunky-mode-notes, beebwiki-address-translation, naug-ch13-video]
-updated: 2026-05-16
+sources: [chunky-mode-notes, beebwiki-address-translation, naug-ch13-video, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Chunky Graphics Mode
@@ -43,7 +43,7 @@ LDA #13 : STA &FE00 : LDA #0   : STA &FE01   ; R13 = 0
 LDA #9  : STA &FE00 : LDA #4   : STA &FE01   ; R9 = 4 → 80×25 square in MODE 2
 ```
 
-What's happening: `R12/R13 = &2800` programs the CRTC start address such that `MA12=0, MA11=1`. With `MA13` driven appropriately, the [[hardware/address-translation|address translator]] routes via **TTX VDU** instead of HI RES, regardless of which graphics mode the Video ULA thinks it's in. Fetches come from the 1 KB MODE 7 RAM window. The ULA still decodes each byte as graphics pixels.
+What's happening: `R12/R13 = &2800` programs the CRTC start address with **`MA13 = 1`** (R12 bit 5) — the bit that makes the [[hardware/address-translation|address translator]] route via **TTX VDU** — and `MA11 = 1, MA12 = 0` (MA11 picks the `&7C00` block on a Model B). *Corrected 2026-11-18:* this sentence used to credit `MA12=0, MA11=1` with the switch; MA13 is the flag. The translator routes via **TTX VDU** instead of HI RES, regardless of which graphics mode the Video ULA thinks it's in. Fetches come from the 1 KB MODE 7 RAM window. The ULA still decodes each byte as graphics pixels.
 
 ## High-speed CRTC clock (modes 0/1/2) — the EOR-64 interleave
 
@@ -64,7 +64,14 @@ Equivalently, treat `&7C00-&7C3F` and `&7C40-&7C7F` as two interleaved 64-byte h
 
 ### Master complication
 
-On the Master, the toggle pattern is more elaborate: either `MA6` or `MA7` is XOR'd depending on `RA0` (extra DRAM rows to refresh, so the translator's interleave dance is different). Same principle — the interleave is deterministic, just two layers instead of one. Derive the table for your specific use case from the schematic, or measure it empirically by writing a known pattern and reading back what the CRTC fetches.
+On the Master the toggle pattern is more elaborate, and it has now been **measured on a real Master** (KC, phX hwtest card J, 2026-11-15; [[sources/beeb-port-kit-hardware-facts-2026-11]] §1):
+
+- MODE 1 with MA13 set (R12/R13 `&2028`, MA11 clear) reads the 1K at **`&7C00`**, RA ignored — the Master's MA13 fetches come from `&7C00`, not `&3C00`.
+- The characters of one 1 MHz phase read `&7C00 + (MA AND &3FF)`; the others the same address **`XOR &40` on one scanline and `XOR &C0` on the next** (MA6, then MA6 and MA7) — **never MA7 alone**. Bits 8-9 never flip. Which RA parity takes `XOR &C0` was not read.
+- **The phase follows the 1 MHz clock, not C0**: every odd-length CRTC line since the boot swaps which characters flip, so a layout that depends on it needs a known 1 MHz phase (phX locks the 6845 to it at boot with R0 = 0, then keeps every line even).
+- jsbeeb 2.10.x and b2 model neither flip; beebjit models MA6 only; jsbeeb main 2.22.0 (#1859) models both.
+
+So a Master layout needs the `XOR &40` interleave on one scanline parity and `XOR &C0` on the other. *Superseded:* this section said "either `MA6` or `MA7` is XOR'd depending on `RA0`", from [[sources/chunky-mode-notes]] (Julian Brown, second-hand); the measured form is above. Details on [[hardware/address-translation]].
 
 ## Low-speed CRTC clock (modes 4/5/6) — works as-is
 

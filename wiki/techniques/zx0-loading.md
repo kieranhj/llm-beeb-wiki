@@ -1,18 +1,33 @@
 ---
 title: ZX0 compressed loading — in-place unpacking rules
 type: technique
-tags: [zx0, compression, loader, dfs, boot, staging]
-sources: [beeb-port-kit-hardware-facts]
-updated: 2026-09-06
+tags: [zx0, zx02, shrinkler, compression, loader, dfs, boot, staging]
+sources: [beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # ZX0 compressed loading
 
 Shipping every data file ZX0-compressed and running a depacker over it at boot, as both of Kieran Connell's ports do ([Paradroid](https://github.com/kieranhj/paradroid-beeb) on a Model B, [Edge Grinder](https://github.com/kieranhj/edge-beeb) on a Master 128). [ZX0](https://github.com/einar-saukas/ZX0) is Einar Saukas's LZ-family format with a tiny 6502 depacker. The rules below are the ones that were **measured**; source [[sources/beeb-port-kit-hardware-facts]] §9, with §6 for the disc facts.
 
+## Which packer: ZX0, ZX02 or Shrinkler (measured 2026)
+
+From [[sources/beeb-port-kit-hardware-facts-2026-11]] §9:
+
+| Packer | 6502 depacker | Speed | Packed size | Source |
+|---|---|---|---|---|
+| ZX0 | 257 bytes | 115.4 cycles per output byte | baseline | py65, 43 files from both ports (242,481 bytes), 2026-09-07 |
+| **ZX02** (Daniel Serpell's 6502-tuned fork) | **131 bytes** | **53.9 cycles a byte** (2.14× faster) | +0.11% over the corpus | same run; end to end by booting the kit's ZX02 disc in jsbeeb (`B-DFS1.2`, Master) |
+| Shrinkler (`-d -b -p -9`, unShrinkler by Dudek and Fusik, `PARITY=0 FAST=0`) | ~320 bytes + 1.5K page-aligned workspace | **~4,000 cycles a byte** (~75× slower than ZX02) | Isometrikum's four streams (34,311 B): 10,623 against ZX02's 12,271 | py65 and jsbeeb boot, 2026-11-08; `isometrikum/docs/crunch.md` |
+
+- **ZX02 is the one to use on a 6502, and it is not close.** Per file its ratio loss is under 1%, except on data that is almost all one repeated run (its gamma codes are capped at 8 bits): a near-empty 2,560-byte panel went 67 → 79 bytes. Both upstream READMEs claim ZX02 also wins on ratio; over this corpus it loses slightly. (The 40k-cycles-per-1K figure below is a load's wall clock; the py65 figures count the decode alone — compare like with like.)
+- **Shrinkler only when size is all that counts**: Isometrikum's crunched executable takes 34 s to unpack on both models (the original CPC demo's 6.6K: 13.5 s).
+- **Under Shrinkler, repeated code packs nearly free, so merging copies into a loop costs bytes** (+19, +20 measured) and one stream for everything saved only ~32; **deleting and generating at boot are what pay**. A run of zeros costs almost nothing packed, so generated tables and workspace can ship as zeros inside the stream and be rebuilt at boot: Isometrikum's `genr_*` ranges, 6,124 bytes, took the executable from 10,771 to 9,197. Price a size change by the packed length before building on it (a round planned on raw bytes at 900-1,200 delivered 502) (Isometrikum crunch rounds 2a-5, 2026-11-08/09; kit gotchas class 10).
+- **On a fast disc read, packing saves less than it looks**: Stryker's Run packed its files with ZX02 and shrank the disc 40% but saved only ~1 s of a 12 s boot, the unpack costing ~60 cycles a byte written; re-laying the files in load order cut its boot from 120 head steps to 32 (12.68 s → 12.38 s) (2026-10-24, jsbeeb 2.10.2, which reads ~8.8K a second).
+
 ## The in-place rule
 
-**ZX0 unpacks forwards; a stream may share memory with its output only while the reader stays ahead of the writer.** The rule of thumb "the stream must end where the output ends" is *not enough*: the required gap is a property of THIS stream, because a literal run copies 1:1 plus flag bits and the writer can gain on the reader locally.
+**ZX0 and ZX02 both unpack forwards; a stream may share memory with its output only while the reader stays ahead of the writer.** The rule of thumb "the stream must end where the output ends" is *not enough*: the required gap is a property of THIS stream, because a literal run copies 1:1 plus flag bits and the writer can gain on the reader locally.
 
 - Walk the decode offline and track `max(write_index − bytes_consumed)`. For Paradroid's font that was 1,566 bytes, with the worst point at the very end (ZX0's closing matches consume almost no input). Check it every build — the tool that builds the disc should refuse an image where any stream overlaps its own output by less than its measured delta. (Paradroid, 2026-08-29, `make_disc.py`'s `in_place_delta()`, verified by booting in jsbeeb; [`docs/loader-compression.md`](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/loader-compression.md).)
 - **A full 20K screen cannot be unpacked in place from inside the screen**: the stream's tail would run past `&8000`. Stage it below the screen, and split it if the staging area is small — Edge Grinder's loading picture is two files staged in the sprite-save area at `&2400`. (Edge 2026-09-04, [`docs/layer-9-loader.md`](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-9-loader.md); Paradroid intro 2026-08-30.)
@@ -34,10 +49,14 @@ Shipping every data file ZX0-compressed and running a depacker over it at boot, 
 
 ## Loader discipline that came out of it
 
-- **Every `*LOAD`/OSFILE happens before IRQ1V is taken**; after that the MOS is not servicing the filing system. See [[os/interrupts]].
-- **The MOS's disc code needs VSync**: with R7 parked where VSync never fires the second `*LOAD` hung in DFS's 8271 status poll at `&ACAE`. Do not park the CRTC before the last load. See [[os/filing-systems]].
+- **Load before taking IRQ1V anyway — but not for the reason first given.** The old claim ("after that the MOS is not servicing the filing system") was assumed, never tested, and is **replaced**: on a Model B with an 8271, an 8 KB `*LOAD` completed with a null IRQ handler, under `SEI`, and with VSync stopped. On a **Master with the 1770 DFS**, `SEI` across the call works, a chaining handler that changes nothing works, and a null handler, a changed System VIA T1 latch or T1's interrupt disabled each **hung** (jsbeeb). The reasons that hold: DFS pages its ROM over `&8000`, its workspace is live until the last call returns, and loads cost whole frames — a one-sector call blocks ~9 fields ([[sources/beeb-port-kit-hardware-facts-2026-11]] §6). See [[os/interrupts]].
+- **"The MOS's disc code needs VSync"** — Paradroid's second `*LOAD` hung in DFS's 8271 poll at `&ACAE` with R7 parked where VSync never fires; **not reproducible on jsbeeb 1.25.0** with VSync confirmed dead (R7 alone in a full-length frame). Keep the display out of the way of a load either way. See [[os/filing-systems]].
+- **After the boot's last load, `OSBYTE 140`** if nothing will load again, or drive the 1770 yourself on a Master ([[hardware/wd1770]]); the kit's `release_fs` is the call ([[memory/os-workspace]]).
+- **A load from jsbeeb's 1770 DFS takes more than 50 frames**: a `*RUN` still in DFS's NMI code at `&0D3F` is loading, not hung (kit, 2026-09-11).
 - **OSFILE writes the file's catalogue addresses back into its parameter block**, so reset load/exec before every call or the second file lands where the first said. See [[os/filing-systems]].
-- **`VDU 22` clears `&3000-&7FFF`**, so anything staged above `&3000` is wiped by a later mode change — change mode first. See [[os/vdu]].
+- **`VDU 22` clears `&3000-&7FFF`**, so anything staged above `&3000` is wiped by a later mode change — change mode first. See [[os/vdu]]. That includes a `*RUN` image's own code above `&3000` if the mode change comes after the load (1942 BUGS #17).
+- **Not into `&1100-&18FF` on an `*EXEC` boot** — `*EXEC` and closing an exec file write there; boot by `*RUN` ([[memory/os-workspace]]).
+- **On a Master, `&C300-&DEFF` of HAZEL can be filled with DFS still working**, within limits set by what the program still asks of it (OSFILE only: all of it); see [[memory/shadow-ram]].
 - **Blank with R8 (`&30`) and hide the cursor with R10 (`&20`)** while the screen is being filled; `R6 = 0` leaks a row and shows the stream. See [[hardware/crtc-6845-advanced]].
 
 ## See also

@@ -2,10 +2,10 @@
 title: System VIA
 type: hardware
 tags: [via, system-via, keyboard, sound, vsync, latch]
-sources: [naug-ch22-vias, master-arm, master-rm, beeb-port-kit-hardware-facts]
+sources: [naug-ch22-vias, master-arm, master-rm, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
 sheila: ["&FE40", "&FE4F"]
 machines: [BBC Model B, BBC B+, Master 128, Master Compact]
-updated: 2026-09-07
+updated: 2026-11-18
 ---
 
 # System VIA
@@ -142,6 +142,11 @@ Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kiera
 - **The VSync CA1 interrupt is serviced about 4 scanlines after the VSync edge.** The timer chain itself is exact — breakpoint bisection put Paradroid's fire 1 at 78.3-79.3 scanlines after handler entry against a design figure of 78 — so the whole error is in where VSync itself sits. The scanline component cannot be read from screenshots better than ±2; it was KC spotting two wrong lines on b-em that pinned it (Paradroid Layer 3).
 - **Polling `&FE4D` bit 1 for VSync races the MOS**, whose own handler clears the flag when it services VSync; chain on IRQ1V instead while the MOS is alive (stated as the design reason; not separately measured). **With interrupts down, polling the flag directly works** — Edge Grinder's memorial fade does exactly that before its IRQ install (Layer 9d, 2026-09-05, jsbeeb).
 - **Taking IRQ1V outright**: disable every interrupt source on both VIAs except System VIA CA1 and T1, or anything unserviced holds the IRQ line asserted forever. The MOS saves the interrupted A in `&FC` but not X or Y (Paradroid Layer 3). See [[os/interrupts]].
+- **Chaining to the MOS loses VSyncs** unless the MOS's System VIA mask (`&0279`, OSBYTE `&E9`) has bit 1 cleared while the game owns VSync: a VSync landing in the ~30 cycles before the MOS dispatcher reads the IFR is acknowledged by the MOS first. Stryker's Run's original lost 12 fields of 1,000; 0 after the fix (2026-10-16, jsbeeb 2.5.0, Master; [BUGS #3](https://github.com/kieranhj/strykers-run/blob/main/BUGS.md) — [[sources/beeb-port-kit-hardware-facts-2026-11]] §3). See [[os/interrupts]].
+- **The MOS reset reads this chip's IER**: MOS 3.20 clears memory on BREAK only if the IER reads 0 (or `&0258` says so), so a game running with VIA interrupts enabled (IER `&C2` in 1942) keeps RAM through a BREAK despite `*FX 200,2`; phX's BREAK intercept clears the IER and restarts the reset. See [[os/break-intercept]].
+- **System VIA T1's state matters to a filing-system call on a Master**: with a chaining IRQ1V handler, a changed T1 latch or T1's interrupt disabled (IER `&40`) hung a 1770 DFS `*LOAD` in jsbeeb (1942, 2026-09-13). A rupture's own T1 cadence cannot run across a filing-system call. See [[os/interrupts]].
+
+Later T1 measurements (chain the latch rather than re-arm from a constant; one T1 chain for a whole demo; a 304-line field) are on [[timing/via-timers]].
 
 ### Port A: keyboard and sound chip together
 

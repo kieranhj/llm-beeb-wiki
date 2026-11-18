@@ -2,8 +2,8 @@
 title: Parallax Bars (64-row buffer via mid-frame ACCCON switch)
 type: technique
 tags: [crtc, single-rasterline, parallax, mode-1, shadow-ram, acccon, dither]
-sources: [twisted-brain]
-updated: 2026-05-16
+sources: [twisted-brain, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Parallax Bars
@@ -26,7 +26,7 @@ Solution: split the buffer across two MODE 1 screens, one in main RAM (rows 0-31
 
 ## The mid-frame switch
 
-CRTC R12/R13 is **latched** at the start of each cycle (see [[hardware/crtc-6845]]). ACCCON `D` bit (display source) takes effect **immediately**. So the sequence per cycle is:
+CRTC R12/R13 is **latched** at the start of each cycle (see [[hardware/crtc-6845]]). ACCCON `D` bit (display source) takes effect **immediately** — measured on two real Masters: a D write mid-line at C0 48 or 59 (odd) switches the display at exactly that character with no glitch character, and D toggled in the blanking every line alternates whole lines cleanly (phX hwtest card A, jsbeeb the same; [[sources/beeb-port-kit-hardware-facts-2026-11]] §4). So the sequence per cycle is:
 
 1. During this cycle: write the *next* cycle's R12/R13 (latched).
 2. **Immediately before the next cycle starts**: write ACCCON to switch main↔SHADOW.
@@ -67,16 +67,18 @@ Per-iteration work (must fit in 4 raster lines = 512c):
     JSR cycles_wait_128     ; +128c   one more raster line
 
     ; --- write ACCCON for next cycle (in 4th hsync) ---
-    LDA &FE34               ; 4c (stretched)
+    LDA &FE34               ; 4c (2 MHz, not stretched)
     AND #&FE                ; 2c   clear D bit
     ORA vram_page, Y        ; 4c   set D bit if row >= 32
-    STA &FE34               ; 4c (stretched)
+    STA &FE34               ; 4c (2 MHz, not stretched)
 
     DEC parallax_crtc_row   ; 5c
     BNE loop                ; 3c
 ```
 
 The three `JSR cycles_wait_128` calls span the three "passive" raster lines per cycle. The fourth raster line ends in the ACCCON write.
+
+(*Corrected 2026-11-18:* the `&FE34` comments said "4c (stretched)"; ACCCON is a 2 MHz register — [[sources/beeb-port-kit-hardware-facts-2026-11]] §4, real Master. And the `LDA &FE34 … STA &FE34` read-modify-write is safe here only because nothing else writes ACCCON during the loop: the 2026 ports' rule is never to read ACCCON back across an interrupt — compose every write from owned parts with the IRQ masked (1942), or change one bit with `TSB`/`TRB`, which no IRQ can split (phX). Never set ACCCON bits 5-7: jsbeeb ignores them, a real Master may not. See [[memory/shadow-ram]].)
 
 ## Animation
 

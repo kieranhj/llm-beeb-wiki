@@ -2,9 +2,9 @@
 title: Shadow RAM & ACCCON
 type: memory
 tags: [shadow-ram, acccon, hazel, double-buffer]
-sources: [naug-ch12-memory, master-arm, master-rm, beeb-port-kit-hardware-facts]
+sources: [naug-ch12-memory, master-arm, master-rm, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
 machines: [BBC B+, Master 128, Master Compact]
-updated: 2026-09-07
+updated: 2026-11-18
 ---
 
 # Shadow RAM & ACCCON
@@ -138,10 +138,31 @@ Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kiera
 ### ACCCON and the display
 
 - **The shadow display bit (D, bit 0) flips cleanly inside the VSync handler**, so a main/shadow double buffer can be swapped in vertical blanking with the scroll address — the "double-buffered animation" above, done directly rather than through the OSBYTEs (2026-09-02, jsbeeb: 10 game frames in 20 fields with a two-field frame lock; [layer-2-display.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-2-display.md)).
-- **The display bank can be switched INSIDE a frame**, taking effect at the next character fetch: a VSync-synced delay loop flipping D put main RAM above the switch and shadow below it, with a step part way along the scanline the write landed in. Place the write in horizontal blanking, or in a row nobody fetches. **jsbeeb only; b-em has NOT been checked, and real hardware is untested** (2026-09-04; [layer-6e-titles.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-6e-titles.md)). [[techniques/parallax-bars]] relies on the same switch.
-- **The hardware wrap applies inside whichever bank is displayed.** With D = 1 and the wrap at 8K, a display crossing `&8000` lands on shadow `&6000`, not main. One ring per bank (2026-09-04, jsbeeb). See [[hardware/address-translation]].
-- **Nothing displayed may live below `&3000`.** jsbeeb displayed a panel at `&2000` under both shadow states; b-em showed garbage on alternate frames. The two emulators disagree about what the video fetches there with D set, and **real hardware is untested either way** (2026-09-02, jsbeeb and b-em; [decisions.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/decisions.md) 17). See [[tools/emulators]].
+- **The display bank can be switched INSIDE a frame, and D acts AT the character written — measured on real Masters.** Edge's first measurement: a VSync-synced delay loop flipping D put main RAM above the switch and shadow below it, with a step part way along the scanline the write landed in (2026-09-04, jsbeeb; [layer-6e-titles.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-6e-titles.md)). [[techniques/parallax-bars]] relies on the same switch. **Now real hardware** ([[sources/beeb-port-kit-hardware-facts-2026-11]] §2, §4):
+  - **1942** keeps its 2-row panel in shadow only: a rupture fire in the horizontal blanking of the last play scanline sets D for the panel's 16 lines, the VSync hook clears it; its oracle saw the write land at `horizCounter` 74-82 in 792 of 798 fields, and the panel matched shadow's bytes 0 of 3,584 wrong with main's copy poked to a pattern (jsbeeb 2026-10-07; **real Master 128 2026-10-13**, KC: "the panel looks good on real hw"). 1942 decision 141.
+  - **phX, KC's two real Masters, 2026-11-14 (hardware-test card A)**: D = 1 written mid-line at C0 48 and at C0 59 (odd) switches the display **at exactly that character, with no glitch character**, and D toggled in the blanking every line alternates whole lines cleanly; jsbeeb the same. An odd C0 means `&FE34` is a 2 MHz write. Unlike the palette (`&FE21`, which acts early on a real Master — see [[hardware/video-ula]]), D is character-aligned because it changes which memory the fetch reads. phX's spectrum analyser builds its bars on it.
+  *(Until 2026-11-18 this entry said "jsbeeb only; real hardware is untested".)*
+- **The hardware wrap applies inside whichever bank is displayed.** With D = 1 and the wrap at 8K, a display crossing `&8000` lands on shadow `&6000`, not main. One ring per bank (2026-09-04, jsbeeb). Still an emulator result only (kit §12). See [[hardware/address-translation]].
+- **Nothing displayed below `&3000` while D is set: with D = 1 the video reads ANDY and HAZEL there, not main RAM** — measured on a real Master. The history:
+  - Edge (2026-09-02): jsbeeb 1.x displayed a panel at `&2000` under both shadow states; b-em showed garbage on alternate frames ([decisions.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/decisions.md) 17). KC's hypothesis (2026-09-07): with D set a CRTC address below `&3000` reads ANDY/HAZEL.
+  - **Stryker's Run (2026-10-23, jsbeeb 2.10)**: confirmed in emulation — jsbeeb 2.10's `videoRead` ORs `&8000` into the address when D is set. Its HUD row, a CRTC frame read from `&0B80`, showed **ANDY's** sprite bytes (`&8000-&8FFF`) on every shadow field until D was cleared from VSync through the HUD's frame and set in the horizontal blank after it; b2 showed it right after the fix ([strykers-run BUGS.md #15](https://github.com/kieranhj/strykers-run/blob/main/BUGS.md)). Its checks timed the writes rather than sampling what the video read, and missed it for a day.
+  - **phX, KC's real Master, 2026-11-15 (hardware-test card I)**: D = 1 over CRTC addresses `&1800-&1AFF`, with main RAM there blue and HAZEL `&C800-&CAFF` green — the lines showed **green**. With D set the 6845 reads HAZEL below `&3000`, as jsbeeb and b2 have it; **b-em's alternate-frame garbage was b-em's** (`phX/docs/hwtest.md` "I", "Results: tests I-L").
+  The rule now: **D = 0 over any displayed row below `&3000`**; displaying below `&3000` with D = 0 works. See [[tools/emulators]].
 - **The shadow screen is 20K of RAM nobody is looking at while main is displayed**, so with D = 0 and X = 1 (CPU sees shadow) it is a free staging area for compressed streams at boot (2026-09-04; [layer-9-loader.md](https://github.com/kieranhj/edge-beeb/blob/master/docs/layer-9-loader.md)). See [[techniques/zx0-loading]].
+
+### ACCCON discipline (1942, Stryker's Run, phX — 2026)
+
+From [[sources/beeb-port-kit-hardware-facts-2026-11]] §4 and gotchas class 6:
+
+- **X redirects every CPU access to `&3000-&7FFF`, not just the screen** — reads included. A renderer that draws into shadow with X set reads shadow's copy of any code or data in `&3000-&3FFF`, so that must be mirrored into shadow or kept below `&3000`, and anything the interrupt reads must be below `&3000` (the interrupt can land mid-draw). Stryker's Run keeps its IRQ's variables below `&3000` and audits the rest (`tools/shadowaudit.mjs`: every read in `&3000-&3FFF` with X set, called stale where shadow's byte differs from main's) (2026-10-16, jsbeeb 2.5.0; [decision 23](https://github.com/kieranhj/strykers-run/blob/main/docs/decisions.md)). And **X names the back buffer only while drawing**: game state in `&3000-&7FFF` read with X still on the back buffer is the other buffer's copy — 1942 ignored a stage-end hold on every other tick that way.
+- **Two methods of sharing ACCCON between parties, and both are sound** (X belongs to the drawer, D to the VSync take or a panel fire, Y to HAZEL):
+  - **Never read ACCCON back; compose every write** (1942): one writer ORs the parts together (`acc_x OR buf_live OR pan_on`) and masks interrupts across its own compose-and-store. A value the boot leaves in one ORed part is ORed into every write: 1942's `pan_on` lived on a MOS vector byte, was non-zero at boot, and put `game_init`'s state into shadow — every enemy block of every stage came a block early (1942 decisions 43, 141; BUGS #47; jsbeeb 2026-09/10).
+  - **Change one bit in place with `tsb`/`trb`** (phX): "only `tsb`/`trb` or read-modify-write — Y must never drop", since its disc layer lives in HAZEL. A `tsb &FE34` does read ACCCON back, but as one instruction an IRQ cannot land between its read and its write, so an interrupt that changes ACCCON and restores it on exit cannot be undone by it; a multi-instruction `lda`/`ora`/`sta` must be masked. phX runs this way through the whole demo, played on KC's real Master (`phX/CLAUDE.md` Traps). See [[hardware/6502]].
+  The point both agree on: no party may write a stale copy of another party's bit.
+- **Never set ACCCON bits 5-7 (TST, IFJ, IRR — named per the table above).** jsbeeb ignores them, so a stray value there passes every emulator check; phX's analyser draw once wrote CRTC R0 values into ACCCON. **What a real Master does with them was NOT observed** — the rule is from the register's documented meaning (IRR forces an IRQ, TST is a test mode) and jsbeeb's silence, not from a failure on hardware. phX's `tools/acccon_watch.mjs` checks every ACCCON write over the whole demo (`phX/CLAUDE.md` Traps, B7 step 0).
+- **A late frame flipped mid-field shears sprites, never a double-buffered scrolling background**: both buffers hold the same level bytes at the same addresses, so the cut cannot mark the scenery. 1942 flips at once rather than holding a field, except for text frames (a sheared caption reads as broken) (1942 decisions 64, 65; jsbeeb and KC's eye).
+- **ACCCON's D/X double buffer is the Master's alone.** The B+'s CPU accesses to `&3000-&7FFF` follow the displayed screen, so it cannot draw one screen while showing the other; the Integra-B's 20K is the CPU's only. A Master shadow-double-buffered game goes to a Model B as one screen raced against the beam (Stryker's Run's Model B build draws in the 112 blank lines and behind the beam). On a Model B `&FE34` is a ROMSEL mirror, so every ACCCON write has to go. OSBYTE 0 with X = 1 names the machine (1 B, 2 B+, 3 Master 128; 5 Compact from the AUG only) (Stryker's Run 2026-10-24/25; the B+ and Integra-B from their documentation; the Model B build played by KC in b2).
+- **`*SHADOW` then soft BREAK leaves ACCCON `&1B`** (D and E set, the display in shadow) under a game that assumes main is displayed: a blue strip, no panel. The kit template's boot now writes ACCCON itself and reads `&18` there (jsbeeb Master, 2026-09-11; paradroid-beeb #18 — kit §4 "Target configurations").
 
 ### HAZEL
 
@@ -150,6 +171,20 @@ Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kiera
 - **`&FFFE` on this Master reads `&E59E`**, above HAZEL's `&DFFF`, so paging HAZEL in cannot break interrupt dispatch (2026-09-04, jsbeeb, read out of the machine).
 - **Sideways bank `&BFFF` and HAZEL `&C000` are adjacent and both visible at once** (different registers, different windows), so a pointer walking off the end of a bank lands in HAZEL and a data stream can lie across the join. Two of Edge Grinder's eleven music streams do (2026-09-04, jsbeeb: SN76489 captures match the reference across the join).
 - ANDY (ROMSEL bit 7) is a separate mechanism, measured on [[memory/paged-rom]].
+- **`&C300-&DEFF` is usable with DFS still working (pop-beeb's range), depending on what the program still asks of the filing system** (kit, 2026-09-11, jsbeeb Master 128 MOS 3.20, 1770 DFS; the OSFILE-load, `*CAT` and soft-BREAK figures matched 1942's independent run byte for byte — [[sources/beeb-port-kit-hardware-facts-2026-11]] §4). The window was filled with `page EOR offset` from main-RAM code and checked after each kind of call:
+
+  | after | written inside `&C300-&DEFF` |
+  |---|---|
+  | OSFILE load, 8 KB file, ×4 | nothing |
+  | OSFILE save and delete | nothing |
+  | any `*` command (OSCLI) | `&DC00` up: the command line |
+  | `OPENIN` + `BGET` | 32 bytes of `&C3` per open channel, plus a page per channel from `&C400` up |
+  | soft BREAK | 10 bytes of `&C3`, 237 of `&DA` |
+
+  DFS worked throughout with the whole window overwritten. `&C000-&C2FF` and `&DF00-&DFFF` hold DFS data at rest and change during calls — not usable. So: OSFILE only → all `&C300-&DEFF` (7K); plus `*` commands → lose `&DC`; plus open files → lose `&C3` and a page per channel; must survive a soft BREAK → lose `&C3` and `&DA`. 1942 uses `&C400-&D9FF`. **Not covered:** real hardware; MOS 3.5 (pop-beeb 1.2 moved off `&DA` for "DFS versions in MOS 3.5+"); MMFS (pop-beeb guards `&DAC0`); ADFS. This refines the Edge entry above, which took all 8K including DFS's own pages.
+- **After `OSBYTE 140` HAZEL is all yours but two ranges the call itself touches**: `&C000-&C2FF` hold nothing anyone reads (1942 puts its own disc loader and catalogue cache there), and **`*FX 140` itself writes `&DA00-&DAE0`** (222 bytes, the same page a soft BREAK writes), so anything unpacked into `&DA` goes in after the call. **HAZEL can then stay paged for the whole of play** (Y in the base of every ACCCON write): 1942 across 42 OSFILE loads and a whole-game run, jsbeeb 2026-09-17/24, **played on a real Master** from a Gotek 2026-09-28 and a real drive 2026-10-12 (1942 decisions 96, 116). phX does the same.
+- **A game that reads "spare" ROM space may be reading HAZEL.** The Master MOS leaves Y set through a game that never touches ACCCON, so `&C000-&DFFF` is HAZEL, not the MOS ROM. Stryker's Run's mountain layer reads data from `&C300` (meant as MOS ROM); on a Master it is whatever the DFS left there, so the mountains depend on the last disc activity — **jsbeeb boots with HAZEL zeroed**, and after a release disc's menu different bytes picked an untested sprite. Fill HAZEL alike in both machines of an A/B check (Stryker's Run BUGS #9, jsbeeb 2026-10-17 to 10-25, `tools/hazelwatch.mjs`: 1,242 reads of `&C301-&C56C`).
+- **BREAK and HAZEL**: `*FX 200,2` is not enough with VIA interrupts enabled; the reliable form is the BREAK intercept. See [[os/break-intercept]].
 
 ### Low RAM reclaimed on the Master
 

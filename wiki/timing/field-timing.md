@@ -2,8 +2,8 @@
 title: Field and scanline timing — measured constants
 type: timing
 tags: [timing, scanline, field, vsync, irq-latency, t1, rupture, cycles]
-sources: [beeb-port-kit-hardware-facts, naug-ch13-video, naug-ch22-vias]
-updated: 2026-09-06
+sources: [beeb-port-kit-hardware-facts, naug-ch13-video, naug-ch22-vias, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Field and scanline timing — measured constants
@@ -22,6 +22,9 @@ The numbers a raster-timed program is built from, **as counted in the emulator**
 | System VIA T1 tick | 1 MHz; **`SL = 64` ticks a scanline** | Edge, 2026-09-02 |
 | A 25 Hz frame in T1 ticks | 39,936 µs | arithmetic from the above |
 | Rows in a rupture | must sum to **39** (× 8 scanlines = 312) or the picture rolls | Paradroid Layer 3 |
+| One CRTC character | **0.5 µs in MODEs 0-3** (128 a line), 1 µs in MODEs 4-7 (64 a line) | per-mode R0 ([[hardware/crtc-6845]]); phX's probe counts 128 characters a line, jsbeeb Master ([[sources/beeb-port-kit-hardware-facts-2026-11]] §1) |
+| CRTC write slot | every CRTC write lands at an even C0 (1 MHz); back-to-back `STA &FE01` 6 cycles | phX, jsbeeb 2.10.2, 2026-11-14 |
+| 272 lit lines in a field | unchanged 39,936.00 cycles a field (3,993,600 over 100) | 1942, jsbeeb, 2026-09-07/08; played on a real Master ([[video/monitor-crt]]) |
 
 ## VSync and interrupt latency
 
@@ -56,6 +59,28 @@ The `-2` is the `(N+2) µs` load-and-underflow anatomy on [[timing/via-timers]].
 - [[hardware/crtc-6845-advanced]] — field anatomy, write windows.
 - [[techniques/vertical-rupture]] — where these constants are used.
 - [[tools/emulators]] — how the measurements were taken.
+
+
+## Later measurements (2026-09 to 2026-11)
+
+From [[sources/beeb-port-kit-hardware-facts-2026-11]] §8 and §11. Isometrikum and Square Roots are CPC demos ported to the BBC (Model B + sideways RAM and Master; **jsbeeb only**, not yet b2 or hardware); phX is a CPC demo ported to the Master and played on KC's real Masters.
+
+### T1 fires and the stable raster (CPC demo ports, jsbeeb)
+
+- **A fire's first CRTC write lands 4 lines after its nominal line** with no correction (the CA1 flag's timing, the IRQ path, the slide) — the same ~4-scanline VSync service latency as above. `T1_SYNC_TUNE = -3*SL`, applied to the next field, puts every write 1 line + 5 characters after its line: fire 0's R4 at 3:9 in 6,384 of 6,399 fields, fire 1's at 49:9 in 6,383; the rest up to 54 characters late, each because a bass interrupt was already running (Isometrikum, MODE 2, R1 = 96, 2026-11-07).
+- **A stable-raster NOP slide of 80 µs holds one write position in 2,994 of 2,999 fields; 64 µs splits the writes between two positions 2 cycles apart.** Page-aligned (`ASSERT HI(slide) = HI(slide_end)`), entered by a self-modified low byte from `loaded - T1CL`. Only worth it where a write window is narrow: Square Roots' windows were whole 512 µs rows and its slide was removed (2026-11-07/08). See [[techniques/hexwab-stable-raster]].
+- **Re-arming T1 from a constant drifts; chaining its latch does not.** A fire-0 restart drifted 70 µs a field; each fire loading the latch for the next interval, T1 locked once at install, held (Square Roots, 2026-11-08). Same conclusion as the T1-not-T2 rule on [[timing/via-timers]].
+- **A frame need not be 312 lines.** Square Roots' CPC frame is 304 lines (51.4 Hz, measured on the reference CPC model); the BBC runs it as R4 = 37 with a T1 field of 19,456 µs (304 × 64) — 312 would make the demo 2.7% slower. A harness counting jsbeeb's frames drifts against such a frame.
+- **A software bass on User VIA T1 is only as punctual as the interrupts in front of it**: Isometrikum's VSync music costs 2,337 cycles a field (5.9%), the bass 1.95 interrupts a field at 152 cycles; toggles within 8 cycles of the period 85.5% with two raster fires, 77.5% with five, worst ±4,700 cycles (jsbeeb).
+
+### One cadence for a whole demo (phX, Master)
+
+- **One T1 chain, two latches, a 0-14-cycle slide**: phX's draw is entered at the same beam position (C0 0) every field of 16,302, every field 39,936 cycles, VSync once a field (jsbeeb, `verify_frame.mjs`, 2026-11-15). Only fields with disc NMIs enter late (0-35 cycles behind the loading card, 0-67 in all four load windows), because an NMI (35 cycles a byte) can delay the IRQ beyond what the slide absorbs — a line-exact part must not run while the disc loads.
+
+### Counting fields in jsbeeb
+
+- **jsbeeb's `frameCount` counts C4 = R6 matches and nothing else** — not VSync, not the frame's end. A field whose display is cut by R8 and never reaches R6 does not count; one that meets R6 twice counts two. jsbeeb's web display decays its phosphor by that count, so a demo whose frames never reach R6 turns white on bbc.xania.org while headless harnesses pass. A real 6845 needs no R6 match. phX's rule: meet C4 = R6 exactly once a field inside lines R8 already blanks, and fail a frame check unless the count steps one a field (jsbeeb 2.10.2 and main 2.21.1, 2026-11-14). More on [[tools/emulators]].
+- **Sample a harness at the port's own tick, not jsbeeb's frame**, when the port's frame is not 312 lines (Square Roots' 304-line frame drifted against it).
 
 ---
 

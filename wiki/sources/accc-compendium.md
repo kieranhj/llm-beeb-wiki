@@ -7,7 +7,7 @@ date: 2023-10-10
 version: 1.7
 url: https://shaker.logonsystem.eu/
 tags: [crtc, 6845, reference, rupture, cpc, internal-counters, c0, c4, c9, c5, vma, vsync, hsync]
-updated: 2026-05-16
+updated: 2026-11-18
 ---
 
 # ACCC — The Amstrad CPC CRTC Compendium
@@ -102,12 +102,21 @@ Chapters relevant to BBC (ignore subsections explicitly tagged "CRTC 1/2/3/4"):
 | 272-280 | §26 Interrupts | **Skip** — CPC uses Z80A IM2 + R52 line counter, BBC uses 6502 IRQ + System VIA |
 | 281-283 | §27, §28 CRTC + CPC identification | reference for [[hardware/crtc-6845]] (HD6845R vs HD6845S already documented) |
 
+## Contradicted by (BBC measurements, 2026-11)
+
+The summary above is of the compendium, which describes the CPC. Later BBC measurements — [[sources/beeb-port-kit-hardware-facts-2026-11]] §1 (phX: jsbeeb 2.10.2 Master and KC's two real Masters) — differ on these points; the summary's own claims are left as written:
+
+- **"Setting R0=1 creates 2µs micro-frames"** is the CPC's figure (1 MHz CRTC). On the BBC a 2-character micro-cycle is **1 µs in the 2 MHz modes** (0.5 µs a character) and 2 µs only in MODEs 4-7. And burnt lines are not invisible: they display their characters 0..R0 while R1 > R0, and nothing blanks video during HSync on the BBC ([[techniques/rvi]], [[video/monitor-crt]]).
+- **"R0=0 … no shipped demo uses it yet"** (this page's own note): funky-fresh's sync and phX's `LOCK_VSYNC` use R0 = 0 (two lines, then R0 = 127) to restart the 6845 on a 1 MHz boundary ([[techniques/crtc-counter-freeze]]).
+- **RVI (R.V.L.L.) has shipped on the BBC**: Evil Influences' full RVI, and phX's forms on real Masters ([[techniques/rvi]]).
+- **The Last-Line window**: jsbeeb latches at exactly C0 = 1 (within the compendium's C0 < 2); on real Masters the latch has been taken by C0 54 — consistent, but the real chip's exact point is unmeasured ([[hardware/crtc-internal-counters]]).
+
 ## Open follow-ups
 
 - **R.V.L.L. "hidden 2µsec ruptures" full worked code** — the compendium gives the recipe but no complete CRTC-0 code listing. Captured under [[techniques/rvi]].
 - **Empirical verification on BBC HD6845SP** — the compendium's CRTC 0 behaviour matches the chip's design. Whether every cycle-by-cycle detail holds on the BBC's specific HD6845SP part vs the Amstrad's UM6845 (also classified "type 0") would warrant a SHAKER-style benchmark for the BBC. Tooling does not yet exist.
 - **SHAKER portal** at <https://shaker.logonsystem.eu/> has photographs of test results per CRTC chip; useful when designing a BBC analogue.
-- **R0=0 chip-freeze shipped use** — known to be experimented with on BBC, never shipped in a public demo. Worth a follow-up page when something does ship.
+- **R0=0 chip-freeze shipped use** — known to be experimented with on BBC, never shipped in a public demo. Worth a follow-up page when something does ship. *(Answered 2026-11: see "Contradicted by" above.)*
 
 ## Filed into
 

@@ -2,8 +2,8 @@
 title: Memory Map
 type: memory
 tags: [memory, address-space, fred, jim, sheila]
-sources: [naug-ch12-memory, naug-ch13-video, allmem-ripley-harston, master-rm]
-updated: 2026-05-16
+sources: [naug-ch12-memory, naug-ch13-video, allmem-ripley-harston, master-rm, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Memory Map
@@ -49,7 +49,15 @@ Source: NAUG §12.1 p155-156.
 | `&0D00-&0DFF` | NMI handler (1 page) |
 | `&0E00-…` | DFS / other filing system workspace, then user program (PAGE) |
 
-`PAGE` (BASIC) / `OSHWM` (MOS) marks the start of user program memory. On Model B with DFS, that's typically `&1900`. Master with HAZEL filing-system RAM enabled, that's `&0E00` (DFS workspace moved into HAZEL).
+`PAGE` (BASIC) / `OSHWM` (MOS) marks the start of user program memory. On Model B with DFS, that's typically `&1900`. Master with HAZEL filing-system RAM enabled, that's `&0E00` (DFS workspace moved into HAZEL; measured `OSBYTE &83` = `&0E00` on jsbeeb's Master, `phX/docs/memory-map.md`).
+
+**Measured traps in this region** ([[sources/beeb-port-kit-hardware-facts-2026-11]] §6):
+
+- **Nothing guarantees filing-system workspace ends at `&1900`.** Another filing system's OSHWM can be higher, and MMFS in sideways RAM puts it lower, at `&0E00`. Read OSHWM (hexwab, paradroid-beeb #18; not measured).
+- **A Model B's DFS hangs loading a `!BOOT` at `&0E00`** (its workspace is `&0E00-&18FF`): jsbeeb 2.10.2, PC `&DC5D` on `B-DFS1.2` and `&8E14` on `B1770`. A Master-only disc's machine check must be a small stub loaded high (1942: `&5000`) that copies the real image down on the machines it accepts and prints a message, DFS intact, on the others (1942 2026-10-19; re-measured by the kit 2026-10-25).
+- **The code ceiling at boot is `&3000`, even on a shadow-screen machine**: the boot's `VDU 22` clears `&3000-&7FFF` after `*RUN` loads the image and before it runs (1942 BUGS #17). See [[memory/os-workspace]].
+- **`*EXEC` writes `&1100-&18FF`** (and so does closing an exec file): a program living there must boot by `*RUN`. See [[memory/os-workspace]] for the whole reclaim table.
+- **A real machine's RAM powers up with junk that survives BREAK**; jsbeeb's is zeroed (and so is the Master's HAZEL). See [[tools/emulators]].
 
 ## SHEILA address allocations (`&FE00-&FEFF`)
 
@@ -84,7 +92,8 @@ See [[video/modes]]. Range is always inside `&3000-&7FFF`; the base depends on s
 
 - **Model B**: as above. 16 KB MOS, 16 KB sideways for languages.
 - **B+**: adds 20 KB shadow RAM and 12 KB paged RAM (bit 7 of `&FE30` selects). Total RAM 64 KB on B+, 128 KB on B+128.
-- **Master 128**: 20 KB shadow RAM, **ANDY** (4 KB private at `&8000-&8FFF`, selected via ROMSEL `&FE30` bit 7), **HAZEL** (8 KB filing-system RAM at `&C000-&DFFF`, selected via ACCCON `Y` bit), 4 KB private MOS workspace, plus 16 sideways slots (some RAM, some ROM).
+- **Master 128**: 20 KB shadow RAM, **ANDY** (4 KB private at `&8000-&8FFF`, selected via ROMSEL `&FE30` bit 7), **HAZEL** (8 KB filing-system RAM at `&C000-&DFFF`, selected via ACCCON `Y` bit), 4 KB private MOS workspace, plus 16 sideways slots — **slots 4-7 are sideways RAM on a stock machine** (phX's boot checks them on KC's two stock Masters; see [[memory/paged-rom]]), the rest ROM. With ACCCON D set, a CRTC address below `&3000` reads ANDY/HAZEL, not main RAM (real Master, phX; [[memory/shadow-ram]]).
+- **Model B**: `&FE34` is not ACCCON — the kit calls it "ROMSEL's shadow" (a ROMSEL mirror), so a Master ACCCON write left in a Model B build pages a ROM and every one has to go — and ROMSEL is write-only (reads back junk: `&FE` in jsbeeb) — read `&F4` (Stryker's Run, kit §5; [[memory/paged-rom]]).
 - **Master Compact**: similar with adjusted ROM map.
 - **Electron**: Model-B-equivalent map; no shadow RAM, no Tube, video ULA combined with CPU clock generation. ADC moves to `&FE18-&FE1A`. Electron ULA functions at `&FE00-&FE0F`.
 

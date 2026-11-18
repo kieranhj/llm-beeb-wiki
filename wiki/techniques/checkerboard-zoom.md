@@ -2,8 +2,8 @@
 title: Checkerboard Zoom (ULA flash-bit toggle per raster)
 type: technique
 tags: [crtc, single-rasterline, ula, flash, mode-1, checkerboard, animation]
-sources: [twisted-brain]
-updated: 2026-05-16
+sources: [twisted-brain, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Checkerboard Zoom
@@ -20,7 +20,7 @@ From Twisted Brain Part 11 ([[sources/twisted-brain]]).
 
 MOS normally toggles bit 0 at the standard flash rate (default 25/25 fifty-Hz frames, ~1 Hz). For the checkerboard effect, the **init function programs colours 8-15 as flash entries** so the demo can repurpose this single bit as a per-raster colour-flip lever; then the draw function writes bit 0 of `&FE20` per scanline to invert all "flashing" colours simultaneously.
 
-Each toggle costs **one `STA &FE20`** = 4 cycles (stretched on SHEILA). Vastly cheaper than rewriting palette entries (which would take 8 writes per affected colour in MODE 1).
+Each toggle costs **one `STA &FE20`** = 4 cycles (a 2 MHz access, not stretched: `&FE20`/`&FE21` measured on two real Masters, [[sources/beeb-port-kit-hardware-facts-2026-11]] §2, phX card 6/B). Vastly cheaper than rewriting palette entries (which would take 8 writes per affected colour in MODE 1).
 
 ## CRTC config
 
@@ -50,7 +50,7 @@ R12/R13 never changes — the same scanline of memory is shown 256 times. What c
     LDA flash_register_value   ; 4c
     AND #&FE                   ; 2c
     ORA checker_parity         ; 4c   ← bit 0 of parity
-    STA &FE20                  ; 4c (stretched)
+    STA &FE20                  ; 4c (2 MHz, not stretched)
 
     ; --- update checker parity ---
     INC checker_y_in_cell      ; 5c

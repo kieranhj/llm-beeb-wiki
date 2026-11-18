@@ -2,8 +2,8 @@
 title: BBC Master Series — Hardware Overview
 type: hardware
 tags: [master, m128, architecture, overview]
-sources: [master-arm, master-rm, beeb-port-kit-hardware-facts]
-updated: 2026-09-07
+sources: [master-arm, master-rm, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # BBC Master Series — Hardware Overview
@@ -52,6 +52,7 @@ The Master runs at 2 MHz for everything except slow devices, where it drops to 1
 
 - **2 MHz**: ROM, RAM (DRAM cycled at 4 MHz, multiplexed CPU↔CRTC), internal Tube.
 - **1 MHz**: System VIA, User VIA, ACIA, SERPROC, ADC, 1 MHz bus peripherals, RTC.
+- **Measured on real Masters (phX, 2026-11-14): the Video ULA's palette `&FE21` and ACCCON `&FE34` are 2 MHz accesses** — a back-to-back `sta`/`stx &FE21` run changed colour every 4 cycles, and ACCCON writes landed at odd as well as even characters. The CRTC (`&FE01`) is 1 MHz: every write lands on an even C0, back-to-back `sta &FE01` costs 6 cycles ([[sources/beeb-port-kit-hardware-facts-2026-11]] §1, §2; detail on [[timing/cycle-stretching]]).
 
 The DRAM↔CPU↔CRTC arbitration is the same as the Model B: 250 ns slots, two CPU accesses + two CRTC accesses per microsecond, CRTC fetches double as DRAM refresh. The video subsystem is fundamentally unchanged in timing.
 
@@ -99,6 +100,16 @@ No speech on the Master — those signals are reclaimed for the 146818. Sound an
 ## Measured on a Master 128 (2026)
 
 [Edge Grinder](https://github.com/kieranhj/edge-beeb) is a C64 port built on the Master specifically (shadow-RAM double buffer, ANDY + HAZEL + four sideways banks for a 349-second tune, a VideoNuLA test build), and its measurements — all in jsbeeb through an MCP, real hardware only where stated — are filed where they belong: ACCCON, the in-frame display switch, HAZEL and BREAK on [[memory/shadow-ram]]; ANDY's true extent (4K, ROMSEL bit 7, overlaying only `&8000-&8FFF`, and why the test must be machine code) on [[memory/paged-rom]]; `&FFFE = &E59E` and the reclaimable low pages on [[os/interrupts]] and [[memory/os-workspace]]; the hardware-wrap sizes on [[hardware/system-via]]; the NuLA registers on [[hardware/video-ula]]; the measured internal key numbers on [[os/keyboard]]. Source: [[sources/beeb-port-kit-hardware-facts]]. A real Master 128 also runs the Model B [Paradroid](https://github.com/kieranhj/paradroid-beeb) port (reported by KC, 2026-09-06) — the first time either port ran on hardware rather than an emulator; real B, B+ and second processors remain untested.
+
+### Later Master projects, on real hardware (2026-09 to 11)
+
+From [[sources/beeb-port-kit-hardware-facts-2026-11]] §4 "Real hardware":
+
+- **1942** (arcade → Master 128 only) **plays on a real Master 128** from a Gotek (2026-09-28) and a real 5.25" drive 1 at `*CONFIGURE FDRIVE 3` (2026-10-12): shadow double buffering, a mid-frame ACCCON D flip, HAZEL and ANDY paged through play, its own 1770 driver, background disc reads in play. What real hardware found that jsbeeb did not: the 1770's per-command head settle, the drive and step rate (see [[hardware/wd1770]]), BREAK not clearing RAM ([[os/break-intercept]]), a garbage line on a transition and a stage-28 lock-up. The kit's lesson: **put real hardware in the loop at the first layer that touches the disc, the CRTC or BREAK** — 1942's first real play was day 22 of 47.
+- **phX** (CPC demo → Master 128 only) took that lesson from day one, on **KC's two Masters** (the original with a Sony RGB CRT, a Cherry Master with a CUB RGB CRT) through a hardware-test disc of 21 programs and a second of four (`phX/docs/hwtest.md`). Found on hardware and not in jsbeeb 2.10.2: palette and R8 writes acting early, the MA13 alternate-character flip, the monitors' black-level clamp and visible windows (on [[hardware/crtc-6845]], [[hardware/video-ula]]), the 1770's early READ ADDRESS INTRQ ([[hardware/wd1770]]). Cards 1-9 and A-E agreed on both Masters for every chip fact. Also measured real: ACCCON D mid-line acts at the character written; with D set the 6845 reads HAZEL below `&3000` ([[memory/shadow-ram]]); banks 4-7 are sideways RAM on a stock machine ([[memory/paged-rom]]).
+- **Stryker's Run** (a 1986 BBC game rebuilt and optimised; Master 128 and Model B + SWR) is jsbeeb-and-b2 only so far: its HUD rupture seen on b2, the Model B build played on b2 (KC, 2026-10-23/25). Its Master MOS 3.20 facts (the tick's cost, VSync lost by chaining, HAZEL as data) are on [[os/interrupts]] and [[memory/shadow-ram]].
+- **The Master MOS is not the Model B's in the corners**: `&028C` read `&FF` under a `*RUN` boot ([[memory/os-workspace]]); a `*RUN` from `!BOOT` arrives with interrupts disabled, so a boot program waiting in OSRDCH waits for ever until it does `CLI` (phX, jsbeeb Master).
+- **A real Master's RAM powers up with junk that survives BREAK**; jsbeeb zeroes RAM and HAZEL ([[tools/emulators]]).
 
 ---
 

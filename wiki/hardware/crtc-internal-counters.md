@@ -2,8 +2,8 @@
 title: 6845 CRTC Internal Counters (C0/C4/C9/C5)
 type: hardware
 tags: [crtc, 6845, internal-state, c0, c4, c9, c5, vma, last-line, additional-management]
-sources: [accc-compendium, hd6845sp-hitachi-datasheet]
-updated: 2026-05-16
+sources: [accc-compendium, hd6845sp-hitachi-datasheet, naug-ch13-video, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # 6845 Internal Counters
@@ -23,7 +23,9 @@ This page is the foundation for [[hardware/crtc-6845]] / [[hardware/crtc-6845-ad
 | `VMA` | 14 | current video memory address | loaded from R12/R13 at frame start |
 | `VMA'` | 14 | next-row video memory address | helper for row advancement |
 
-`C0` increments once per microsecond (every horizontal character clock). `C9` increments when `C0` overflows. `C4` increments when `C9` overflows (in normal use). `VMA` advances by 2 bytes per displayed microsecond.
+`C0` increments once per **character clock**. `C9` increments when `C0` overflows. `C4` increments when `C9` overflows (in normal use). `VMA` advances by one character address per displayed character.
+
+**On the BBC a character clock is not a microsecond.** The 6845 runs at 2 MHz in MODEs 0-3 (R0 = 127: 128 characters in a 64 µs line, **0.5 µs a character**) and 1 MHz in MODEs 4-7 (R0 = 63: 64 characters, **1 µs a character**) — per-mode R0 values on [[hardware/crtc-6845]] ([[sources/naug-ch13-video]] §13.3.3). And one CRTC character is **one byte** on the BBC, against two on the Amstrad CPC ([[sources/beeb-port-kit-hardware-facts-2026-11]] §2, Isometrikum, checked byte for byte by its harnesses). *Superseded:* this page previously said "`C0` increments once per microsecond … `VMA` advances by 2 bytes per displayed microsecond" — the [[sources/accc-compendium]]'s figures for the CPC, whose CRTC is clocked at 1 MHz and fetches 2 bytes a character; true of the BBC only in the 1 MHz modes, and never the 2 bytes.
 
 The 14-bit memory address sent to the bus is composed of `VMA` and bits 0-2 of `C9` — see [[hardware/address-translation]] for how those 14 bits land in DRAM space on the BBC.
 
@@ -85,6 +87,21 @@ Compiled from compendium §11-§20:
 - **R0=0 freeze** (§13.2.4): setting R0=0 freezes C9 (and via knock-on, C4, C5). Register writes to R4/R5/R9 are ignored during the freeze; R8 still considered each C0=0; R7 still tested each C0=0. Foundation of [[techniques/crtc-counter-freeze]] (planned).
 - **Freeze of additional adjustment line** (§13.2.3): if R0=0 lands during R5 additional-management, the chip stays mid-adjustment indefinitely.
 - **Freeze of VSync** (§13.2.2): writing R0<2 on the line before C4=R7 prevents the VSync from triggering for that frame. Unlocking requires changing R7 or letting C4 increment.
+
+## Measured on the BBC (jsbeeb and real Masters, 2026)
+
+The model above is the CPC compendium's. These are the counter facts measured on BBC hardware or jsbeeb's HD6845SP model, from [[sources/beeb-port-kit-hardware-facts-2026-11]] §1 (phX's probe, which records every video fetch with C0/C9/C4 and every CRTC write with its C0; jsbeeb 2.10.2 Master, 2026-11-14, unless marked real; `phX/docs/layer-3-6845.md`). Real-Master results are by eye on a CRT: to a character, not a cycle.
+
+| Fact | Platform |
+|---|---|
+| **The Last-Line latch is at C0 = 1** in jsbeeb ("Testing indicates that the latch is set here at exactly C0=1", jsbeeb `video.js`, from Twisted Brain). So in a one-row frame R4 must be rewritten before that row's last scanline reaches C0 = 1, not at the row's end (Stryker's Run's one-row HUD frame, 2026-10-23; seen right on b2). Agrees with the compendium's C0 < 2 window. | jsbeeb 2.10.2; b2 by eye |
+| **On a real Master the latch has been taken by C0 54**: the next frame's R4 written in the current frame's last line at C0 54 is safe on both of KC's Masters (phX hardware-test card 8). Where between C0 1 and 54 the real chip latches is not measured. | real Master ×2 |
+| **C9 16-23 display as RA 0-7; C9 8-15 are blank** (Evil Influences' RVI shows a C9 of 16 as scanline 0). | jsbeeb |
+| **C4 runs to its 7-bit wrap** when a frame misses its end: R4/R9 = 0 written one line before the last line never ends the frame; C9 runs past R9 (8-15 blank), C4 counts on to 127, and the intended one-line frames start ~148 lines late. R5 written during the vertical adjust does the same. | jsbeeb |
+| **A frame may not end on a 2-character (R0 = 1) line**: jsbeeb never ends one (C9 stays 1); on real Masters a test that did lost sync on the Sony monitor and bent on the CUB (card L, 2026-11-15). | jsbeeb; real Master ×2 |
+| **R0 = 0 freezes C0**; restarting the chip from a 1 MHz-aligned R0 write fixes its phase against the 1 MHz clock (phX's VSync lock; see [[techniques/crtc-counter-freeze]]). What R0 = 0 does to DRAM refresh is not measured. | jsbeeb; real Master (phX plays on it) |
+
+The write-timing knife edges (1 MHz write slots, R1 below C0, R12/R13 windows) are on [[hardware/crtc-6845-advanced]].
 
 ## See also
 

@@ -2,8 +2,8 @@
 title: Copper Bars / Plasma
 type: technique
 tags: [crtc, vertical-rupture, single-scanline, mode-0, palette, dither, sine, copper, plasma]
-sources: [twisted-brain]
-updated: 2026-05-16
+sources: [twisted-brain, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Copper Bars and Plasma
@@ -72,6 +72,10 @@ No multiplication needed at runtime — everything is sine-table lookup + ADC. J
 The trick is the **separation of "what content"** (pre-rendered dither in screen RAM) **from "where on screen each chunk lands"** (per-cycle R12/R13). Once you accept that the screen-RAM-to-display mapping is yours to choose, the 2 MHz CPU has plenty of time to update *which* rows are picked and *which* palette they use — without ever redrawing a pixel.
 
 A 256-line MODE 0 screen has 20 480 bytes. Filling that at 2 MHz costs **10 240 cycles** of pure writes — about 80 raster lines just to clear, never mind drawing. Per-row R12/R13 reuse means we display all 64 character rows from just a 1 KB pre-rendered buffer, and the per-frame work is < 1 KB of CRTC + palette register writes.
+
+## Palette writes in the blanking: land them a character late (2026-11)
+
+On a real Master a `&FE21` write takes effect **early** — by about one MODE 2 pixel by KC's eye, or `4 - p` texels into the previous character per jsbeeb main 2.22.1 (MODE 0: five texels); the two disagree and the question is open ([[hardware/video-ula]]). Either way **a palette write meant for the horizontal blanking straight after the display can recolour the last displayed character**: start such writes a character or two into the blanking (phX's logo moved its writes from C0 100 to 102: 0 of 400 fields right on jsbeeb 2.22.1 before, 400 of 400 after) ([[sources/beeb-port-kit-hardware-facts-2026-11]] §2). `&FE21` itself is a 2 MHz access, 4 cycles, measured on real Masters.
 
 ## Constant-time discipline
 

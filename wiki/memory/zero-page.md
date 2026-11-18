@@ -2,8 +2,8 @@
 title: Zero Page
 type: memory
 tags: [zero-page, workspace, mos]
-sources: [naug-ch06-os-introduction, naug-ch13-video, allmem-ripley-harston]
-updated: 2026-05-14
+sources: [naug-ch06-os-introduction, naug-ch13-video, allmem-ripley-harston, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Zero Page
@@ -78,6 +78,19 @@ If your code is the entire foreground (no `CALL` back to BASIC), all of `&00-&8F
 ### Take over filing-system / VDU zp regions
 
 If you've turned off the filing system (e.g. by setting up your own NMI handler and managing the disc directly) you can reclaim `&B0-&CF`. If you're running your own video driver (direct screen writes), the VDU workspace at `&D0-&E1` is free.
+
+**Measured refinements** ([[sources/beeb-port-kit-hardware-facts-2026-11]] §6, after hexwab on paradroid-beeb #18):
+
+| Range | Yours when | Note |
+|---|---|---|
+| `&A0-&A7` (NMI owner) | after `OSBYTE 140` has given you the NMI | measured unwritten by anything else through a whole game (1942, 2026-10-11, jsbeeb Master); 1942's and the kit's 1770 driver keep the NMI routine's saved A at `&A0` — but phX moved its A to the stack because a nested NMI overwrote it there (see [[hardware/wd1770]]) |
+| `&A8-&AF` (MOS scratch) | after `OSBYTE 140`, **and only while you make no OS call** | not the filing system's, so 140 is not the whole story: an OS call may use it |
+| `&B0-&CF` (filing system) | **after `OSBYTE 140`, and not before** — "turning off the filing system" means letting it detach | Paradroid used it without the call and ran only because Acorn's DFS did not mind; an Opus DDOS 3.45 hung (hexwab, real hardware) |
+| `&BC`/`&BD` | measured free in play under a MOS that still runs (Stryker's Run, Master, watches over every phase) | a watch sees a zp read's address but not its value: check the source for indexed accesses |
+
+**A program that owns everything can have almost all of it.** phX, after `*FX 140` with its own IRQ and NMI, played on KC's real Master, uses the whole zero page except `&A0` (its 1770 NMI's), `&F4` (ROMSHAD, written with ROMSEL every time) and `&FC` (the IRQ's saved A) — the MOS's `&E0-&FF` included (`phX/docs/memory-map.md`). That contradicts nothing below: "Don't bother with `&EF-&FF`" is for code that still calls the OS.
+
+**Under an auto-allocator, an interrupt and the main loop must not share a routine.** Baron assumes code reachable from a `ZA_INTERRUPT` handler runs only inside it and may pack that handler's variables onto the routine's; Square Roots' music interrupt variables landed on a span routine's, and the first full run failed at record 207 (2026-11-08; kit gotchas class 3). And while a build must stay byte-identical, pin the zero page: removing one variable lets the allocator repack the rest (Isometrikum crunch rounds 1-3).
 
 The trade-off: **the more MOS state you displace, the more state you must restore on exit**. For code that runs to completion and resets the machine (games, demos), restoration is trivial — just `BRK` or `JMP &E00` (RESET). For code that returns to BASIC, you must save and restore.
 

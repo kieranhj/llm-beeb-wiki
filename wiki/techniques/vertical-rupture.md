@@ -2,8 +2,8 @@
 title: Vertical Rupture (CRTC split-screen)
 type: technique
 tags: [crtc, raster, split-screen, scrolling, mode-2]
-sources: [retrosoftware-smooth-vscroll, hd6845sp-hitachi-datasheet, naug-ch13-video, accc-compendium, beeb-port-kit-hardware-facts]
-updated: 2026-09-07
+sources: [retrosoftware-smooth-vscroll, hd6845sp-hitachi-datasheet, naug-ch13-video, accc-compendium, beeb-port-kit-hardware-facts, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # Vertical Rupture
@@ -34,7 +34,7 @@ For each register you'll touch during a rupture, where the write must land on th
 | R12/R13 | Anywhere before the C4=C9=C0=0 boundary that starts the next cycle | VMA loads from old R12/R13 for next cycle |
 | R5 (adjust scanlines) | Before C0=2 of the last frame line | Adjust isn't applied this frame |
 
-The "land at C0<2 of the candidate scanline" requirement for R4 is the chief footgun. With 8-cycle-stretched STA accesses to `&FE00`/`&FE01` and ~5c instruction setup, you have a 16c-ish window — manageable but not generous.
+The "land at C0<2 of the candidate scanline" requirement for R4 is the chief footgun. A back-to-back `STA &FE01` costs **6 cycles** and every CRTC write lands on a 1 MHz boundary (an even C0) — jsbeeb 2.10.2 Master, measured by phX ([[sources/beeb-port-kit-hardware-facts-2026-11]] §1) — so with ~5c of instruction setup the window is a couple of 1 MHz slots: manageable but not generous. *Superseded:* this paragraph said "8-cycle-stretched STA accesses", unmeasured. In jsbeeb the latch is at exactly C0 = 1; on a real Master an R4 for the *next* frame written at C0 54 of the last line is safe (phX, both of KC's Masters, card 8).
 
 ## The "Last Line" state — what actually arms the cycle boundary
 
@@ -191,8 +191,29 @@ Source: [[sources/beeb-port-kit-hardware-facts]] — facts measured during Kiera
 - **R7 for the panel cycle must go in at VSync, not at the first timer fire**, or a panel cycle that reaches the stale R7 fires a second VSync and re-enters the handler mid-frame (Paradroid, 2026-08-21).
 - **Switching CRTC shapes costs malformed fields** unless the writes are aligned to row 0 of a fresh frame, and a right-length field can still be in the wrong phase — **jsbeeb showed no fault; b2 rolled and KC photographed it**. Suppress VSync (`R7 = 255`) across the intermediate cycles, exactly as the worked example does for cycle 1 (Paradroid, 2026-08-31). Details on [[hardware/crtc-6845-advanced]]; which emulator sees what on [[tools/emulators]].
 - **Interlace must be off (`R8 = 0`)**: the MOS leaves MODE 1 at `R8 = 1`, which moves VSync by half a scanline on alternate fields and a timer-placed split with it (Paradroid Layer 3).
-- **Do the last disc load before the rupture is armed.** With R7 parked where VSync never fires, DFS's 8271 status poll at `&ACAE` hung the second `*LOAD` forever (Paradroid Layer 3, jsbeeb, [bug-map-corruption.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/bug-map-corruption.md)). See [[os/filing-systems]].
+- **Do the last disc load before the rupture is armed.** With R7 parked where VSync never fires, DFS's 8271 status poll at `&ACAE` hung the second `*LOAD` forever (Paradroid Layer 3, jsbeeb, [bug-map-corruption.md](https://github.com/kieranhj/paradroid-beeb/blob/main/docs/bug-map-corruption.md)). See [[os/filing-systems]]. *Later (2026-09-09, jsbeeb 1.25.0):* stopping VSync with R7 alone no longer reproduces the hang, so the cause is not pinned to VSync; and a rupture's own T1 cadence cannot run across a filing-system call on a Master (changing T1 hung jsbeeb's MOS) — keep loads away from the rupture either way ([[sources/beeb-port-kit-hardware-facts-2026-11]] §6).
 - **Taking IRQ1V outright** (both ports do) means disabling every interrupt source on both VIAs except System VIA CA1 and T1, or anything unserviced holds the IRQ line asserted forever. The MOS saves the interrupted A in `&FC` but not X or Y (Paradroid Layer 3). See [[os/interrupts]].
+
+
+## Measured in practice — later ports (2026-09 to 2026-11)
+
+From [[sources/beeb-port-kit-hardware-facts-2026-11]] §1: **1942** (Master 128, Sept 2026, built with the kit), **Stryker's Run** (a 1986 BBC game rebuilt from disassembly, Oct 2026) and **phX** (Nov 2026).
+
+### The vertical total adjust displays — and where that puts the scrolling area
+
+The primary source is Rich Talbot-Watkins's write-up *Line by line vertical scrolling on the Beeb* and his working demo `smoothscroll.ssd`, which the kit had not cited before 1942 read them. See also [[techniques/smooth-vertical-scroll]].
+
+- **`R6 = displayed rows + 1`**, because the vertical total adjust counts as one more character row for the R6 compare. Display enable then survives into the adjust and the CRTC fetches the *next* buffer row's top `line` scanlines — the bottom sliver a 1-scanline scroll needs. Rich's demo sets `R6 = 24 + 1` for a 24-row window. Measured by 1942 (2026-09-08, jsbeeb 1.25.0, Master: **0 wrong of 14,784 pixels fetched by the adjust**, all eight values of `line`, field 39,936.00 cycles) and by the kit's `template/examples/vscroll` on a **Model B** (15-row cycle, `R6 = 16`: 0 of 38,400 pixels wrong, 0 of 19,840 in the adjust). **jsbeeb 1.25.0 only** — not b2, beebjit or real hardware; Rich's demo relies on it and runs, which is evidence about the 6845 but not a measurement of the sliver.
+- **Put the scrolling area FIRST in the frame.** The adjusts are `line` on the scrolling cycle and `8 - line` on the other. With a static panel *above* the scrolling area the `8 - line` lands between them, visible, and must be blanked — a gap of up to 8 scanlines. Scrolling area first, and the same adjust falls at the end of the panel cycle, in the **top border**; the first visible line then sits a fixed distance from VSync whatever `line` is. 1942 built both shapes: Rich's — 2 CRTC cycles, 3 T1 fires, 272 lit lines with no gaps, 40 lines of blanking; the Paradroid-shaped first cut — 3 cycles, 6 fires, two visible 8-line gaps, 16 lines of blanking.
+- **Only one R8 edge has to land on an exact scanline** in that frame (the unblank at the first visible line); the panel-first shape needed four.
+- **Paradroid's refusal to display the adjust cost it a row of play area**, but its cost came from its own frame (a 10K wrap making the strip exactly 16 rows, and a panel above the play area forcing three cycles), not from the technique.
+- **The R5 worst case**: a fire that lands in the adjust's own last scanline. Rich's demo writes the scrolling cycle's R5 there and gets away with it by instruction order (R8, timer, R4, R5); 1942 writes it mid-cycle instead.
+- **Overscan**: 1942 lights 272 lines (256-line playfield first, 16-line panel below, 40 lines of blanking) in an unchanged 312-line field, played on a real Master and display from 2026-09-28 — see [[video/monitor-crt]].
+
+### Frame ends
+
+- **The 6845 decides a frame has ended at its last scanline's C0 = 1**, so in a one-row frame R4 must be rewritten before that row's last scanline (Stryker's Run's one-row HUD frame, jsbeeb 2.10.2, 2026-10-23; seen right on b2). In one-line frames, entering them must happen in the current frame's last line after C0 = 1, with no vertical adjust in the tail (phX, jsbeeb) — see [[techniques/single-rasterline-rupture]].
+- **jsbeeb 2.10's 6845 starts VSync the instant C4 = R7**, so `R7 = 0` may be written only once the last CRTC cycle is past its row 0, and a cycle's R4 must be in place before that cycle's row 0 ends (Isometrikum, jsbeeb 2.10.2, 2026-11-07; not tried on real hardware). See [[techniques/triggered-vsync]].
 
 ---
 

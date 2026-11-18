@@ -2,13 +2,13 @@
 title: CRTC Counter Freeze (R0=0)
 type: technique
 tags: [crtc, r0, freeze, counters, experimental, raster, c9, c4]
-sources: [accc-compendium]
-updated: 2026-05-16
+sources: [accc-compendium, beeb-port-kit-hardware-facts-2026-11]
+updated: 2026-11-18
 ---
 
 # CRTC Counter Freeze (R0=0)
 
-**Experimental on BBC**: this technique has been explored on real hardware but is not used in any shipped demo as of 2026. Documented here for completeness — when the right use case appears, the recipe is ready.
+**Used on the BBC — as a sync.** funky-fresh uses R0 = 0 to synchronise the 6845, and phX (2026-11, Master 128; unpublished) took it from there: its VSync lock (`LOCK_VSYNC`) holds **R0 = 0 for two lines and then writes R0 = 127**, so the 6845 restarts from a 1 MHz access and its phase against the 1 MHz clock is the same every boot ([[sources/beeb-port-kit-hardware-facts-2026-11]] §1; `phX/docs/part-bobs.md`; jsbeeb, and played on KC's real Master). *Superseded:* this paragraph said "explored on real hardware but … not used in any shipped demo as of 2026". The wider freeze recipes below remain experimental.
 
 Setting **R0=0** on CRTC 0 (the BBC's HD6845S/SP family) **freezes most of the chip's internal counters**. C0 stays at 0, C9 stops incrementing, C4 stops being managed (with one "last hiccup" exception). The chip becomes a near-statue. Restoring R0>2 unfreezes it; counters resume from where they were (subject to a couple of subtle armed-state quirks).
 
@@ -61,11 +61,11 @@ Practical implication: **don't freeze with R0=0 when a VSync is about to start**
 - **System VIA / User VIA timers** — completely unaffected. T1 free-run, vsync IRQ flag, ADC conversions all proceed normally.
 - **6502 execution** — completely unaffected. You're running normal code throughout the freeze.
 - **Video ULA serialiser** — unchanged. It keeps serialising whatever byte the CRTC fed it last (which the CRTC is now feeding repeatedly because VMA doesn't advance). Visually this means a single 8-pixel horizontal stripe stuck where the beam was when freeze hit.
-- **DRAM refresh** — **a serious concern**. The address translator's refresh-cycle behaviour ([[hardware/address-translation]]) relies on the CRTC actually scanning. When R0=0 freezes the CRTC, refresh patterns change. The ACCC compendium notes this; for CPC it's been characterised. For BBC it would warrant verification before any extended freeze (more than ~1 ms).
+- **DRAM refresh** — **a serious concern** (still not measured on the BBC: phX's two-line freeze does not answer it — [[sources/beeb-port-kit-hardware-facts-2026-11]] §1). The address translator's refresh-cycle behaviour ([[hardware/address-translation]]) relies on the CRTC actually scanning. When R0=0 freezes the CRTC, refresh patterns change. The ACCC compendium notes this; for CPC it's been characterised. For BBC it would warrant verification before any extended freeze (more than ~1 ms).
 
-## Possible BBC use cases (speculative)
+## Possible BBC use cases
 
-None are known to be shipped. Plausible candidates:
+**Shipped: the 1 MHz phase lock** (above). Why it matters: on a Master in a 2 MHz mode the MA13 fetch flip follows the 1 MHz clock, not C0, and every odd-length line since the boot moves it — a locked phase makes it the same every boot ([[hardware/address-translation]]). Other candidates (speculative):
 
 - **Synchronous burst-write windows** — freeze the CRTC for a few hundred µs while doing heavy data movement (e.g. fast bulk transfer to/from a peripheral), then unfreeze and let the display resume. Cleaner than blanking the display via ULA because the chip state is preserved exactly.
 - **Music-player jitter elimination** — freeze the chip across a music-update boundary so any data-dependent timing in the music player doesn't propagate to display timing. Probably overkill in practice.

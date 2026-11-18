@@ -54,6 +54,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 - [[sources/6502org-65c02-opcodes]] — 6502.org canonical 65C02 opcode reference. Covers unused-opcode behaviour across G65SC / R65SC / R65C02 / W65C02S variants. Source for [[hardware/6502-undefined-opcodes]].
 - [[sources/via-timer-chip-level-refs]] — Combined chip-level references for 6522 VIA timers: WDC W65C22 datasheet Fig 18 (N+1.5 IRQ assertion), Frank Kontros 6522 timers page, Stardot hoglet hardware tests (`1, 0, &FF, &FE` through-zero sequence). Decomposes the `(N+2) µs` formula.
 - [[sources/beeb-port-kit-hardware-facts]] — Kieran Connell's *beeb-port-kit* `hardware-facts.md` (2026-09-06): hardware, MOS, DFS, beebasm and emulator facts **measured** (dated, instrument named) during two C64 → BBC ports, Paradroid (Model B) and Edge Grinder (Master 128). CRTC rupture write windows, R5 trap, wrap sizes, Master ACCCON/ANDY/HAZEL, SWR probing, reclaimable workspace, measured IKN table, 128c scanline, ZX0 rules, emulator calibration.
+- [[sources/beeb-port-kit-hardware-facts-2026-11]] — the kit's `hardware-facts.md` + `gotchas.md` at 4490a91 (2026-11-18): everything since the September ingest — 1942, Stryker's Run, the CPC demos and **phX on two real Masters** (hardware-test disc): 6845 knife edges, RVI on the BBC, Master MA13 `XOR &40/&C0`, monitors, `&FE21` 2 MHz and landing early, shadow below `&3000` reads HAZEL, the real 1770's early READ ADDRESS INTRQ, MOS 3.20 BREAK, jsbeeb pin vs main.
 
 ## Hardware
 
@@ -90,6 +91,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 
 ## Video
 
+- [[video/monitor-crt]] — What a real RGB CRT shows: the Sony's and CUB's visible windows by R2, the Sony's back-porch black-level clamp (non-black after HSync shifts the line's colours), RVI strays, lost sync on 2-character frame ends; no emulator models a monitor. (1 source)
 - [[video/modes]] — Mode summary: resolution, bpp, screen base, screen size, byte→pixel layout (MODE 2 interleaving), address arithmetic.
 - [[video/hardware-scrolling]] — R12/R13 lever, vertical & sideways scroll, hardware wrap-around, MODE 7 correction, vsync timing, OS shadow-copy issue.
 - [[video/plot-codes]] — VDU 25 PLOT k reference, k=0-95 (User Guide) + k=96-255 (Master extensions). Filled triangles/rectangles/circles/ellipses/flood fill.
@@ -161,7 +163,7 @@ Content catalog. Routing table for queries — start here, then drill into pages
 
 - [[tools/basic-assembler]] — BBC BASIC inline assembler cheatsheet: OPT bits, P%/O%, labels, EQU directives, two-pass dance, FN-macro pattern, BeebAsm porting notes.
 - [[tools/beebasm]] — BeebAsm 1.11 gotchas that cost builds in two ports: no `IFDEF` / symbol-defined-twice, local labels shadowing globals, `SAVE` order on the disc, `CLEAR` vs `GUARD`, `SKIP` in gap-finders, stderr under PowerShell, the symbol dump, proving a change mechanical. (1 source)
-- [[tools/emulators]] — jsbeeb (via MCP), b-em and b2 as instruments: what each sees that the others cannot (b2 rolls a misplaced field, b-em disagrees with jsbeeb below `&3000` on a Master), `cycles_run` vs `elapsed_cycles`, snapshots mid-routine, zeroed RAM, NuLA palette emulated, unpadded SSDs boot, disc-model timings. (1 source)
+- [[tools/emulators]] — jsbeeb (pinned 2.10.2 vs main 2.22.x: MA13 flip, palette/R8 timing, 1770), b2, beebjit, b-em as instruments; jsbeeb vs a real Master table; `frameCount` counts only C4 = R6 (the web display's phosphor), `bitmapY` at HSync, zeroed RAM vs real junk, `cycles_run`, snapshots, disc-model timings. (2 sources)
 
 ## Synthesis
 
